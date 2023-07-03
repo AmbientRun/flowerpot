@@ -5,11 +5,11 @@
 - [ ] outline this README
 - [ ] license the codebase appropriately
 - [ ] migrate tasks from journal here
-- [ ] create a "map" mod
-- [ ] map: write map component and message schemas using chunks
-- [ ] map: generate a basic, fixed-size map of chunks server-side
+- [x] create a "map" mod
+- [x] map: write map component and message schemas using chunks
+- [x] map: generate a basic, fixed-size map of chunks server-side
+- [x] map: synchronize all (for now) chunks with all players
 - [ ] map: spawn client-side chunk and tile entities in response to updates
-- [ ] map: synchronize all (for now) chunks with all players
 - [ ] create a "player" mod
 - [ ] player: construct the provided player entity with transform, avatar, and camera
 - [ ] player: define input messages and send them on input
