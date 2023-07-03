@@ -2,3 +2,7 @@
 id = "flowerpot"
 name = "flowerpot"
 version = "0.0.1"
+
+includes = [
+  "src/map/ambient.toml",
+]
