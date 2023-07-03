@@ -9,13 +9,13 @@ version = "0.0.1"
 ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "c2ed4913" }
 
 [[bin]]
-name = "client_flowerpot"
-path = "src/client.rs"
+name = "flowerpot_map_client"
+path = "src/map/client.rs"
 required-features = ["client"]
 
 [[bin]]
-name = "server_flowerpot"
-path = "src/server.rs"
+name = "flowerpot_map_server"
+path = "src/map/server.rs"
 required-features = ["server"]
 
 [features]
