@@ -54,7 +54,7 @@ pub fn main() {
         let chunks = all_chunks.evaluate();
         println!("Updating client {} with {} chunks", uid, chunks.len());
         for (_e, position) in chunks.iter() {
-            LoadChunk::new(*position).send_client_targeted_unreliable(uid.clone());
+            LoadChunk::new(*position).send_client_targeted_reliable(uid.clone());
         }
     });
 }
