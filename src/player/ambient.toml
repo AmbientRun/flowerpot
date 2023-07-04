@@ -26,3 +26,8 @@ type = "EntityId"
 name = "LocalPlayerRef"
 attributes = ["Debuggable", "MaybeResource"]
 description = "A resource referencing the local player's entity."
+
+[messages.update_player_angle]
+name = "UpdatePlayerAngle"
+description = "Client-to-server message to update the client's player's angle."
+fields = { pitch = "F32", yaw = "F32" }
