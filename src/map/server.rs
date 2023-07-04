@@ -16,21 +16,6 @@ pub const CHUNK_SIZE: usize = 16;
 
 #[main]
 pub fn main() {
-    Entity::new()
-        .with_merge(make_perspective_infinite_reverse_camera())
-        .with(aspect_ratio_from_window(), EntityId::resources())
-        .with_default(main_scene())
-        .with(translation(), Vec3::ONE * 5.)
-        .with(lookat_target(), vec3(0., 0., 0.))
-        .spawn();
-
-    Entity::new()
-        .with_merge(make_transformable())
-        .with_default(quad())
-        .spawn();
-
-    println!("Hello, Ambient!");
-
     for x in -2..=2 {
         for y in -2..=2 {
             let position = IVec2::new(x, y);
