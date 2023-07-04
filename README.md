@@ -5,15 +5,18 @@
 - [ ] outline this README
 - [ ] license the codebase appropriately
 - [ ] migrate tasks from journal here
+- [ ] setup CI to test code quality of PRs
+- [ ] add clippy to CI
+- [ ] make panicking (i.e. use of unwrap() or expect()) a clippy error
 - [x] create a "map" mod
 - [x] map: write map component and message schemas using chunks
 - [x] map: generate a basic, fixed-size map of chunks server-side
 - [x] map: synchronize all (for now) chunks with all players
-- [ ] map: spawn client-side chunk and tile entities in response to updates
-- [ ] create a "player" mod
+- [x] map: spawn client-side chunk and tile entities in response to updates
+- [x] create a "player" mod
 - [ ] player: construct the provided player entity with transform, avatar, and camera
 - [ ] player: define input messages and send them on input
-- [ ] player: write and run shared movement code for client and server
+- [ ] player: define and execute shared movement code for client and server
 - [ ] make a "fauna" mod
 - [ ] fauna: define a fauna tag component
 - [ ] player: make the player a fauna server-side
