@@ -20,3 +20,9 @@ description = """
 A reference to this player's head entity. Used client-side only in order to
 update the main camera's transform.
 """
+
+[components."player::local_player_ref"]
+type = "EntityId"
+name = "LocalPlayerRef"
+attributes = ["Debuggable", "MaybeResource"]
+description = "A resource referencing the local player's entity."
