@@ -1,0 +1,22 @@
+[components.player]
+name = "Player"
+description = "Component namespace related to the player mod."
+
+[components."player::pitch"]
+type = "F32"
+name = "Pitch"
+attributes = ["Debuggable"]
+
+[components."player::yaw"]
+type = "F32"
+name = "Yaw"
+attributes = ["Debuggable"]
+
+[components."player::head_ref"]
+type = "EntityId"
+name = "HeadRef"
+attributes = ["Debuggable"]
+description = """
+A reference to this player's head entity. Used client-side only in order to
+update the main camera's transform.
+"""

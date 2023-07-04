@@ -5,4 +5,5 @@ version = "0.0.1"
 
 includes = [
   "src/map/ambient.toml",
+  "src/player/ambient.toml",
 ]

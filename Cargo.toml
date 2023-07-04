@@ -18,6 +18,16 @@ name = "flowerpot_map_server"
 path = "src/map/server.rs"
 required-features = ["server"]
 
+[[bin]]
+name = "flowerpot_player_client"
+path = "src/player/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_player_server"
+path = "src/player/server.rs"
+required-features = ["server"]
+
 [features]
 client = ["ambient_api/client"]
 server = ["ambient_api/server"]
