@@ -1,0 +1,3 @@
+[components.template]
+name = "Template"
+description = "Component namespace related to the template mod."

@@ -3,6 +3,7 @@
 # To-Do
 
 - [ ] outline this README
+- [ ] add instructions for making a mod from the template
 - [ ] license the codebase appropriately
 - [ ] migrate tasks from journal here
 - [ ] setup CI to test code quality of PRs
