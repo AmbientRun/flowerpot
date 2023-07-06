@@ -4,6 +4,7 @@ name = "flowerpot"
 version = "0.0.1"
 
 includes = [
+  "src/fauna/ambient.toml",
   "src/map/ambient.toml",
   "src/player/ambient.toml",
 ]

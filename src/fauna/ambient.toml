@@ -1,0 +1,3 @@
+[components.fauna]
+name = "Fauna"
+description = "Component namespace related to the fauna mod."

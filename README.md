@@ -19,7 +19,7 @@
 - [x] player: define mouselook messages and send them on input
 - [x] player: define shared movement code and run it client-side
 - [x] player: define movement messages and send them from the client
-- [ ] make a "fauna" mod
+- [x] make a "fauna" mod
 - [ ] fauna: define a fauna tag component
 - [ ] fauna: define fauna position and angle components + update messages
 - [ ] player: make the player a fauna server-side
