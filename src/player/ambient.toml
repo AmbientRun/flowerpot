@@ -6,11 +6,42 @@ description = "Component namespace related to the player mod."
 type = "F32"
 name = "Pitch"
 attributes = ["Debuggable"]
+description = "The client-side player's pitch. NOT the player's fauna pitch."
 
 [components."player::yaw"]
 type = "F32"
 name = "Yaw"
 attributes = ["Debuggable"]
+description = "The client-side player's yaw. NOT the player's fauna yaw."
+
+[components."player::position"]
+type = "Vec2"
+name = "Position"
+attributes = ["Debuggable"]
+description = """
+A player's map position.
+
+The client interpolates this with the player's fauna position to implement rubberbanding.
+
+The server uses this in conjunction with the direction component to implement player movement code.
+"""
+
+[components."player::speed"]
+type = "F32"
+name = "Speed"
+attributes = ["Debuggable"]
+description = "The speed of a player."
+
+[components."player::direction"]
+type = "Vec2"
+name = "Direction"
+attributes = ["Debuggable"]
+description = """
+The velocity of a player, server-side and client-side.
+NOT relative to player yaw.
+Maximum length is clamped to 1.0, and use in conjunction with the speed
+component to determine the actual player movement.
+"""
 
 [components."player::head_ref"]
 type = "EntityId"
@@ -31,3 +62,8 @@ description = "A resource referencing the local player's entity."
 name = "UpdatePlayerAngle"
 description = "Client-to-server message to update the client's player's angle."
 fields = { pitch = "F32", yaw = "F32" }
+
+[messages.update_player_direction]
+name = "UpdatePlayerDirection"
+description = "Client-to-server message to update the client's player's direction."
+fields = { direction = "Vec2" }

@@ -14,15 +14,19 @@
 - [x] map: synchronize all (for now) chunks with all players
 - [x] map: spawn client-side chunk and tile entities in response to updates
 - [x] create a "player" mod
-- [ ] player: construct the provided player entity with transform, avatar, and camera
-- [ ] player: define input messages and send them on input
-- [ ] player: define and execute shared movement code for client and server
+- [x] player: construct the provided player entity with transform, avatar, and camera
+- [x] player: define mouselook messages and send them on input
+- [x] player: define shared movement code and run it client-side
+- [x] player: define movement messages and send them from the client
 - [ ] make a "fauna" mod
 - [ ] fauna: define a fauna tag component
+- [ ] fauna: define fauna position and angle components + update messages
 - [ ] player: make the player a fauna server-side
+- [ ] player: run player movement server-side
 - [ ] fauna: define fauna spawn, despawn, and update messages
 - [ ] fauna: send fauna update messages for all fauna to all clients server-side
 - [ ] fauna: spawn and update puppeted fauna entities client-side
+- [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
 - [ ] map: add a list component of subscribed clients (player entity IDs; user IDs for message-sending can be retrieved) to chunks
 - [ ] map: keep all chunk subscriptions updated with all clients
 - [ ] map: define messages for un/subscribing specific clients to specific chunks

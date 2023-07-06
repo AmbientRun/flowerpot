@@ -14,7 +14,10 @@ use ambient_api::{
 };
 
 use components::player::*;
-use messages::UpdatePlayerAngle;
+use messages::{UpdatePlayerAngle, UpdatePlayerDirection};
+use shared::init_shared_player;
+
+mod shared;
 
 // TODO make a component?
 const HEAD_HEIGHT: f32 = 1.5;
@@ -45,6 +48,8 @@ fn main() {
                 Entity::new()
                     .with_merge(make_transformable())
                     .with_default(cube())
+                    .with(position(), Vec2::ZERO)
+                    .with(speed(), 10.0) // TODO terrain-based speed
                     .with(head_ref(), head),
             );
 
@@ -67,6 +72,18 @@ fn main() {
             }
         });
 
+    init_shared_player();
+
+    change_query((player(), position()))
+        .track_change(position())
+        .bind(move |entities| {
+            for (e, (_, position)) in entities {
+                // TODO integrate with map system
+                let new_translation = position.extend(0.0);
+                entity::add_component(e, translation(), new_translation);
+            }
+        });
+
     run_async(async_main());
 }
 
@@ -84,6 +101,7 @@ async fn async_main() {
 
         move |_| {
             let input = input::get();
+            // TODO make cursor lock component-based for easier extension
             if !cursor_lock.auto_unlock_on_escape(&input) {
                 return;
             }
@@ -97,6 +115,31 @@ async fn async_main() {
 
             entity::add_component(local_player_entity, yaw_component(), yaw);
             entity::add_component(local_player_entity, pitch_component(), pitch);
+        }
+    });
+
+    Frame::subscribe({
+        move |_| {
+            let input = input::get();
+            // TODO interop with mouselook cursor lock?
+
+            let mut new_direction = Vec2::ZERO;
+            if input.keys.contains(&KeyCode::W) {
+                new_direction.y -= 1.0;
+            }
+            if input.keys.contains(&KeyCode::S) {
+                new_direction.y += 1.0;
+            }
+            if input.keys.contains(&KeyCode::A) {
+                new_direction.x -= 1.0;
+            }
+            if input.keys.contains(&KeyCode::D) {
+                new_direction.x += 1.0;
+            }
+
+            let new_direction = new_direction.clamp_length_max(1.0);
+            entity::add_component(local_player_entity, direction(), new_direction);
+            UpdatePlayerDirection::new(new_direction).send_server_reliable();
         }
     });
 }
