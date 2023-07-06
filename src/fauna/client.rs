@@ -1,6 +1,100 @@
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
+
 use ambient_api::prelude::*;
 
 mod shared;
 
+use components::fauna::*;
+use messages::*;
+
 #[main]
-fn main() {}
+fn main() {
+    SpawnFauna::subscribe(move |_, data| {
+        Entity::new()
+            .with_default(fauna())
+            .with(remote_entity(), data.eid)
+            .spawn();
+    });
+
+    let store = FaunaStore::new();
+
+    store.subscribe_update::<DespawnFauna>(move |e, _| {
+        entity::despawn_recursive(e);
+    });
+
+    store.subscribe_update::<UpdateFaunaPosition>(move |e, data| {
+        entity::add_component(e, position(), data.position);
+    });
+
+    store.subscribe_update::<UpdateFaunaYaw>(move |e, data| {
+        entity::add_component(e, yaw(), data.yaw);
+    });
+}
+
+pub trait FaunaUpdate: ModuleMessage {
+    fn get_remote_entity(&self) -> EntityId;
+}
+
+macro_rules! impl_update_for_eid {
+    ($message:ident) => {
+        impl FaunaUpdate for $message {
+            fn get_remote_entity(&self) -> EntityId {
+                self.eid
+            }
+        }
+    };
+}
+
+impl_update_for_eid!(DespawnFauna);
+impl_update_for_eid!(UpdateFaunaPosition);
+impl_update_for_eid!(UpdateFaunaYaw);
+
+#[derive(Clone)]
+pub struct FaunaStore {
+    inner: Arc<Mutex<HashMap<EntityId, EntityId>>>,
+}
+
+impl FaunaStore {
+    pub fn new() -> Self {
+        let inner = Default::default();
+        let store = Self { inner };
+
+        spawn_query((fauna(), remote_entity())).bind({
+            let store = store.clone();
+            move |entities| {
+                let mut store = store.inner.lock().unwrap();
+                for (e, (_, remote)) in entities {
+                    store.insert(e, remote);
+                }
+            }
+        });
+
+        despawn_query((fauna(), remote_entity())).bind({
+            let store = store.clone();
+            move |entities| {
+                let mut store = store.inner.lock().unwrap();
+                for (_, (_, remote)) in entities {
+                    store.remove(&remote);
+                }
+            }
+        });
+
+        store
+    }
+
+    pub fn remote_to_local(&self, remote: EntityId) -> Option<EntityId> {
+        self.inner.lock().unwrap().get(&remote).copied()
+    }
+
+    pub fn subscribe_update<T: FaunaUpdate>(&self, mut cb: impl FnMut(EntityId, T) + 'static) {
+        let store = self.to_owned();
+        T::subscribe(move |_, data| {
+            let remote = data.get_remote_entity();
+            let Some(local) = store.remote_to_local(remote) else { return };
+            cb(local, data);
+        });
+    }
+}

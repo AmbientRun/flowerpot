@@ -1,3 +1,55 @@
 [components.fauna]
 name = "Fauna"
 description = "Component namespace related to the fauna mod."
+
+[components."fauna::fauna"]
+type = "Empty"
+name = "Fauna"
+attributes = ["Debuggable"]
+description = "A tag given to all fauna entities."
+
+[components."fauna::position"]
+type = "Vec2"
+name = "Fauan"
+attributes = ["Debuggable"]
+description = "A fauna's map position."
+
+[components."fauna::yaw"]
+type = "F32"
+name = "Yaw"
+attributes = ["Debuggable"]
+description = "A fauna's yaw."
+
+[components."fauna::remote_entity"]
+type = "EntityId"
+name = "RemoteEntity"
+attributes = ["Debuggable"]
+description = """
+The remote entity ID of this fauna.
+
+When the SpawnFauna message is received on the client, the client spawns a
+corresponding local ID. However, the new ID may not (and probably will not)
+match the entity ID given in the SpawnFauna message. This component is attached
+to locally-spawned fauna in order to translate between local fauna entities and
+their server-side entity IDs.
+"""
+
+[messages.spawn_fauna]
+name = "SpawnFauna"
+description = "Server-to-client message spawning a fauna on a client."
+fields = { eid = "EntityId" }
+
+[messages.despawn_fauna]
+name = "DespawnFauna"
+description = "Server-to-client message despawning a fauna on a client."
+fields = { eid = "EntityId" }
+
+[messages.update_fauna_position]
+name = "UpdateFaunaPosition"
+description = "Updates a fauna's position on the receiving client."
+fields = { eid = "EntityId", position = "Vec2" }
+
+[messages.update_fauna_yaw]
+name = "UpdateFaunaYaw"
+description = "Updates a fauna's yaw on the receiving client."
+fields = { eid = "EntityId", yaw = "F32" }

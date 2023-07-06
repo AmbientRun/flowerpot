@@ -20,13 +20,12 @@
 - [x] player: define shared movement code and run it client-side
 - [x] player: define movement messages and send them from the client
 - [x] make a "fauna" mod
-- [ ] fauna: define a fauna tag component
-- [ ] fauna: define fauna position and angle components + update messages
+- [x] fauna: define a fauna tag component
+- [x] fauna: define fauna spawn and despawn messages
+- [x] fauna: define fauna position and angle components + update messages
+- [x] fauna: spawn and update puppeted fauna entities client-side
 - [ ] player: make the player a fauna server-side
 - [ ] player: run player movement server-side
-- [ ] fauna: define fauna spawn, despawn, and update messages
-- [ ] fauna: send fauna update messages for all fauna to all clients server-side
-- [ ] fauna: spawn and update puppeted fauna entities client-side
 - [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
 - [ ] map: add a list component of subscribed clients (player entity IDs; user IDs for message-sending can be retrieved) to chunks
 - [ ] map: keep all chunk subscriptions updated with all clients
