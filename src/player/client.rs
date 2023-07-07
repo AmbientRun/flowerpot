@@ -6,7 +6,7 @@ use ambient_api::{
         camera::aspect_ratio_from_window,
         player::{local_user_id, player, user_id},
         primitives::cube,
-        transform::{local_to_parent, rotation, translation},
+        transform::{local_to_parent, local_to_world, rotation, translation},
     },
     concepts::{make_perspective_infinite_reverse_camera, make_transformable},
     messages::Frame,
@@ -47,7 +47,8 @@ fn main() {
                 player_entity,
                 Entity::new()
                     .with_merge(make_transformable())
-                    .with_default(cube())
+                    .with_default(local_to_world())
+                    // .with_default(cube())
                     .with(position(), Vec2::ZERO)
                     .with(speed(), 10.0) // TODO terrain-based speed
                     .with(head_ref(), head),

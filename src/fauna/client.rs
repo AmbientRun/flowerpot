@@ -3,7 +3,11 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use ambient_api::prelude::*;
+use ambient_api::{
+    components::core::{primitives::sphere_radius, rendering::color, transform::translation},
+    concepts::{make_sphere, make_transformable},
+    prelude::*,
+};
 
 mod shared;
 
@@ -32,6 +36,29 @@ fn main() {
     store.subscribe_update::<UpdateFaunaYaw>(move |e, data| {
         entity::add_component(e, yaw(), data.yaw);
     });
+
+    // temp fauna rendering code
+
+    query((fauna(), position())).each_frame(move |entities| {
+        for (e, (_, position)) in entities {
+            entity::add_components(
+                e,
+                make_transformable()
+                    .with(translation(), position.extend(0.0))
+                    .with_merge(make_sphere())
+                    .with(sphere_radius(), 0.2)
+                    .with(color(), vec4(1.0, 1.0, 0.0, 0.0)),
+            );
+        }
+    });
+
+    change_query((fauna(), position()))
+        .track_change(position())
+        .bind(move |entities| {
+            for (e, (_, position)) in entities {
+                entity::add_component(e, translation(), position.extend(0.0));
+            }
+        });
 }
 
 pub trait FaunaUpdate: ModuleMessage {
