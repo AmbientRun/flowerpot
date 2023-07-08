@@ -24,8 +24,8 @@
 - [x] fauna: define fauna spawn and despawn messages
 - [x] fauna: define fauna position and angle components + update messages
 - [x] fauna: spawn and update puppeted fauna entities client-side
-- [ ] player: make the player a fauna server-side
-- [ ] player: run player movement server-side
+- [x] player: make the player a fauna server-side
+- [x] player: run player movement server-side
 - [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
 - [ ] map: add a list component of subscribed clients (player entity IDs; user IDs for message-sending can be retrieved) to chunks
 - [ ] map: keep all chunk subscriptions updated with all clients
@@ -34,12 +34,20 @@
 - [ ] fauna: define an `in_chunk` component and update all fauna with it
 - [ ] fauna: define an `last_chunk` component
 - [ ] fauna: when a fauna moves chunks, diff the subscribers `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
+- [ ] make a "terrain" mod
+- [ ] terrain: define a heightmap chunk component
+- [ ] terrain: procedurally generate chunk heightmaps
+- [ ] terrain: generate meshes and materials for client-side chunks
+- [ ] fauna: position fauna on the map using their chunk's terrain
 
 Big topics that stil need to be planned:
 - [ ] render distance
+- [ ] fauna models
+- [ ] player avatars
 - [ ] soil types
+- [ ] day/night cycle
 - [ ] crop definitions, growth, and syncing
-- [ ] procedural generation and heightmaps
+- [ ] cover crop rendering
 - [ ] a base content mod
 - [ ] roads and foundations
 - [ ] items and crafting
