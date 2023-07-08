@@ -1,13 +1,4 @@
-use ambient_api::{
-    components::core::{
-        app::main_scene,
-        camera::aspect_ratio_from_window,
-        primitives::quad,
-        transform::{lookat_target, translation},
-    },
-    concepts::{make_perspective_infinite_reverse_camera, make_transformable},
-    prelude::*,
-};
+use ambient_api::prelude::*;
 
 use components::map::*;
 use messages::{LoadChunk, Ready};
@@ -16,8 +7,8 @@ pub const CHUNK_SIZE: usize = 16;
 
 #[main]
 pub fn main() {
-    for x in -5..=5 {
-        for y in -5..=5 {
+    for x in -2..=2 {
+        for y in -2..=2 {
             let position = IVec2::new(x, y);
 
             let tile_num = CHUNK_SIZE * CHUNK_SIZE;
