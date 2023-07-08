@@ -4,7 +4,7 @@ use std::{
 };
 
 use ambient_api::{
-    components::core::{primitives::quad, transform::translation},
+    components::core::{primitives::quad, rendering::color, transform::translation},
     concepts::make_transformable,
     prelude::*,
 };
@@ -25,14 +25,24 @@ pub fn main() {
             println!("Loading chunk: {}", data.pos);
 
             let mut tiles = Vec::with_capacity(CHUNK_SIZE * CHUNK_SIZE);
+            let tile_offset = data.pos.extend(0).as_vec3() * CHUNK_SIZE as f32;
             for y in 0..CHUNK_SIZE {
                 for x in 0..CHUNK_SIZE {
+                    let tile_color = (x + y) & 1 == 1;
                     tiles.push(
                         Entity::new()
                             .with_merge(make_transformable())
                             .with(
                                 translation(),
-                                data.pos.extend(0).as_vec3() + Vec3::new(x as f32, y as f32, 0.0),
+                                tile_offset + Vec3::new(x as f32, y as f32, 0.0),
+                            )
+                            .with(
+                                color(),
+                                if tile_color {
+                                    vec4(1.0, 0.0, 0.0, 1.0)
+                                } else {
+                                    vec4(0.0, 1.0, 0.0, 1.0)
+                                },
                             )
                             .with_default(quad())
                             .spawn(),

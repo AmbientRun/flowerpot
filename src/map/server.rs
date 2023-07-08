@@ -16,8 +16,8 @@ pub const CHUNK_SIZE: usize = 16;
 
 #[main]
 pub fn main() {
-    for x in -2..=2 {
-        for y in -2..=2 {
+    for x in -5..=5 {
+        for y in -5..=5 {
             let position = IVec2::new(x, y);
 
             let tile_num = CHUNK_SIZE * CHUNK_SIZE;
