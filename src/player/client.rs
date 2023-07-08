@@ -5,7 +5,6 @@ use ambient_api::{
         app::main_scene,
         camera::aspect_ratio_from_window,
         player::{local_user_id, player, user_id},
-        primitives::cube,
         transform::{local_to_parent, local_to_world, rotation, translation},
     },
     concepts::{make_perspective_infinite_reverse_camera, make_transformable},
@@ -13,8 +12,8 @@ use ambient_api::{
     prelude::*,
 };
 
-use components::player::*;
-use messages::{UpdatePlayerAngle, UpdatePlayerDirection};
+use components::{fauna, player::*};
+use messages::{Join, UpdatePlayerAngle, UpdatePlayerDirection};
 use shared::init_shared_player;
 
 mod shared;
@@ -143,4 +142,9 @@ async fn async_main() {
             UpdatePlayerDirection::new(new_direction).send_server_reliable();
         }
     });
+
+    eprintln!("player mod loaded, waiting for fauna mod");
+    entity::wait_for_component(entity::resources(), fauna::mod_loaded()).await;
+    eprintln!("client and fauna mods loading; joining game");
+    Join::new().send_server_reliable();
 }
