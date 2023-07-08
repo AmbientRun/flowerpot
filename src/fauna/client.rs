@@ -39,7 +39,7 @@ fn main() {
 
     // temp fauna rendering code
 
-    query((fauna(), position())).each_frame(move |entities| {
+    spawn_query((fauna(), position())).bind(move |entities| {
         for (e, (_, position)) in entities {
             entity::add_components(
                 e,
@@ -47,7 +47,7 @@ fn main() {
                     .with(translation(), position.extend(0.0))
                     .with_merge(make_sphere())
                     .with(sphere_radius(), 0.2)
-                    .with(color(), vec4(1.0, 1.0, 0.0, 0.0)),
+                    .with(color(), vec4(1.0, 1.0, 0.0, 1.0)),
             );
         }
     });
@@ -59,6 +59,9 @@ fn main() {
                 entity::add_component(e, translation(), position.extend(0.0));
             }
         });
+
+    eprintln!("fauna mod loaded");
+    entity::add_component(entity::resources(), mod_loaded(), ());
 }
 
 pub trait FaunaUpdate: ModuleMessage {
@@ -94,7 +97,7 @@ impl FaunaStore {
             move |entities| {
                 let mut store = store.inner.lock().unwrap();
                 for (e, (_, remote)) in entities {
-                    store.insert(e, remote);
+                    store.insert(remote, e);
                 }
             }
         });
