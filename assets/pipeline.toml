@@ -1,0 +1,15 @@
+[[pipelines]]
+type = "Materials"
+
+[pipelines.importer]
+type = "Single"
+name = "grass"
+base_color = "grass.png"
+
+[pipelines.importer.sampler]
+address_mode_u = "repeat"
+address_mode_v = "repeat"
+address_mode_w = "repeat"
+mag_filter = "nearest"
+min_filter = "nearest"
+mipmap_filter = "nearest"
