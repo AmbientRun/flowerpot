@@ -34,7 +34,7 @@
 - [ ] fauna: define an `in_chunk` component and update all fauna with it
 - [ ] fauna: define an `last_chunk` component
 - [ ] fauna: when a fauna moves chunks, diff the subscribers `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
-- [ ] make a "terrain" mod
+- [x] make a "terrain" mod
 - [ ] terrain: define a heightmap chunk component
 - [ ] terrain: procedurally generate chunk heightmaps
 - [ ] terrain: generate meshes and materials for client-side chunks

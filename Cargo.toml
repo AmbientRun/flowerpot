@@ -38,6 +38,16 @@ name = "flowerpot_player_server"
 path = "src/player/server.rs"
 required-features = ["server"]
 
+[[bin]]
+name = "flowerpot_terrain_client"
+path = "src/terrain/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_terrain_server"
+path = "src/terrain/server.rs"
+required-features = ["server"]
+
 [features]
 client = ["ambient_api/client"]
 server = ["ambient_api/server"]

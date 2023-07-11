@@ -1,0 +1,3 @@
+[components.terrain]
+name = "Terrain"
+description = "Component namespace related to the terrain mod."
