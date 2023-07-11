@@ -7,6 +7,7 @@ version = "0.0.1"
 
 [dependencies]
 ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "c2ed4913" }
+noise = "0.8"
 
 [[bin]]
 name = "flowerpot_fauna_client"
