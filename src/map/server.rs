@@ -3,10 +3,14 @@ use ambient_api::prelude::*;
 use components::map::*;
 use messages::{LoadChunk, Ready};
 
-pub const CHUNK_SIZE: usize = 16;
+mod shared;
+
+use shared::CHUNK_SIZE;
 
 #[main]
 pub fn main() {
+    shared::init_shared_map();
+
     for x in -2..=2 {
         for y in -2..=2 {
             let position = IVec2::new(x, y);

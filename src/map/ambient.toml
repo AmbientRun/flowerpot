@@ -25,6 +25,18 @@ V
 ```
 """
 
+[components."map::position"]
+name = "Position"
+attributes = ["Debuggable"]
+type = "Vec2"
+description = "The map position of this entity."
+
+[components."map::in_chunk"]
+name = "InChunk"
+attributes = ["Debuggable"]
+type = "EntityId"
+description = "A reference to the chunk that this entity is in. Automatically updated according to its position."
+
 [messages.load_chunk]
 name = "LoadChunk"
 description = "Server-to-client message to command a client to load a chunk."
