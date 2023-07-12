@@ -39,12 +39,12 @@ fn main() {
 
     // temp fauna rendering code
 
-    spawn_query((fauna(), position())).bind(move |entities| {
-        for (e, (_, position)) in entities {
+    spawn_query((fauna(), position(), terrain::height())).bind(move |entities| {
+        for (e, (_, position, height)) in entities {
             entity::add_components(
                 e,
                 make_transformable()
-                    .with(translation(), position.extend(0.0))
+                    .with(translation(), position.extend(height))
                     .with_merge(make_sphere())
                     .with(sphere_radius(), 0.2)
                     .with(color(), vec4(1.0, 1.0, 0.0, 1.0)),
@@ -52,11 +52,11 @@ fn main() {
         }
     });
 
-    change_query((fauna(), position()))
+    change_query((fauna(), position(), terrain::height()))
         .track_change(position())
         .bind(move |entities| {
-            for (e, (_, position)) in entities {
-                entity::add_component(e, translation(), position.extend(0.0));
+            for (e, (_, position, height)) in entities {
+                entity::add_component(e, translation(), position.extend(height));
             }
         });
 
