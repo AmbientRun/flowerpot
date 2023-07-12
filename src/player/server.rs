@@ -1,6 +1,6 @@
 use ambient_api::{components::core::player::player, prelude::*};
 
-use components::{fauna, player::*};
+use components::{fauna, player::*, map};
 use messages::{Join, UpdatePlayerAngle, UpdatePlayerDirection};
 
 mod shared;
@@ -49,7 +49,7 @@ fn main() {
         .requires(player())
         .each_frame(move |entities| {
             for (e, pos) in entities {
-                entity::add_component(e, fauna::position(), pos);
+                entity::add_component(e, map::position(), pos);
             }
         });
 }

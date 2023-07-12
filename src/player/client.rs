@@ -12,7 +12,7 @@ use ambient_api::{
     prelude::*,
 };
 
-use components::{fauna, player::*};
+use components::{fauna, map, player::*, terrain};
 use messages::{Join, UpdatePlayerAngle, UpdatePlayerDirection};
 use shared::init_shared_player;
 
@@ -74,12 +74,17 @@ fn main() {
 
     init_shared_player();
 
-    change_query((player(), position()))
-        .track_change(position())
+    change_query((player(), position())).track_change(position()).bind(move |entities| {
+        for (e, (_, position)) in entities {
+            entity::add_component(e, map::position(), position);
+        }
+    });
+
+    change_query((player(), map::position(), terrain::height()))
+        .track_change((map::position(), terrain::height()))
         .bind(move |entities| {
-            for (e, (_, position)) in entities {
-                // TODO integrate with map system
-                let new_translation = position.extend(0.0);
+            for (e, (_, position, height)) in entities {
+                let new_translation = position.extend(height);
                 entity::add_component(e, translation(), new_translation);
             }
         });
