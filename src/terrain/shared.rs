@@ -23,7 +23,7 @@ pub fn init_shared_terrain() {
                     let sample = DVec2::new(x as f64, y as f64);
                     let sample = sample * RESOLUTION;
                     let height = noise.get([sample.x, sample.y]);
-                    let height = (height * 64.0).round() as u16;
+                    let height = (height * 64.0).round() as i16;
                     heights.push(height);
                 }
             }
