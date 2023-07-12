@@ -2,7 +2,7 @@ use ambient_api::prelude::*;
 
 mod shared;
 
-use components::fauna::*;
+use components::{fauna::*, map::position};
 use messages::*;
 
 #[main]

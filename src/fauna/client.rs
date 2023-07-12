@@ -11,7 +11,7 @@ use ambient_api::{
 
 mod shared;
 
-use components::fauna::*;
+use components::{fauna::*, map::position, terrain};
 use messages::*;
 
 #[main]

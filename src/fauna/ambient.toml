@@ -8,12 +8,6 @@ name = "Fauna"
 attributes = ["Debuggable"]
 description = "A tag given to all fauna entities."
 
-[components."fauna::position"]
-type = "Vec2"
-name = "Fauan"
-attributes = ["Debuggable"]
-description = "A fauna's map position."
-
 [components."fauna::yaw"]
 type = "F32"
 name = "Yaw"
