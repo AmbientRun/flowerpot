@@ -1,7 +1,10 @@
 use ambient_api::{glam::DVec2, prelude::*};
 use noise::{Fbm, NoiseFn};
 
-use crate::components::{map::chunk, terrain::*};
+use crate::components::{
+    map::{chunk, in_chunk, position},
+    terrain::*,
+};
 
 // TODO deduplicate this
 pub const CHUNK_SIZE: usize = 16;
@@ -29,6 +32,51 @@ pub fn init_shared_terrain() {
             }
 
             entity::add_component(e, heightmap(), heights);
+        }
+    });
+
+    query((position(), in_chunk())).each_frame(move |entities| {
+        for (e, (position, in_chunk)) in entities {
+            let Some(chunk_xy) = entity::get_component(in_chunk, chunk()) else { continue };
+
+            let local_pos = position - (chunk_xy * CHUNK_SIZE as i32).as_vec2();
+            let coarse_pos = local_pos.floor().as_ivec2();
+            let fine_pos = local_pos - coarse_pos.as_vec2();
+
+            if coarse_pos.x < 0
+                || coarse_pos.y < 0
+                || coarse_pos.x >= CHUNK_SIZE as i32
+                || coarse_pos.y >= CHUNK_SIZE as i32
+            {
+                continue;
+            }
+
+            let Some(heights) = entity::get_component(in_chunk, heightmap()) else { continue };
+
+            let get_height = |x, y| {
+                let x = x as usize;
+                let y = y as usize;
+                let idx = y * (CHUNK_SIZE + 1) + x;
+                heights[idx] as f32 / 4.0
+            };
+
+            let IVec2 { x, y } = coarse_pos;
+            let v1 = get_height(x, y);
+            let v2 = get_height(x + 1, y);
+            let v3 = get_height(x, y + 1);
+            let v4 = get_height(x + 1, y + 1);
+
+            let (base, flip_x, dx, flip_y, dy) = if fine_pos.x + fine_pos.y < 1.0 {
+                (v1, false, v2 - v1, false, v3 - v1)
+            } else {
+                (v4, true, v3 - v4, true, v2 - v4)
+            };
+
+            let x = if flip_x { 1.0 - fine_pos.x } else { fine_pos.x };
+            let y = if flip_y { 1.0 - fine_pos.y } else { fine_pos.y };
+            let new_height = base + x * dx + y * dy;
+            eprintln!("new height: {}", new_height);
+            entity::add_component(e, height(), new_height);
         }
     });
 }

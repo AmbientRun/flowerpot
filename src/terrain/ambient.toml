@@ -21,3 +21,9 @@ Y 0 1 2
 V
 ```
 """
+
+[components."terrain::height"]
+type = "F32"
+name = "Height"
+attributes = ["Debuggable"]
+description = "The height of this entity on the map. Computed using map::position."
