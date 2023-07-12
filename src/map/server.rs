@@ -11,8 +11,8 @@ use shared::CHUNK_SIZE;
 pub fn main() {
     shared::init_shared_map();
 
-    for x in -2..=2 {
-        for y in -2..=2 {
+    for x in -8..=8 {
+        for y in -8..=8 {
             let position = IVec2::new(x, y);
 
             let tile_num = CHUNK_SIZE * CHUNK_SIZE;
