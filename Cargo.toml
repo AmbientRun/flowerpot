@@ -10,6 +10,16 @@ ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "c2ed49
 noise = "0.8"
 
 [[bin]]
+name = "flowerpot_crops_client"
+path = "src/crops/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_crops_server"
+path = "src/crops/server.rs"
+required-features = ["server"]
+
+[[bin]]
 name = "flowerpot_fauna_client"
 path = "src/fauna/client.rs"
 required-features = ["client"]

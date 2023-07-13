@@ -1,0 +1,3 @@
+[components.crops]
+name = "crops"
+description = "Component namespace related to the crops mod."
