@@ -1,7 +1,7 @@
 use ambient_api::prelude::*;
 
 use components::map::*;
-use messages::{LoadChunk, Ready};
+use messages::{LoadChunk, OnPlayerLoadChunk, Ready};
 
 mod shared;
 
@@ -30,11 +30,13 @@ pub fn main() {
 
     let all_chunks = query(chunk()).build();
     Ready::subscribe(move |source, _| {
+        let player = source.client_entity_id().unwrap();
         let uid = source.client_user_id().unwrap();
         let chunks = all_chunks.evaluate();
         println!("Updating client {} with {} chunks", uid, chunks.len());
-        for (_e, position) in chunks.iter() {
-            LoadChunk::new(*position).send_client_targeted_reliable(uid.clone());
+        for (e, position) in chunks {
+            LoadChunk::new(position).send_client_targeted_reliable(uid.clone());
+            OnPlayerLoadChunk::new(e, position, player, uid.clone()).send_local_broadcast(true);
         }
     });
 }

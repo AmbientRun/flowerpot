@@ -37,6 +37,12 @@ attributes = ["Debuggable"]
 type = "EntityId"
 description = "A reference to the chunk that this entity is in. Automatically updated according to its position."
 
+[components."map::chunk_tile_index"]
+name = "ChunkTileIndex"
+attributes = ["Debuggable"]
+type = "U8"
+description = "The index of this tile in the parent chunk's tile list."
+
 [messages.load_chunk]
 name = "LoadChunk"
 description = "Server-to-client message to command a client to load a chunk."
@@ -51,3 +57,23 @@ fields = { pos = "Ivec2" }
 name = "Ready"
 description = "Client-to-server message sent when the client is ready to receive map data."
 fields = {}
+
+[messages.on_player_load_chunk]
+name = "OnPlayerLoadChunk"
+description = "Server-local message emitted when a chunk has been loaded on a player."
+
+[messages.on_player_load_chunk.fields]
+player_entity = "EntityId"
+player_uid = "String"
+chunk_pos = "Ivec2"
+chunk_entity = "EntityId"
+
+[messages.on_player_unload_chunk]
+name = "OnPlayerUnloadChunk"
+description = "Server-local message emitted when a chunk has been unloaded on a player."
+
+[messages.on_player_unload_chunk.fields]
+player_entity = "EntityId"
+player_uid = "String"
+chunk_pos = "Ivec2"
+chunk_entity = "EntityId"
