@@ -73,7 +73,6 @@ pub fn init_shared_terrain() {
             let x = if flip_x { 1.0 - fine_pos.x } else { fine_pos.x };
             let y = if flip_y { 1.0 - fine_pos.y } else { fine_pos.y };
             let new_height = base + x * dx + y * dy;
-            eprintln!("new height: {}", new_height);
             entity::add_component(e, height(), new_height);
         }
     });
