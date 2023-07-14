@@ -43,6 +43,42 @@ attributes = ["Debuggable"]
 type = "U8"
 description = "The index of this tile in the parent chunk's tile list."
 
+[components."map::north_neighbor"]
+name = "EntityId"
+attributes = ["Debuggable"]
+type = "EntityId"
+description = """
+The entity neighboring this entity to the north (-Y).
+For chunks, this is another chunk. For tiles, this is another tile.
+"""
+
+[components."map::east_neighbor"]
+name = "EntityId"
+attributes = ["Debuggable"]
+type = "EntityId"
+description = """
+The entity neighboring this entity to the east (+X).
+For chunks, this is another chunk. For tiles, this is another tile.
+"""
+
+[components."map::south_neighbor"]
+name = "EntityId"
+attributes = ["Debuggable"]
+type = "EntityId"
+description = """
+The entity neighboring this entity to the south (+Y).
+For chunks, this is another chunk. For tiles, this is another tile.
+"""
+
+[components."map::west_neighbor"]
+name = "EntityId"
+attributes = ["Debuggable"]
+type = "EntityId"
+description = """
+The entity neighboring this entity to the west (-X).
+For chunks, this is another chunk. For tiles, this is another tile.
+"""
+
 [messages.load_chunk]
 name = "LoadChunk"
 description = "Server-to-client message to command a client to load a chunk."
