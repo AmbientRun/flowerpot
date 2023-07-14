@@ -13,3 +13,6 @@ address_mode_w = "repeat"
 mag_filter = "nearest"
 min_filter = "nearest"
 mipmap_filter = "nearest"
+
+[[pipelines]]
+type = "Models"
