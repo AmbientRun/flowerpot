@@ -11,7 +11,7 @@ pub fn init_shared_map() -> PositionMap {
         move |entities| {
             let chunks = chunks.read().unwrap();
             for (e, position) in entities {
-                let xy = (position / CHUNK_SIZE as f32).as_ivec2();
+                let xy = (position / CHUNK_SIZE as f32).floor().as_ivec2();
                 let Some(chunk) = chunks.get(&xy) else { continue };
                 entity::add_component(e, in_chunk(), *chunk);
             }
