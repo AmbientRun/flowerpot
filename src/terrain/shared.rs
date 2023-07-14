@@ -1,13 +1,11 @@
 use ambient_api::{glam::DVec2, prelude::*};
+use flowerpot::CHUNK_SIZE;
 use noise::{Fbm, NoiseFn};
 
 use crate::components::{
     map::{chunk, in_chunk, position},
     terrain::*,
 };
-
-// TODO deduplicate this
-pub const CHUNK_SIZE: usize = 16;
 
 pub const RESOLUTION: f64 = 1.0 / 256.0;
 

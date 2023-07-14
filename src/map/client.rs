@@ -1,11 +1,10 @@
 use ambient_api::prelude::*;
 
 use components::map::*;
+use flowerpot::CHUNK_SIZE;
 use messages::{LoadChunk, Ready, UnloadChunk};
 
 mod shared;
-
-use shared::CHUNK_SIZE;
 
 #[main]
 pub fn main() {

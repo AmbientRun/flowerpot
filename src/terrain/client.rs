@@ -1,11 +1,15 @@
 use ambient_api::{
-    components::core::{procedurals::procedural_mesh, rendering::{pbr_material_from_url, color}},
+    components::core::{
+        procedurals::procedural_mesh,
+        rendering::{color, pbr_material_from_url},
+    },
     concepts::make_transformable,
     mesh::{self, Vertex},
     prelude::*,
 };
+use flowerpot::CHUNK_SIZE;
+
 use components::{map::chunk, terrain::heightmap};
-use shared::CHUNK_SIZE;
 
 mod shared;
 
