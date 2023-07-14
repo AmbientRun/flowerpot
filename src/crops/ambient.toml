@@ -1,3 +1,30 @@
 [components.crops]
 name = "crops"
 description = "Component namespace related to the crops mod."
+
+[components."crops::medium_crop_class"]
+type = "Empty"
+name = "MediumCropClass"
+attributes = ["Debuggable", "Networked"]
+description = "A tag for medium crop class entities."
+
+[components."crops::medium_crop_occupant"]
+type = "EntityId"
+name = "MediumCropOccupant"
+attributes = ["Debuggable"]
+description = "A reference to the medium crop that occupies this tile. Can be null for no occupant."
+
+[components."crops::class"]
+type = "EntityId"
+name = "Class"
+attributes = ["Debuggable"]
+description = "A reference to the crop class that this crop is an instantiation of."
+
+[messages.update_medium_crops]
+name = "UpdateMediumCrops"
+description = "Server-to-client batch update for the medium crops in a chunk."
+
+[messages.update_medium_crops.fields]
+chunk = "Ivec2"
+crop_tiles = { type = "Vec", element_type = "U8" }
+crop_classes = { type = "Vec", element_type = "EntityId" }
