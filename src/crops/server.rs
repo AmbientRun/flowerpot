@@ -16,7 +16,10 @@ mod shared;
 
 #[main]
 fn main() {
-    let dummy_class = Entity::new().with_default(medium_crop_class()).spawn();
+    let dummy_class = Entity::new()
+        .with_default(medium_crop_class())
+        .with(model_prefab_path(), "assets/crops/tomatoes/Tomato_5.fbx".to_string())
+        .spawn();
 
     spawn_query((chunk(), chunk_tile_refs())).bind(move |entities| {
         for (_, (chunk, tiles)) in entities {

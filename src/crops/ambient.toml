@@ -8,6 +8,12 @@ name = "MediumCropClass"
 attributes = ["Debuggable", "Networked"]
 description = "A tag for medium crop class entities."
 
+[components."crops::model_prefab_path"]
+type = "String"
+name = "ModelPrefabPath"
+attributes = ["Debuggable", "Networked"]
+description = "The asset path to a model prefab to use for this crop class."
+
 [components."crops::medium_crop"]
 type = "Empty"
 name = "MediumCrop"

@@ -1,7 +1,8 @@
 use ambient_api::{
     components::core::{
+        prefab::prefab_from_url,
         primitives::cube,
-        transform::{local_to_world, translation},
+        transform::{local_to_parent, local_to_world, rotation, translation},
     },
     concepts::make_transformable,
     prelude::*,
@@ -60,15 +61,24 @@ fn main() {
         }
     });
 
-    spawn_query((position(), height(), medium_crop())).bind(move |entities| {
-        for (e, (position, height, _)) in entities {
-            let model = make_transformable()
-                .with_default(local_to_world())
-                .with_default(cube())
-                .with(translation(), position.extend(height))
+    spawn_query((position(), height(), medium_crop(), model_prefab_path())).bind(move |entities| {
+        for (e, (position, height, _, prefab_path)) in entities {
+            let model = Entity::new()
+                .with(prefab_from_url(), asset::url(prefab_path).unwrap())
+                .with_default(local_to_parent())
                 .spawn();
 
-            entity::add_child(e, model);
+            // TODO deterministic angle using tile coordinates
+            let angle = random::<f32>() * std::f32::consts::TAU;
+
+            let transform = make_transformable()
+                .with(translation(), position.extend(height))
+                .with(rotation(), Quat::from_rotation_z(angle))
+                .with_default(local_to_world())
+                .spawn();
+
+            entity::add_child(transform, model);
+            entity::add_child(e, transform);
         }
     });
 
