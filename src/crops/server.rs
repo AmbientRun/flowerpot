@@ -4,10 +4,13 @@ use ambient_api::prelude::*;
 
 use components::{
     crops::*,
-    map::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk},
+    map::{
+        chunk, chunk_tile_index, chunk_tile_refs, east_neighbor, in_chunk, north_neighbor,
+        south_neighbor, west_neighbor,
+    },
 };
 
-use messages::{OnPlayerLoadChunk, UpdateMediumCrops};
+use messages::{GrowTick, OnPlayerLoadChunk, UpdateMediumCrops};
 
 mod shared;
 
@@ -21,9 +24,14 @@ fn main() {
                 continue;
             }
 
-            let dummy_crop = Entity::new().with(class(), dummy_class).spawn();
-
             let tile = tiles[0];
+
+            let dummy_crop = Entity::new()
+                .with_default(medium_crop())
+                .with(class(), dummy_class)
+                .with(on_tile(), tile)
+                .spawn();
+
             entity::add_component(tile, medium_crop_occupant(), dummy_crop);
         }
     });
@@ -88,4 +96,41 @@ fn main() {
                 UpdateMediumCrops::new(chunk, classes, tiles).send_client_broadcast_reliable();
             }
         });
+
+    run_async(async move {
+        loop {
+            sleep(1.0).await;
+            eprintln!("growing!");
+            GrowTick::new().send_local_broadcast(true);
+        }
+    });
+
+    let growable_crops = query((medium_crop(), on_tile(), class())).build();
+    GrowTick::subscribe(move |_, _| {
+        for (_e, (_, tile, base_class)) in growable_crops.evaluate() {
+            let neighbors = [
+                north_neighbor(),
+                east_neighbor(),
+                south_neighbor(),
+                west_neighbor(),
+            ];
+
+            for neighbor in neighbors {
+                let Some(neighbor) = entity::get_component(tile, neighbor) else {  continue };
+
+                if entity::has_component(neighbor, medium_crop_occupant()) {
+                    continue;
+                }
+
+                let new_occupant = Entity::new()
+                    .with_default(medium_crop())
+                    .with(class(), base_class)
+                    .with(on_tile(), neighbor)
+                    .spawn();
+                entity::add_component(neighbor, medium_crop_occupant(), new_occupant);
+                entity::add_component(neighbor, medium_crop_occupant(), new_occupant);
+                break;
+            }
+        }
+    });
 }
