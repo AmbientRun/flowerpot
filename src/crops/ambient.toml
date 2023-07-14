@@ -8,6 +8,12 @@ name = "MediumCropClass"
 attributes = ["Debuggable", "Networked"]
 description = "A tag for medium crop class entities."
 
+[components."crops::medium_crop"]
+type = "Empty"
+name = "MediumCrop"
+attributes = ["Debuggable"]
+description = "A tag for instantiated medium crop entities."
+
 [components."crops::medium_crop_occupant"]
 type = "EntityId"
 name = "MediumCropOccupant"
