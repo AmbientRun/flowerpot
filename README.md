@@ -14,15 +14,18 @@
 - [ ] terrain: experiment with different `cut_direction` heuristics
 - [ ] terrain: define and use a terrain seed resource
 - [ ] fauna: position fauna on the map using their chunk's terrain
-- [ ] make a "crops" mod
-- [ ] crops: define cover, small, medium, and large tag components
-- [ ] crops: define a `medium_crop_occupant` tile component
-- [ ] crops: define a `class_ref` crop component
-- [ ] crops: spawn a dummy medium crop prototype and instantiate it to test
-- [ ] crops: define a `UpdateMediumCrops` chunk message
-- [ ] map: add `in_chunk` to all chunk tiles server- and client-side
-- [ ] crops: update newly-connected clients with full `UpdateMediumCrops` messages
-- [ ] crops: broadcast `UpdateMediumCrops` in `change_query` on `medium_crop_occupant`
+- [x] make a "crops" mod
+- [x] crops: define medium tag component
+- [x] crops: define a `medium_crop_occupant` tile component
+- [x] crops: define a `class` crop component
+- [x] crops: define a `UpdateMediumCrops` chunk message
+- [x] crops: spawn a dummy medium crop prototype and instantiate it to test
+- [x] map: add `in_chunk` to all chunk tiles server- and client-side
+- [x] map: define `chunk_tile_index` and add to all chunk tiles server- and client-side
+- [ ] map: define `OnPlayerLoadChunk` and `OnPlayerUnloadChunk` module messages
+- [ ] map: emit `OnPlayerLoadChunk` messages on player connect chunk broadcast
+- [x] crops: update newly-connected clients with full `UpdateMediumCrops` messages
+- [x] crops: broadcast `UpdateMediumCrops` in `change_query` on `medium_crop_occupant`
 - [ ] crops: update `medium_crop_occupant` from `UpdateMediumCrops` client-side
 - [ ] crops: draw placeholder medium crops for `medium_crop_occupant`
 - [ ] crops: despawn client-side occupants of despawning tiles
@@ -43,7 +46,6 @@ Chunk un/loading:
 - [ ] map: listen to subscription messages and update chunks accordingly (keep values sorted for rapid diffing)
 - [ ] fauna: define a `last_chunk` component
 - [ ] fauna: when a fauna moves chunks, diff the subscribers of `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
-- [ ] crops: send `UpdateMediumCrops` when players load chunks
 - [ ] crops: update `UpdateMediumCrops` using chunk subscriptions
 
 Big topics that stil need to be planned:
@@ -58,6 +60,10 @@ Big topics that stil need to be planned:
 - [ ] cover crops
 - [ ] small crops
 - [ ] large crops
+- [ ] procedural world generation
+- [ ] water
+- [ ] non-walkable tiles and movement code
+- [ ] fences
 - [ ] road networking and representation
 - [ ] player items/crafting UX
 - [ ] fauna display names
