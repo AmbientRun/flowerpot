@@ -61,6 +61,16 @@ name = "flowerpot_terrain_server"
 path = "src/terrain/server.rs"
 required-features = ["server"]
 
+[[bin]]
+name = "flowerpot_weather_client"
+path = "src/weather/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_weather_server"
+path = "src/weather/server.rs"
+required-features = ["server"]
+
 [features]
 client = ["ambient_api/client"]
 server = ["ambient_api/server"]
