@@ -22,16 +22,20 @@
 - [x] crops: spawn a dummy medium crop prototype and instantiate it to test
 - [x] map: add `in_chunk` to all chunk tiles server- and client-side
 - [x] map: define `chunk_tile_index` and add to all chunk tiles server- and client-side
-- [ ] map: define `OnPlayerLoadChunk` and `OnPlayerUnloadChunk` module messages
-- [ ] map: emit `OnPlayerLoadChunk` messages on player connect chunk broadcast
+- [x] map: define `OnPlayerLoadChunk` and `OnPlayerUnloadChunk` module messages
+- [x] map: emit `OnPlayerLoadChunk` messages on player connect chunk broadcast
 - [x] crops: update newly-connected clients with full `UpdateMediumCrops` messages
 - [x] crops: broadcast `UpdateMediumCrops` in `change_query` on `medium_crop_occupant`
-- [ ] crops: update `medium_crop_occupant` from `UpdateMediumCrops` client-side
-- [ ] crops: draw placeholder medium crops for `medium_crop_occupant`
-- [ ] crops: despawn client-side occupants of despawning tiles
-- [ ] crops: define a `GrowTick` message
-- [ ] map: server-side tile neighbors?
-- [ ] crops: subscribe to `GrowTick` and just duplicate class IDs to neighbors
+- [x] crops: update `medium_crop_occupant` from `UpdateMediumCrops` client-side
+- [x] crops: draw placeholder medium crops for `medium_crop_occupant`
+- [x] crops: despawn client-side occupants of despawning tiles
+- [x] crops: define a `GrowTick` message
+- [x] crops: regularly broadcast `GrowTick`
+- [x] map: server-side tile neighbors
+- [x] crops: subscribe to `GrowTick` and just duplicate class IDs to neighbors
+- [x] crops: define the `model_prefab_path` component
+- [x] crops: add `model_prefab_path` to dummy crop
+- [x] crops: instantiate `model_prefab_path` on client-side crops
 - [ ] make a "core" mod
 - [ ] core: port the prototype's entity macros
 - [ ] core: spawn base content server-side
