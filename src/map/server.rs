@@ -74,6 +74,8 @@ pub fn main() {
                     observing.insert(idx, data.player_entity);
                     added = true;
                     break;
+                } else if *p == data.player_entity {
+                    return;
                 }
             }
 
@@ -91,7 +93,10 @@ pub fn main() {
             for (_e, (chunk_pos, observing)) in entities {
                 let is_sorted = observing.windows(2).all(|w| w[0] < w[1]);
                 if !is_sorted {
-                    eprintln!("list of observers to chunk {} isn't sorted!", chunk_pos);
+                    eprintln!(
+                        "list of observers to chunk {} isn't sorted: {:?}",
+                        chunk_pos, observing
+                    );
                 }
             }
         });
@@ -99,7 +104,7 @@ pub fn main() {
     OnPlayerUnloadChunk::subscribe(move |_, data| {
         entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
             let old_len = observing.len();
-            observing.retain(|p| *p == data.player_entity);
+            observing.retain(|p| *p != data.player_entity);
             if observing.len() < old_len {
                 UnloadChunk::new(data.chunk_pos).send_client_targeted_reliable(data.player_uid);
             }
