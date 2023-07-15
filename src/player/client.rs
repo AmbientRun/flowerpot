@@ -148,8 +148,9 @@ async fn async_main() {
         }
     });
 
-    eprintln!("player mod loaded, waiting for fauna mod");
+    eprintln!("player mod loaded, waiting for fauna and map mods");
     entity::wait_for_component(entity::resources(), fauna::mod_loaded()).await;
-    eprintln!("client and fauna mods loading; joining game");
+    entity::wait_for_component(entity::resources(), map::mod_loaded()).await;
+    eprintln!("player, map, and fauna mods loaded; joining game");
     Join::new().send_server_reliable();
 }

@@ -2,6 +2,14 @@
 name = "Map"
 description = "Map mod-related components."
 
+[components."map::mod_loaded"]
+type = "Empty"
+name = "ModLoaded"
+attributes = ["Debuggable", "MaybeResource"]
+description = """
+A resource that is added when the map mod has completed loading.
+"""
+
 [components."map::chunk"]
 name = "Chunk"
 attributes = ["Debuggable"]
@@ -102,11 +110,6 @@ fields = { pos = "Ivec2" }
 name = "UnloadChunk"
 description = "Server-to-client emssage to command a client to unload a chunk."
 fields = { pos = "Ivec2" }
-
-[messages.ready]
-name = "Ready"
-description = "Client-to-server message sent when the client is ready to receive map data."
-fields = {}
 
 [messages.on_player_load_chunk]
 name = "OnPlayerLoadChunk"

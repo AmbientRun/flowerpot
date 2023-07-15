@@ -1,13 +1,10 @@
 use std::collections::HashMap;
 
-use ambient_api::{
-    components::core::player::{player, user_id},
-    prelude::*,
-};
+use ambient_api::prelude::*;
 use flowerpot::CHUNK_SIZE;
 
 use components::map::*;
-use messages::{LoadChunk, OnPlayerLoadChunk, OnPlayerUnloadChunk, Ready};
+use messages::{LoadChunk, OnPlayerLoadChunk, OnPlayerUnloadChunk, UnloadChunk};
 
 mod shared;
 
@@ -69,38 +66,22 @@ pub fn main() {
     stitch_neighbors(chunks);
     stitch_neighbors(tiles);
 
-    let all_chunks = query(chunk()).build();
-    Ready::subscribe(move |source, _| {
-        let player = source.client_entity_id().unwrap();
-        let uid = source.client_user_id().unwrap();
-        let chunks = all_chunks.evaluate();
-        println!("Updating client {} with {} chunks", uid, chunks.len());
-        for (e, position) in chunks {
-            LoadChunk::new(position).send_client_targeted_reliable(uid.clone());
-            OnPlayerLoadChunk::new(e, position, player, uid.clone()).send_local_broadcast(true);
-        }
-    });
-
-    let all_chunks = query(chunk()).build();
-    despawn_query((player(), user_id())).bind(move |entities| {
-        for (player, (_, uid)) in entities {
-            for (chunk, position) in all_chunks.evaluate() {
-                OnPlayerUnloadChunk::new(chunk, position, player, uid.clone())
-                    .send_local_broadcast(true);
-            }
-        }
-    });
-
     OnPlayerLoadChunk::subscribe(move |_, data| {
         entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
+            let mut added = false;
             for (idx, p) in observing.iter().enumerate() {
                 if *p > data.player_entity {
                     observing.insert(idx, data.player_entity);
-                    return;
+                    added = true;
+                    break;
                 }
             }
 
-            observing.push(data.player_entity);
+            if !added {
+                observing.push(data.player_entity);
+            }
+
+            LoadChunk::new(data.chunk_pos).send_client_targeted_reliable(data.player_uid);
         });
     });
 
@@ -117,7 +98,13 @@ pub fn main() {
 
     OnPlayerUnloadChunk::subscribe(move |_, data| {
         entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
-            observing.retain(|p| *p == data.player_entity)
+            let old_len = observing.len();
+            observing.retain(|p| *p == data.player_entity);
+            if observing.len() < old_len {
+                UnloadChunk::new(data.chunk_pos).send_client_targeted_reliable(data.player_uid);
+            }
         });
     });
+
+    entity::add_component(entity::resources(), mod_loaded(), ());
 }

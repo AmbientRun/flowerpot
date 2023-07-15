@@ -2,7 +2,7 @@ use ambient_api::prelude::*;
 
 use components::map::*;
 use flowerpot::CHUNK_SIZE;
-use messages::{LoadChunk, Ready, UnloadChunk};
+use messages::{LoadChunk, UnloadChunk};
 
 mod shared;
 
@@ -41,6 +41,5 @@ pub fn main() {
         }
     });
 
-    println!("ready!");
-    Ready::new().send_server_reliable();
+    entity::add_component(entity::resources(), mod_loaded(), ());
 }
