@@ -14,10 +14,10 @@ mod shared;
 fn main() {
     shared::init_shared_player();
 
-    let all_chunks = query(map::chunk()).build();
+    let chunks = flowerpot::init_map(map::chunk());
+
     Join::subscribe(move |source, _data| {
         let Some(e) = source.client_entity_id() else { return };
-        let Some(uid)  = source.client_user_id() else { return };
 
         // player component must be attached before fauna spawn messages will
         // be received
@@ -40,23 +40,66 @@ fn main() {
                     .with(yaw(), 0.0),
             );
 
-            entity::add_component(e, position(), vec2(0.0, 0.0));
-
-            for (chunk, position) in all_chunks.evaluate() {
-                OnPlayerLoadChunk::new(chunk, position, e, uid.clone()).send_local_broadcast(true);
-            }
+            entity::add_components(
+                e,
+                Entity::new()
+                    .with(position(), vec2(0.0, 0.0))
+                    .with(loaded_chunks(), vec![]),
+            );
         });
     });
 
-    let all_chunks = query(map::chunk()).build();
-    despawn_query((player(), user_id())).bind(move |entities| {
-        for (player, (_, uid)) in entities {
-            for (chunk, position) in all_chunks.evaluate() {
-                OnPlayerUnloadChunk::new(chunk, position, player, uid.clone())
-                    .send_local_broadcast(true);
+    despawn_query((player(), user_id(), loaded_chunks())).bind({
+        let chunks = chunks.clone();
+        move |entities| {
+            let chunks = chunks.read().unwrap();
+            for (player, (_, uid, loaded)) in entities {
+                for position in loaded {
+                    let Some(chunk) = chunks.get(&position) else { continue };
+                    OnPlayerUnloadChunk::new(*chunk, position, player, uid.clone())
+                        .send_local_broadcast(true);
+                }
             }
         }
     });
+
+    change_query((user_id(), loaded_chunks(), map::in_chunk()))
+        .track_change(map::in_chunk())
+        .bind({
+            let chunks = chunks.clone();
+            move |entities| {
+                let chunks = chunks.read().unwrap();
+                for (e, (uid, old_chunks, current_chunk)) in entities {
+                    let current_pos = entity::get_component(current_chunk, map::chunk()).unwrap();
+                    let mut new_chunks = Vec::new();
+                    for y in -4..4 {
+                        for x in -4..4 {
+                            new_chunks.push(ivec2(x, y) + current_pos);
+                        }
+                    }
+
+                    // TODO this is hilariously slow. please use sorted diffs
+
+                    for new_chunk in new_chunks.iter() {
+                        if !old_chunks.contains(new_chunk) {
+                            let Some(chunk) = chunks.get(new_chunk) else { continue };
+                            OnPlayerLoadChunk::new(*chunk, *new_chunk, e, uid.clone())
+                                .send_local_broadcast(true);
+                        }
+                    }
+
+                    for old_chunk in old_chunks.iter() {
+                        if !new_chunks.contains(old_chunk) {
+                            let Some(chunk) = chunks.get(old_chunk) else { continue };
+                            OnPlayerUnloadChunk::new(*chunk, *old_chunk, e, uid.clone())
+                                .send_local_broadcast(true);
+                        }
+                    }
+
+                    entity::set_component(e, loaded_chunks(), new_chunks);
+                }
+            }
+        });
 
     UpdatePlayerDirection::subscribe(move |source, data| {
         let Some(e) = source.client_entity_id() else { return };

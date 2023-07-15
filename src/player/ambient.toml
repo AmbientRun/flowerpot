@@ -2,6 +2,12 @@
 name = "Player"
 description = "Component namespace related to the player mod."
 
+[components."player::loaded_chunks"]
+type = { type = "Vec", element_type = "Ivec2" }
+name = "LoadedChunks"
+attributes = ["Debuggable"]
+description = "The list of chunk positions that this player currently has loaded."
+
 [components."player::pitch"]
 type = "F32"
 name = "Pitch"
