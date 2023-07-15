@@ -1,10 +1,13 @@
 use std::collections::HashMap;
 
-use ambient_api::prelude::*;
+use ambient_api::{
+    components::core::player::{player, user_id},
+    prelude::*,
+};
 use flowerpot::CHUNK_SIZE;
 
 use components::map::*;
-use messages::{LoadChunk, OnPlayerLoadChunk, Ready};
+use messages::{LoadChunk, OnPlayerLoadChunk, OnPlayerUnloadChunk, Ready};
 
 mod shared;
 
@@ -34,7 +37,10 @@ pub fn main() {
     for x in -8..=8 {
         for y in -8..=8 {
             let position = IVec2::new(x, y);
-            let chunk = Entity::new().with(chunk(), position).spawn();
+            let chunk = Entity::new()
+                .with(chunk(), position)
+                .with(players_observing(), vec![])
+                .spawn();
 
             let tile_num = CHUNK_SIZE * CHUNK_SIZE;
             let mut chunk_tiles = Vec::with_capacity(tile_num);
@@ -73,5 +79,45 @@ pub fn main() {
             LoadChunk::new(position).send_client_targeted_reliable(uid.clone());
             OnPlayerLoadChunk::new(e, position, player, uid.clone()).send_local_broadcast(true);
         }
+    });
+
+    let all_chunks = query(chunk()).build();
+    despawn_query((player(), user_id())).bind(move |entities| {
+        for (player, (_, uid)) in entities {
+            for (chunk, position) in all_chunks.evaluate() {
+                OnPlayerUnloadChunk::new(chunk, position, player, uid.clone())
+                    .send_local_broadcast(true);
+            }
+        }
+    });
+
+    OnPlayerLoadChunk::subscribe(move |_, data| {
+        entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
+            for (idx, p) in observing.iter().enumerate() {
+                if *p > data.player_entity {
+                    observing.insert(idx, data.player_entity);
+                    return;
+                }
+            }
+
+            observing.push(data.player_entity);
+        });
+    });
+
+    change_query((chunk(), players_observing()))
+        .track_change(players_observing())
+        .bind(move |entities| {
+            for (_e, (chunk_pos, observing)) in entities {
+                let is_sorted = observing.windows(2).all(|w| w[0] < w[1]);
+                if !is_sorted {
+                    eprintln!("list of observers to chunk {} isn't sorted!", chunk_pos);
+                }
+            }
+        });
+
+    OnPlayerUnloadChunk::subscribe(move |_, data| {
+        entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
+            observing.retain(|p| *p == data.player_entity)
+        });
     });
 }

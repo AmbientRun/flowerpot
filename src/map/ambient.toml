@@ -25,6 +25,20 @@ V
 ```
 """
 
+[components."map::players_observing"]
+name = "PlayersObserving"
+type = { type = "Vec", element_type = "EntityId" }
+attributes = ["Debuggable"]
+description = """
+The list of all players that have loaded this chunk and are observing updates
+to it. This list must always be kept sorted so that lists on other chunks may
+be rapidly diffed.
+
+This component is automatically updated by the map mod in response to
+OnPlayerLoadChunk and OnPlayerUnloadChunk messages, so do not modify this
+component directly.
+"""
+
 [components."map::position"]
 name = "Position"
 attributes = ["Debuggable"]
