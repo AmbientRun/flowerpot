@@ -18,9 +18,11 @@ pub fn init_shared_map() -> PositionMap {
         }
     });
 
-    despawn_query(position()).bind(move |entities| {
+    despawn_query((in_chunk(), position())).bind(move |entities| {
         for (e, _) in entities {
-            entity::remove_component(e, in_chunk());
+            if entity::exists(e) {
+                entity::remove_component(e, in_chunk());
+            }
         }
     });
 
