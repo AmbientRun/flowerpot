@@ -31,7 +31,7 @@ pub fn main() {
         move |_, data| {
             println!("Unloading chunk: {}", data.pos);
 
-            let chunk = chunks.write().unwrap().remove(&data.pos).unwrap();
+            let Some(chunk) = chunks.write().unwrap().remove(&data.pos) else { return };
 
             for tile in entity::get_component(chunk, chunk_tile_refs()).unwrap_or_default() {
                 entity::despawn_recursive(tile);

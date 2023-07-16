@@ -4,7 +4,10 @@ use ambient_api::prelude::*;
 use flowerpot::CHUNK_SIZE;
 
 use components::map::*;
-use messages::{LoadChunk, OnPlayerLoadChunk, OnPlayerUnloadChunk, UnloadChunk};
+use messages::{
+    LoadChunk, LoadPlayerChunk, OnPlayerLoadChunk, OnPlayerUnloadChunk, UnloadChunk,
+    UnloadPlayerChunk,
+};
 
 mod shared;
 
@@ -66,7 +69,7 @@ pub fn main() {
     stitch_neighbors(chunks);
     stitch_neighbors(tiles);
 
-    OnPlayerLoadChunk::subscribe(move |_, data| {
+    LoadPlayerChunk::subscribe(move |_, data| {
         entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
             let mut added = false;
             for (idx, p) in observing.iter().enumerate() {
@@ -83,7 +86,15 @@ pub fn main() {
                 observing.push(data.player_entity);
             }
 
-            LoadChunk::new(data.chunk_pos).send_client_targeted_reliable(data.player_uid);
+            LoadChunk::new(data.chunk_pos).send_client_targeted_reliable(data.player_uid.clone());
+
+            OnPlayerLoadChunk::new(
+                data.chunk_entity,
+                data.chunk_pos,
+                data.player_entity,
+                data.player_uid,
+            )
+            .send_local_broadcast(true);
         });
     });
 
@@ -101,12 +112,21 @@ pub fn main() {
             }
         });
 
-    OnPlayerUnloadChunk::subscribe(move |_, data| {
+    UnloadPlayerChunk::subscribe(move |_, data| {
         entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
             let old_len = observing.len();
             observing.retain(|p| *p != data.player_entity);
             if observing.len() < old_len {
-                UnloadChunk::new(data.chunk_pos).send_client_targeted_reliable(data.player_uid);
+                UnloadChunk::new(data.chunk_pos)
+                    .send_client_targeted_reliable(data.player_uid.clone());
+
+                OnPlayerUnloadChunk::new(
+                    data.chunk_entity,
+                    data.chunk_pos,
+                    data.player_entity,
+                    data.player_uid,
+                )
+                .send_local_broadcast(true);
             }
         });
     });

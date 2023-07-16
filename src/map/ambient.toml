@@ -111,9 +111,35 @@ name = "UnloadChunk"
 description = "Server-to-client emssage to command a client to unload a chunk."
 fields = { pos = "Ivec2" }
 
+[messages.load_player_chunk]
+name = "LoadPlayerChunk"
+description = """
+Server-local message commanding the map mod to load a chunk on a player.
+The map mod follows this up by broadcasting OnPlayerLoadChunk.
+"""
+
+[messages.load_player_chunk.fields]
+player_entity = "EntityId"
+player_uid = "String"
+chunk_pos = "Ivec2"
+chunk_entity = "EntityId"
+
+[messages.unload_player_chunk]
+name = "UnloadPlayerChunk"
+description = """
+Server-local message commanding the map mod to unload a chunk on a player.
+The map mod follows this up by broadcasting OnPlayerUnloadChunk.
+"""
+
+[messages.unload_player_chunk.fields]
+player_entity = "EntityId"
+player_uid = "String"
+chunk_pos = "Ivec2"
+chunk_entity = "EntityId"
+
 [messages.on_player_load_chunk]
 name = "OnPlayerLoadChunk"
-description = "Server-local message emitted when a chunk has been loaded on a player."
+description = "Server-local message emitted after a chunk has been loaded on a player."
 
 [messages.on_player_load_chunk.fields]
 player_entity = "EntityId"
@@ -123,7 +149,7 @@ chunk_entity = "EntityId"
 
 [messages.on_player_unload_chunk]
 name = "OnPlayerUnloadChunk"
-description = "Server-local message emitted when a chunk has been unloaded on a player."
+description = "Server-local message emitted after a chunk has been unloaded on a player."
 
 [messages.on_player_unload_chunk.fields]
 player_entity = "EntityId"
