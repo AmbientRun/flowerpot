@@ -13,52 +13,48 @@
 - [ ] terrain: define a `cut_direction` component
 - [ ] terrain: experiment with different `cut_direction` heuristics
 - [ ] terrain: define and use a terrain seed resource
-- [ ] fauna: position fauna on the map using their chunk's terrain
-- [x] make a "crops" mod
-- [x] crops: define medium tag component
-- [x] crops: define a `medium_crop_occupant` tile component
-- [x] crops: define a `class` crop component
-- [x] crops: define a `UpdateMediumCrops` chunk message
-- [x] crops: spawn a dummy medium crop prototype and instantiate it to test
-- [x] map: add `in_chunk` to all chunk tiles server- and client-side
-- [x] map: define `chunk_tile_index` and add to all chunk tiles server- and client-side
-- [x] map: define `OnPlayerLoadChunk` and `OnPlayerUnloadChunk` module messages
-- [x] map: emit `OnPlayerLoadChunk` messages on player connect chunk broadcast
-- [x] crops: update newly-connected clients with full `UpdateMediumCrops` messages
-- [x] crops: broadcast `UpdateMediumCrops` in `change_query` on `medium_crop_occupant`
-- [x] crops: update `medium_crop_occupant` from `UpdateMediumCrops` client-side
-- [x] crops: draw placeholder medium crops for `medium_crop_occupant`
-- [x] crops: despawn client-side occupants of despawning tiles
-- [x] crops: define a `GrowTick` message
-- [x] crops: regularly broadcast `GrowTick`
-- [x] map: server-side tile neighbors
-- [x] crops: subscribe to `GrowTick` and just duplicate class IDs to neighbors
-- [x] crops: define the `model_prefab_path` component
-- [x] crops: add `model_prefab_path` to dummy crop
-- [x] crops: instantiate `model_prefab_path` on client-side crops
 - [ ] make a "core" mod
 - [ ] core: port the prototype's entity macros
 - [ ] core: spawn base content server-side
+- [ ] core: define prototypes for all available crop models
+- [ ] crops: define `seed_ref` and `next_growth_stage` components
+- [ ] crops: implement crop growth
+- [ ] player: define left and right hand components
+- [ ] player: initialize left and right hand children for local player
 - [ ] make an "items" mod
+- [ ] items: define `held_ref` component
+- [ ] items: spawn held item models in hands
+- [ ] items: hold debug items in local player's hands
 - [ ] items: define crafting recipe-related components
-- [ ] items: port over the prototype's crafting store
+- [ ] items: port over a shared version of the prototype's crafting components and store
+- [ ] items: define and send a crafting input message
+- [ ] items: run crafting client-side
+- [ ] items: define fauna update messages for held items
+- [ ] items: respond to crafting inputs server-side
+- [ ] items: respond to held item updates client-side (no-op on identical items)
+- [ ] crops: deterministic crop tile angles
 
 Chunk un/loading:
-- [ ] map: add a list component of subscribed clients (player entity IDs; user IDs for message-sending can be retrieved) to chunks
-- [ ] map: keep all chunk subscriptions updated with all clients
-- [ ] map: define messages for un/subscribing specific clients to specific chunks
-- [ ] map: listen to subscription messages and update chunks accordingly (keep values sorted for rapid diffing)
+- [x] map: define a list component of subscribed clients (player entity IDs; user IDs for message-sending can be retrieved) to chunks
+- [x] map: keep all chunk subscriptions updated with all clients
+- [x] map: define event messages on un/subscribing of specific clients to specific chunks
+- [x] map: listen to subscription messages and update chunks accordingly (keep values sorted for rapid diffing)
+- [x] Move all chunk subscriptions from map mod to player mod
+- [x] player: define a component to track each player's current list of loaded chunks
+- [x] player: every frame, recompute every player's render distance, diff against loaded chunks, emit un/load events, and update the list
+- [x] terrain: despawn client-side meshes for unloaded chunks
+- [x] crops: update `UpdateMediumCrops` using chunk subscriptions
+- [ ] lib: write a helper function to track the set of matching entities in each chunk
 - [ ] fauna: define a `last_chunk` component
 - [ ] fauna: when a fauna moves chunks, diff the subscribers of `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
-- [ ] crops: update `UpdateMediumCrops` using chunk subscriptions
 
 Big topics that stil need to be planned:
-- [ ] render distance
+- [ ] better heuristics for player chunk loading?
 - [ ] fauna models
 - [ ] player avatars
 - [ ] soil types
 - [ ] day/night cycle
-- [ ] optimized crop sync?
+- [ ] optimized diff-based crop sync?
 - [ ] configurable crop growth tick num before stage change
 - [ ] crop neighbor counting and available neighbor tags
 - [ ] cover crops
