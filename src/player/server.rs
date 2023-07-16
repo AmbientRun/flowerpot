@@ -5,7 +5,7 @@ use ambient_api::{
 
 use components::{fauna, map, player::*};
 use messages::{
-    Join, OnPlayerLoadChunk, OnPlayerUnloadChunk, UpdatePlayerAngle, UpdatePlayerDirection,
+    Join, LoadPlayerChunk, UnloadPlayerChunk, UpdatePlayerAngle, UpdatePlayerDirection,
 };
 
 mod shared;
@@ -56,7 +56,7 @@ fn main() {
             for (player, (_, uid, loaded)) in entities {
                 for position in loaded {
                     let Some(chunk) = chunks.get(&position) else { continue };
-                    OnPlayerUnloadChunk::new(*chunk, position, player, uid.clone())
+                    UnloadPlayerChunk::new(*chunk, position, player, uid.clone())
                         .send_local_broadcast(true);
                 }
             }
@@ -83,7 +83,7 @@ fn main() {
                     for new_chunk in new_chunks.iter() {
                         if !old_chunks.contains(new_chunk) {
                             let Some(chunk) = chunks.get(new_chunk) else { continue };
-                            OnPlayerLoadChunk::new(*chunk, *new_chunk, e, uid.clone())
+                            LoadPlayerChunk::new(*chunk, *new_chunk, e, uid.clone())
                                 .send_local_broadcast(true);
                         }
                     }
@@ -91,7 +91,7 @@ fn main() {
                     for old_chunk in old_chunks.iter() {
                         if !new_chunks.contains(old_chunk) {
                             let Some(chunk) = chunks.get(old_chunk) else { continue };
-                            OnPlayerUnloadChunk::new(*chunk, *old_chunk, e, uid.clone())
+                            UnloadPlayerChunk::new(*chunk, *old_chunk, e, uid.clone())
                                 .send_local_broadcast(true);
                         }
                     }
