@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use ambient_api::prelude::*;
+use ambient_api::{components::core::player::user_id, prelude::*};
 
 use components::{
     crops::*,
@@ -12,13 +12,18 @@ use components::{
 
 use messages::{GrowTick, OnPlayerLoadChunk, UpdateMediumCrops};
 
+use crate::components::map::players_observing;
+
 mod shared;
 
 #[main]
 fn main() {
     let dummy_class = Entity::new()
         .with_default(medium_crop_class())
-        .with(model_prefab_path(), "assets/crops/tomatoes/Tomato_5.fbx".to_string())
+        .with(
+            model_prefab_path(),
+            "assets/crops/tomatoes/Tomato_5.fbx".to_string(),
+        )
         .spawn();
 
     spawn_query((chunk(), chunk_tile_refs())).bind(move |entities| {
@@ -69,17 +74,14 @@ fn main() {
             .send_client_targeted_reliable(data.player_uid.clone());
     });
 
-    // TODO subscription-based batch updates
     change_query((in_chunk(), chunk_tile_index(), medium_crop_occupant()))
         .track_change(medium_crop_occupant())
         .bind(move |entities| {
             type ChunkUpdate = Vec<(u8, EntityId)>;
-            type BatchedUpdates = HashMap<IVec2, ChunkUpdate>;
+            type BatchedUpdates = HashMap<EntityId, ChunkUpdate>;
             let mut updates = BatchedUpdates::new();
 
             for (_e, (chunk_ref, tile_idx, occupant)) in entities {
-                let Some(chunk_pos) = entity::get_component(chunk_ref, chunk()) else { continue };
-
                 let Some(class) = entity::get_component(occupant, class()) else {
                     eprintln!("crop {} has no class", occupant);
                     continue;
@@ -87,16 +89,22 @@ fn main() {
 
                 let update = (tile_idx, class);
 
-                if let Some(updates) = updates.get_mut(&chunk_pos) {
+                if let Some(updates) = updates.get_mut(&chunk_ref) {
                     updates.push(update);
                 } else {
-                    updates.insert(chunk_pos, vec![update]);
+                    updates.insert(chunk_ref, vec![update]);
                 }
             }
 
-            for (chunk, update) in updates {
+            for (chunk_ref, update) in updates {
+                let Some(chunk_pos) = entity::get_component(chunk_ref, chunk()) else { continue };
+                let Some(observers) = entity::get_component(chunk_ref, players_observing()) else { continue };
                 let (tiles, classes): (Vec<_>, Vec<_>) = update.into_iter().unzip();
-                UpdateMediumCrops::new(chunk, classes, tiles).send_client_broadcast_reliable();
+
+                for observer in observers {
+                    let Some(uid) = entity::get_component(observer, user_id()) else { continue };
+                    UpdateMediumCrops::new(chunk_pos, classes.clone(), tiles.clone()).send_client_targeted_reliable(uid);
+                }
             }
         });
 
