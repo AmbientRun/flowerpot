@@ -80,7 +80,7 @@ fn main() {
                 indices: indices.as_ref(),
             });
 
-            Entity::new()
+            let mesh = Entity::new()
                 .with_merge(make_transformable())
                 .with(procedural_mesh(), mesh)
                 .with(
@@ -89,6 +89,8 @@ fn main() {
                 )
                 .with(color(), Vec4::ONE)
                 .spawn();
+
+            entity::add_child(e, mesh);
         }
     });
 }
