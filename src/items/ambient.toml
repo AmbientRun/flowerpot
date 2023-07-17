@@ -1,0 +1,3 @@
+[components.items]
+name = "Items"
+description = "Component namespace related to the items mod."

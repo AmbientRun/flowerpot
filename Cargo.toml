@@ -43,6 +43,16 @@ path = "src/game/server.rs"
 required-features = ["server"]
 
 [[bin]]
+name = "flowerpot_items_client"
+path = "src/items/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_items_server"
+path = "src/items/server.rs"
+required-features = ["server"]
+
+[[bin]]
 name = "flowerpot_map_client"
 path = "src/map/client.rs"
 required-features = ["client"]
