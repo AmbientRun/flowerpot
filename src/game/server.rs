@@ -3,7 +3,9 @@ use std::sync::atomic::AtomicBool;
 use ambient_api::{components::core::app::name, once_cell::sync::OnceCell, prelude::*};
 use components::{
     crops::{age, class, medium_crop, medium_crop_occupant, on_tile},
+    items::held_ref,
     map::{chunk, chunk_tile_refs},
+    player::{left_hand_ref, right_hand_ref},
 };
 
 mod shared;
@@ -154,6 +156,31 @@ pub mod crops {
     }
 }
 
+pub mod items {
+    use super::*;
+
+    pub mod debug {
+        use super::*;
+
+        use ambient_api::{components::core::rendering::color, prelude::vec4};
+
+        def_prototype!(
+            BLUE,
+            color: vec4(0.0, 0.0, 1.0, 1.0),
+        );
+
+        def_prototype!(
+            YELLOW,
+            color: vec4(1.0, 1.0, 0.0, 1.0),
+        );
+
+        def_prototype!(
+            GREEN,
+            color: vec4(0.0, 1.0, 0.0, 1.0),
+        );
+    }
+}
+
 #[main]
 fn main() {
     spawn_query((chunk(), chunk_tile_refs())).bind(move |entities| {
@@ -172,6 +199,13 @@ fn main() {
                 .spawn();
 
             entity::add_component(tile, medium_crop_occupant(), dummy_crop);
+        }
+    });
+
+    spawn_query((left_hand_ref(), right_hand_ref())).bind(move |entities| {
+        for (_player, (left, right)) in entities {
+            entity::add_component(left, held_ref(), items::debug::YELLOW.get());
+            entity::add_component(right, held_ref(), items::debug::BLUE.get());
         }
     });
 }
