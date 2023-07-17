@@ -14,6 +14,39 @@ name = "ModelPrefabPath"
 attributes = ["Debuggable", "Networked"]
 description = "The asset path to a model prefab to use for this crop class."
 
+[components."crops::age"]
+type = "U16"
+name = "GrowthProgress"
+attributes = ["Debuggable"]
+description = "The age in growth ticks of this crop."
+
+[components."crops::seed"]
+type = "EntityId"
+name = "Seed"
+attributes = ["Debuggable"]
+description = "The entity ID of the crop class that this crop reproduces into."
+
+[components."crops::seeding_interval"]
+type = "U16"
+name = "SeedingInterval"
+attributes = ["Debuggable"]
+description = "The age between each attempt at seeding this crop."
+
+[components."crops::next_growth_stage"]
+type = "EntityId"
+name = "NextGrowthStage"
+attributes = ["Debuggable"]
+description = """
+The entity ID of the crop class that this crop grows into.
+If null, then the crop is removed from the tile when it grows.
+"""
+
+[components."crops::next_growth_age"]
+type = "U16"
+name = "GrowthInterval"
+attributes = ["Debuggable"]
+description = "The age that this crop needs to reach to grow into its next growth stage."
+
 [components."crops::medium_crop"]
 type = "Empty"
 name = "MediumCrop"
@@ -46,8 +79,3 @@ description = "Server-to-client batch update for the medium crops in a chunk."
 chunk = "Ivec2"
 crop_tiles = { type = "Vec", element_type = "U8" }
 crop_classes = { type = "Vec", element_type = "EntityId" }
-
-[messages.grow_tick]
-name = "GrowTick"
-description = "Ticks crop growth. Tied to sun exposure."
-fields = {}

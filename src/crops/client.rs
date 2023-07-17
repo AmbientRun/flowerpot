@@ -57,6 +57,10 @@ fn main() {
                         }
                     }
 
+                    if class.is_null() {
+                        continue;
+                    }
+
                     let occupant_position = (data.chunk * CHUNK_SIZE as i32).as_vec2()
                         + vec2(
                             (tile_idx as usize % CHUNK_SIZE) as f32,
