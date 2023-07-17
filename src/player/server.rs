@@ -30,6 +30,9 @@ fn main() {
                 return;
             }
 
+            let left_hand = Entity::new().with(owner_ref(), e).spawn();
+            let right_hand = Entity::new().with(owner_ref(), e).spawn();
+
             entity::add_components(
                 e,
                 Entity::new()
@@ -37,7 +40,9 @@ fn main() {
                     .with(speed(), 1.0)
                     .with(position(), vec2(0.0, 0.0))
                     .with(direction(), vec2(0.0, 0.0))
-                    .with(yaw(), 0.0),
+                    .with(yaw(), 0.0)
+                    .with(left_hand_ref(), left_hand)
+                    .with(right_hand_ref(), right_hand),
             );
 
             entity::add_components(

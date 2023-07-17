@@ -70,6 +70,12 @@ name = "RightHandRef"
 attributes = ["Debuggable"]
 description = "A reference to this player's right hand entity."
 
+[components."player::owner_ref"]
+type = "EntityId"
+name = "OwnerRef"
+attributes = ["Debuggable"]
+description = "A reference to the player that this entity is owned by."
+
 [components."player::local_player_ref"]
 type = "EntityId"
 name = "LocalPlayerRef"

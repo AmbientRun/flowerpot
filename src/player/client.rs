@@ -5,7 +5,6 @@ use ambient_api::{
         app::main_scene,
         camera::aspect_ratio_from_window,
         player::{local_user_id, player, user_id},
-        primitives::cube,
         transform::{local_to_parent, local_to_world, rotation, scale, translation},
     },
     concepts::{make_perspective_infinite_reverse_camera, make_transformable},
@@ -51,7 +50,6 @@ fn main() {
                     .with(translation(), offset)
                     .with(rotation(), Quat::from_rotation_x(-FRAC_PI_2))
                     .with(scale(), Vec3::splat(0.3))
-                    .with_default(cube())
                     .spawn();
 
                 entity::add_child(head, hand);
@@ -67,7 +65,6 @@ fn main() {
                 Entity::new()
                     .with_merge(make_transformable())
                     .with_default(local_to_world())
-                    // .with_default(cube())
                     .with(position(), Vec2::ZERO)
                     .with(speed(), 10.0) // TODO terrain-based speed
                     .with(head_ref(), head),
