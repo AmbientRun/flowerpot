@@ -35,20 +35,29 @@ big topics:
   - [ ] crops: send small crop update messages on player chunk un/loading
   - [ ] crops: send small crop update messages to observers when they de/spawn
   - [ ] crops: spawn and update small crops client-side
-- [ ] items
-  - [ ] player: define left and right hand components
-  - [ ] player: initialize left and right hand children for local player
-  - [ ] make an "items" mod
+- [ ] items and actions
+  - [x] player: define left and right hand components
+  - [x] player: initialize left and right hand children for local player
+  - [x] make an "items" mod
+  - [ ] items: define `class` component
   - [ ] items: define `held_ref` component
-  - [ ] items: spawn held item models in hands
-  - [ ] items: hold debug items in local player's hands
-  - [ ] items: define crafting recipe-related components
-  - [ ] items: port over a shared version of the prototype's crafting components and store
-  - [ ] items: define and send a crafting input message
-  - [ ] items: run crafting client-side
-  - [ ] items: define fauna update messages for held items
-  - [ ] items: respond to crafting inputs server-side
-  - [ ] items: respond to held item updates client-side (no-op on identical items)
+  - [ ] items: define server-to-client held item update messages
+  - [ ] items: spawn held item models in hands client-side
+  - [ ] items: spawn debug items in all player's hands
+  - [ ] make an "actions" mod
+  - [ ] actions: design an action key data type
+  - [ ] actions: define `RegisterCraftingAction` and `OnCraftingAction` messages
+  - [ ] actions: create a singleton actions store
+  - [ ] actions: subscribe to `RegisterCraftingAction`
+  - [ ] actions: define a `PerformAction` client-to-server message
+  - [ ] actions: subscribe to `PerformAction` and dispatch `OnCraftingAction`
+  - [ ] items: define a `model_prefab_path` component
+  - [ ] make a "crafting" mod
+  - [ ] crafting: define crafting recipe components
+  - [ ] crafting: do a `spawn_query` for crafting recipes and register crafting actions
+  - [ ] crafting: subscribe to `OnCraftingAction` and perform player crafting
+  - [ ] game: grab some usable item models and define items for them
+  - [ ] game: define some workable crafting recipes
 - [ ] launch content
   - [x] make a "game" mod
   - [x] game: port the prototype's entity macros
