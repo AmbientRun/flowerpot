@@ -59,10 +59,10 @@ big topics:
   - [ ] items: respond to crafting inputs server-side
   - [ ] items: respond to held item updates client-side (no-op on identical items)
 - [ ] launch content
-  - [ ] make a "core" mod
-  - [ ] core: port the prototype's entity macros
-  - [ ] core: spawn base content server-side
-  - [ ] core: define prototypes for all available crop models
+  - [x] make a "game" mod
+  - [ ] game: port the prototype's entity macros
+  - [ ] game: spawn base content server-side
+  - [ ] game: define prototypes for all available crop models
 
 ## Pre-Playtest
 

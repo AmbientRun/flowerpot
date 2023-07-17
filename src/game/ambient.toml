@@ -1,0 +1,3 @@
+[components.game]
+name = "Game"
+description = "Component namespace related to Flowerpot's core game mod."
