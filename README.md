@@ -9,7 +9,6 @@ big topics:
 - [ ] tile outline rendering
 - [ ] player targeting
 - [ ] player reach
-- [ ] configurable crop growth tick num before stage change
 - [ ] crop neighbor counting and available neighbor tags
 - [ ] player items/crafting UX
 - [ ] heightmap raycasting
@@ -25,8 +24,10 @@ big topics:
   - [ ] fauna: instantiate fauna prefabs client-side
   - [ ] fauna: copy the placeholder player model from the prototype
 - [ ] crops
-  - [ ] crops: define `seed_ref` and `next_growth_stage` components
-  - [ ] crops: implement crop growth and better spread
+  - [x] crops: define `seed` and `next_growth_stage` components
+  - [x] crops: implement crop growth and better spread
+  - [x] crops: replace `GrowTick` with `age`
+  - [ ] crops: sort out all of the medium crop assets
   - [ ] crops: define a `small_crop_class` component
   - [ ] crops: define `SpawnSmallCrops` (can update class) and `DespawnSmallCrops` messages (similar to fauna)
   - [ ] crops: spawn test irises on chunks
@@ -34,16 +35,6 @@ big topics:
   - [ ] crops: send small crop update messages on player chunk un/loading
   - [ ] crops: send small crop update messages to observers when they de/spawn
   - [ ] crops: spawn and update small crops client-side
-- [ ] worldgen
-  - [ ] make a "procgen" mod
-  - [ ] procgen: figure out how to trigger chunk generation here
-  - [ ] procgen: instantiate random crops on each chunk
-  - [ ] terrain: define a `cut_direction` component
-  - [ ] terrain: define a checkerboard `cut_direction` system
-  - [ ] terrain: generate meshes according to `cut_direction`
-  - [ ] terrain: calculate height according to `cut_direction`
-  - [ ] terrain: experiment with different `cut_direction` heuristics
-  - [ ] terrain: define and use a terrain seed resource
 - [ ] items
   - [ ] player: define left and right hand components
   - [ ] player: initialize left and right hand children for local player
@@ -60,29 +51,42 @@ big topics:
   - [ ] items: respond to held item updates client-side (no-op on identical items)
 - [ ] launch content
   - [x] make a "game" mod
-  - [ ] game: port the prototype's entity macros
-  - [ ] game: spawn base content server-side
-  - [ ] game: define prototypes for all available crop models
+  - [x] game: port the prototype's entity macros
+  - [x] game: define some basic crop prototypes
+  - [x] game: spawn beeeeaaaaannnnns
+  - [ ] game: define prototypes for all available medium crop models
+  - [ ] game: define prototypes for all medium crop-related items
+- [ ] worldgen
+  - [ ] make a "procgen" mod
+  - [ ] procgen: figure out how to trigger chunk generation here
+  - [ ] procgen: instantiate random crops on each chunk
 
 ## Pre-Playtest
 
 big topics that still need to be planned here:
+- [ ] per-tile entity refactor
+- [ ] fauna display names
+- [ ] player sets display name on join
+- [ ] game chat
+- [ ] harvesting small crops
+- [ ] huge map gen
 - [ ] water
 - [ ] day/night cycle
 - [ ] non-walkable tiles and movement code
-- [ ] per-tile entity refactor
 - [ ] how do small crops reproduce?
-- [ ] harvesting small crops
 - [ ] road networking and representation
-- [ ] fauna display names
-- [ ] player sets display name on join
 - [ ] optimized diff-based crop sync?
-- [ ] game chat
 
 - [ ] tech
   - [ ] refactor chunk storage away from per-tile entities
 - [ ] worldgen
   - [ ] terrain: terrain in the shape of an island
+  - [ ] terrain: define a `cut_direction` component
+  - [ ] terrain: define a checkerboard `cut_direction` system
+  - [ ] terrain: generate meshes according to `cut_direction`
+  - [ ] terrain: calculate height according to `cut_direction`
+  - [ ] terrain: experiment with different `cut_direction` heuristics
+  - [ ] terrain: define and use a terrain seed resource
 
 ## Pre-Launch
 
