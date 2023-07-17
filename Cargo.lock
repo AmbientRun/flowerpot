@@ -435,6 +435,7 @@ name = "flowerpot"
 version = "0.0.1"
 dependencies = [
  "ambient_api",
+ "lazy_static",
  "noise",
 ]
 
@@ -662,6 +663,12 @@ name = "itoa"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c0aa48fab2893d8a49caa94082ae8488f4e1050d73b367881dcd2198f4199fd8"
+
+[[package]]
+name = "lazy_static"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "leb128"
