@@ -39,12 +39,13 @@ big topics:
   - [x] player: define left and right hand components
   - [x] player: initialize left and right hand children for local player
   - [x] make an "items" mod
-  - [ ] items: define `class` component
-  - [ ] items: define `held_ref` component
-  - [ ] items: define server-to-client held item update messages
-  - [ ] items: spawn held item models in hands client-side
-  - [ ] items: spawn debug items in all player's hands
-  - [ ] make an "actions" mod
+  - [x] items: define `class` component
+  - [x] items: define `held_ref` component
+  - [x] items: define server-to-client held item update messages
+  - [x] items: send held item update messages on `held_ref` change
+  - [x] items: spawn held item models in hands client-side
+  - [x] game: define and spawn debug items in all player's hands
+  - [x] make an "actions" mod
   - [ ] actions: design an action key data type
   - [ ] actions: define `RegisterCraftingAction` and `OnCraftingAction` messages
   - [ ] actions: create a singleton actions store
@@ -85,6 +86,7 @@ big topics that still need to be planned here:
 - [ ] how do small crops reproduce?
 - [ ] road networking and representation
 - [ ] optimized diff-based crop sync?
+- [ ] seeing items other players are holding
 
 - [ ] tech
   - [ ] refactor chunk storage away from per-tile entities

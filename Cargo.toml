@@ -13,6 +13,16 @@ noise = "0.8"
 [lib]
 
 [[bin]]
+name = "flowerpot_actions_client"
+path = "src/actions/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_actions_server"
+path = "src/actions/server.rs"
+required-features = ["server"]
+
+[[bin]]
 name = "flowerpot_crops_client"
 path = "src/crops/client.rs"
 required-features = ["client"]
