@@ -63,7 +63,7 @@ description = "A reference to the medium crop that occupies this tile. Can be nu
 type = "EntityId"
 name = "Class"
 attributes = ["Debuggable"]
-description = "A reference to the crop class that this crop is an instantiation of."
+description = "A reference to the crop class that this crop is an instance of."
 
 [components."crops::on_tile"]
 type = "EntityId"
