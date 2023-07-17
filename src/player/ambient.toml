@@ -58,6 +58,18 @@ A reference to this player's head entity. Used client-side only in order to
 update the main camera's transform.
 """
 
+[components."player::left_hand_ref"]
+type = "EntityId"
+name = "LeftHandRef"
+attributes = ["Debuggable"]
+description = "A reference to this player's left hand entity."
+
+[components."player::right_hand_ref"]
+type = "EntityId"
+name = "RightHandRef"
+attributes = ["Debuggable"]
+description = "A reference to this player's right hand entity."
+
 [components."player::local_player_ref"]
 type = "EntityId"
 name = "LocalPlayerRef"

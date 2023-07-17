@@ -5,7 +5,8 @@ use ambient_api::{
         app::main_scene,
         camera::aspect_ratio_from_window,
         player::{local_user_id, player, user_id},
-        transform::{local_to_parent, local_to_world, rotation, translation},
+        primitives::cube,
+        transform::{local_to_parent, local_to_world, rotation, scale, translation},
     },
     concepts::{make_perspective_infinite_reverse_camera, make_transformable},
     messages::Frame,
@@ -42,6 +43,25 @@ fn main() {
 
             entity::add_child(player_entity, head);
 
+            let init_hand = |hand_ref, offset| {
+                let hand = Entity::new()
+                    .with_default(main_scene())
+                    .with_default(local_to_parent())
+                    .with_default(local_to_world())
+                    .with(translation(), offset)
+                    .with(rotation(), Quat::from_rotation_x(-FRAC_PI_2))
+                    .with(scale(), Vec3::splat(0.3))
+                    .with_default(cube())
+                    .spawn();
+
+                entity::add_child(head, hand);
+
+                entity::add_component(player_entity, hand_ref, hand);
+            };
+
+            init_hand(left_hand_ref(), Vec3::new(-0.5, -0.4, 1.0));
+            init_hand(right_hand_ref(), Vec3::new(0.5, -0.4, 1.0));
+
             entity::add_components(
                 player_entity,
                 Entity::new()
@@ -74,11 +94,13 @@ fn main() {
 
     init_shared_player();
 
-    change_query((player(), position())).track_change(position()).bind(move |entities| {
-        for (e, (_, position)) in entities {
-            entity::add_component(e, map::position(), position);
-        }
-    });
+    change_query((player(), position()))
+        .track_change(position())
+        .bind(move |entities| {
+            for (e, (_, position)) in entities {
+                entity::add_component(e, map::position(), position);
+            }
+        });
 
     change_query((player(), map::position(), terrain::height()))
         .track_change((map::position(), terrain::height()))
