@@ -209,14 +209,13 @@ fn main() {
         }
     });
 
-    crate::messages::RegisterCraftingAction::new(
-        "pingas",
-        items::debug::YELLOW.get(),
-        items::debug::BLUE.get(),
+    use crate::components::crafting::*;
+    def_entity!(
+        recipe: (),
+        primary_ingredient: items::debug::YELLOW.get(),
+        secondary_ingredient: items::debug::BLUE.get(),
+        primary_yield: items::debug::GREEN.get(),
+        secondary_yield: EntityId::null(),
     )
-    .send_local_broadcast(false);
-
-    crate::messages::OnCraftingAction::subscribe(move |_, data| {
-        eprintln!("player {} crafted {}", data.player, data.id);
-    });
+    .spawn();
 }
