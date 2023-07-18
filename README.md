@@ -53,10 +53,11 @@ big topics:
   - [x] actions: define a `PerformAction` client-to-server message
   - [x] actions: subscribe to `PerformAction` and dispatch `OnCraftingAction`
   - [x] actions: bind `PerformAction` to key
-  - [ ] make a "crafting" mod
-  - [ ] crafting: define crafting recipe components
-  - [ ] crafting: do a `spawn_query` for crafting recipes and register crafting actions
-  - [ ] crafting: subscribe to `OnCraftingAction` and perform player crafting
+  - [x] make a "crafting" mod
+  - [x] crafting: define crafting recipe components
+  - [x] crafting: do a `spawn_query` for crafting recipes and register crafting actions
+  - [x] crafting: subscribe to `OnCraftingAction` and perform player crafting
+  - [ ] crafting: better semantics for secondary items?
   - [ ] items: define a `model_prefab_path` component
   - [ ] game: grab some usable item models and define items for them
   - [ ] game: define some workable crafting recipes
@@ -91,6 +92,8 @@ big topics that still need to be planned here:
 
 - [ ] tech
   - [ ] refactor chunk storage away from per-tile entities
+- [ ] items and actions
+  - [ ] crafting: comprehensively document components
 - [ ] worldgen
   - [ ] terrain: terrain in the shape of an island
   - [ ] terrain: define a `cut_direction` component

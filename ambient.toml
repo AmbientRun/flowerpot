@@ -5,6 +5,7 @@ version = "0.0.1"
 
 includes = [
   "src/actions/ambient.toml",
+  "src/crafting/ambient.toml",
   "src/crops/ambient.toml",
   "src/fauna/ambient.toml",
   "src/items/ambient.toml",
