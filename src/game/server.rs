@@ -208,4 +208,15 @@ fn main() {
             entity::add_component(right, held_ref(), items::debug::BLUE.get());
         }
     });
+
+    crate::messages::RegisterCraftingAction::new(
+        "pingas",
+        items::debug::YELLOW.get(),
+        items::debug::BLUE.get(),
+    )
+    .send_local_broadcast(false);
+
+    crate::messages::OnCraftingAction::subscribe(move |_, data| {
+        eprintln!("player {} crafted {}", data.player, data.id);
+    });
 }

@@ -46,17 +46,18 @@ big topics:
   - [x] items: spawn held item models in hands client-side
   - [x] game: define and spawn debug items in all player's hands
   - [x] make an "actions" mod
-  - [ ] actions: design an action key data type
-  - [ ] actions: define `RegisterCraftingAction` and `OnCraftingAction` messages
-  - [ ] actions: create a singleton actions store
-  - [ ] actions: subscribe to `RegisterCraftingAction`
-  - [ ] actions: define a `PerformAction` client-to-server message
-  - [ ] actions: subscribe to `PerformAction` and dispatch `OnCraftingAction`
-  - [ ] items: define a `model_prefab_path` component
+  - [x] actions: design an action key data type
+  - [x] actions: define `RegisterCraftingAction` and `OnCraftingAction` messages
+  - [x] actions: create a singleton actions store
+  - [x] actions: subscribe to `RegisterCraftingAction`
+  - [x] actions: define a `PerformAction` client-to-server message
+  - [x] actions: subscribe to `PerformAction` and dispatch `OnCraftingAction`
+  - [x] actions: bind `PerformAction` to key
   - [ ] make a "crafting" mod
   - [ ] crafting: define crafting recipe components
   - [ ] crafting: do a `spawn_query` for crafting recipes and register crafting actions
   - [ ] crafting: subscribe to `OnCraftingAction` and perform player crafting
+  - [ ] items: define a `model_prefab_path` component
   - [ ] game: grab some usable item models and define items for them
   - [ ] game: define some workable crafting recipes
 - [ ] launch content
