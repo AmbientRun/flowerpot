@@ -18,6 +18,7 @@ description = "Sent to the registering module when the registered action is perf
 [messages.on_crafting_action.fields]
 player = "EntityId"
 id = "String"
+right_is_primary = "Bool"
 
 [messages.perform_crafting_action]
 name = "PerformCraftingAction"

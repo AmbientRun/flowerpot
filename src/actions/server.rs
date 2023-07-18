@@ -20,33 +20,47 @@ pub struct CraftingActionContext {
 }
 
 impl CraftingActionContext {
-    pub fn new(mut primary_held: EntityId, mut secondary_held: EntityId) -> Self {
-        if primary_held < secondary_held {
-            std::mem::swap(&mut primary_held, &mut secondary_held);
-        }
-
-        Self {
-            primary_held,
-            secondary_held,
+    pub fn new(left_held: EntityId, right_held: EntityId) -> (Self, bool) {
+        if left_held < right_held {
+            (
+                Self {
+                    primary_held: right_held,
+                    secondary_held: left_held,
+                },
+                true,
+            )
+        } else {
+            (
+                Self {
+                    primary_held: left_held,
+                    secondary_held: right_held,
+                },
+                false,
+            )
         }
     }
 
-    pub fn get_player_contexts(player: EntityId) -> [Option<Self>; 3] {
-        let Some(left_hand) = entity::get_component(player, left_hand_ref()) else { return [None; 3] };
-        let Some(right_hand) = entity::get_component(player, right_hand_ref()) else { return [None; 3] };
+    pub fn for_player_contexts(player: EntityId, mut cb: impl FnMut(Self, bool) -> bool) {
+        let Some(left_hand) = entity::get_component(player, left_hand_ref()) else { return };
+        let Some(right_hand) = entity::get_component(player, right_hand_ref()) else { return };
 
         let left_held = entity::get_component(left_hand, held_ref()).unwrap_or_default();
         let right_held = entity::get_component(right_hand, held_ref()).unwrap_or_default();
 
-        let both = Self::new(left_held, right_held);
-        let right = Self::new(right_held, EntityId::null());
-        let left = Self::new(left_held, EntityId::null());
+        let (both, right_is_primary) = Self::new(left_held, right_held);
+        if !cb(both, right_is_primary) {
+            return;
+        }
 
-        [
-            Some(both.clone()),
-            if right != both { Some(right) } else { None },
-            if left != both { Some(left) } else { None },
-        ]
+        let (right, _) = Self::new(right_held, EntityId::null());
+        if right != both && !cb(right, true) {
+            return;
+        }
+
+        let (left, _) = Self::new(left_held, EntityId::null());
+        if left != both && !cb(left, false) {
+            return;
+        }
     }
 }
 
@@ -74,7 +88,8 @@ fn main() {
         move |source, data| {
             let mut registry = crafting.lock().unwrap();
 
-            let context = CraftingActionContext::new(data.primary_held, data.secondary_held);
+            let (context, _right_is_primary) =
+                CraftingActionContext::new(data.primary_held, data.secondary_held);
 
             if registry.contains_key(&context) {
                 eprintln!("crafting action already registered: {:?}", context);
@@ -95,12 +110,15 @@ fn main() {
         move |source, _data| {
             let Some(player) = source.client_entity_id() else { return };
             let registry = crafting.lock().unwrap();
-            for context in CraftingActionContext::get_player_contexts(player) {
-                let Some(context) = context else { continue };
-                let Some(action) = registry.get(&context) else { continue };
-                OnCraftingAction::new(action.id.clone(), player).send_local(action.module);
-                break;
-            }
+            CraftingActionContext::for_player_contexts(player, move |context, right_is_primary| {
+                if let Some(action) = registry.get(&context) {
+                    OnCraftingAction::new(action.id.clone(), player, right_is_primary)
+                        .send_local(action.module);
+                    false
+                } else {
+                    true
+                }
+            });
         }
     });
 }
