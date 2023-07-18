@@ -1,0 +1,3 @@
+[components.crafting]
+name = "Crafting"
+description = "Component namespace related to the crafting mod."

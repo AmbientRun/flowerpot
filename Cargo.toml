@@ -23,6 +23,16 @@ path = "src/actions/server.rs"
 required-features = ["server"]
 
 [[bin]]
+name = "flowerpot_crafting_client"
+path = "src/crafting/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_crafting_server"
+path = "src/crafting/server.rs"
+required-features = ["server"]
+
+[[bin]]
 name = "flowerpot_crops_client"
 path = "src/crops/client.rs"
 required-features = ["client"]
