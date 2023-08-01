@@ -28,6 +28,14 @@ to locally-spawned fauna in order to translate between local fauna entities and
 their server-side entity IDs.
 """
 
+[components."fauna::display_name_container"]
+type = "EntityId"
+name = "DisplayNameContainer"
+attributes = ["Debuggable"]
+description = """
+A client-side instance of this fauna's display name container entity.
+"""
+
 [components."fauna::mod_loaded"]
 type = "Empty"
 name = "ModLoaded"

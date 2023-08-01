@@ -4,7 +4,15 @@ use std::{
 };
 
 use ambient_api::{
-    components::core::{primitives::sphere_radius, rendering::color, transform::translation},
+    components::core::{
+        app::main_scene,
+        primitives::sphere_radius,
+        rendering::color,
+        transform::{
+            local_to_parent, local_to_world, mesh_to_local, mesh_to_world, spherical_billboard,
+            translation,
+        },
+    },
     concepts::{make_sphere, make_transformable},
     prelude::*,
 };
@@ -41,10 +49,38 @@ fn main() {
 
     spawn_query((fauna(), position(), terrain::height())).bind(move |entities| {
         for (e, (_, position, height)) in entities {
+            use ambient_api::components::core::text::*;
+            let display_name = Entity::new()
+                .with(
+                    local_to_parent(),
+                    Mat4::from_scale(Vec3::ONE * 0.02)
+                        * Mat4::from_rotation_x(180_f32.to_radians()),
+                )
+                .with(text(), "Hello, world!".to_string())
+                .with(font_size(), 36.0)
+                .with(font_family(), "Default".to_string())
+                .with(font_style(), "Regular".to_string())
+                .with(color(), vec4(1.0, 0.0, 1.0, 1.0))
+                .with_default(main_scene())
+                .with_default(local_to_world())
+                .with_default(mesh_to_local())
+                .with_default(mesh_to_world())
+                .spawn();
+
+            let container = make_transformable()
+                .with(translation(), position.extend(height))
+                .with_default(main_scene())
+                .with_default(local_to_world())
+                .with_default(spherical_billboard())
+                .spawn();
+
+            entity::add_child(container, display_name);
+
             entity::add_components(
                 e,
                 make_transformable()
                     .with(translation(), position.extend(height))
+                    .with(display_name_container(), container)
                     .with_merge(make_sphere())
                     .with(sphere_radius(), 0.2)
                     .with(color(), vec4(1.0, 1.0, 0.0, 1.0)),
@@ -59,6 +95,19 @@ fn main() {
                 entity::add_component(e, translation(), position.extend(height));
             }
         });
+
+    change_query((
+        fauna(),
+        position(),
+        terrain::height(),
+        display_name_container(),
+    ))
+    .track_change(position())
+    .bind(move |entities| {
+        for (_e, (_, position, height, container)) in entities {
+            entity::add_component(container, translation(), position.extend(height + 2.0));
+        }
+    });
 
     eprintln!("fauna mod loaded");
     entity::add_component(entity::resources(), mod_loaded(), ());
