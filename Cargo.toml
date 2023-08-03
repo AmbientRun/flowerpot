@@ -104,6 +104,16 @@ path = "src/terrain/server.rs"
 required-features = ["server"]
 
 [[bin]]
+name = "flowerpot_ui_client"
+path = "src/ui/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_ui_server"
+path = "src/ui/server.rs"
+required-features = ["server"]
+
+[[bin]]
 name = "flowerpot_weather_client"
 path = "src/weather/client.rs"
 required-features = ["client"]

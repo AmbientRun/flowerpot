@@ -13,5 +13,6 @@ includes = [
   "src/map/ambient.toml",
   "src/player/ambient.toml",
   "src/terrain/ambient.toml",
+  "src/ui/ambient.toml",
   "src/weather/ambient.toml",
 ]
