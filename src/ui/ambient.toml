@@ -7,3 +7,11 @@ fields = {}
 
 [messages.release_input]
 fields = {}
+
+[messages.join_denied]
+fields = { reason = "String" }
+
+[messages.join_request]
+name = "JoinRequest"
+description = "Client-to-server message to join the game."
+fields = { name = "String" }

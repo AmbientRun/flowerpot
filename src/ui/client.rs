@@ -4,6 +4,7 @@ use ambient_api::{
     components::core::{
         app::name,
         layout::{max_height, min_height, space_between_items},
+        rendering::color,
     },
     element::Setter,
     messages::Frame,
@@ -12,11 +13,9 @@ use ambient_api::{
 
 mod shared;
 
-use messages::Join;
-
 use crate::{
     components::{fauna, map, player::local_player_ref},
-    messages::{UpdatePlayerAngle, RequestInput, ReleaseInput},
+    messages::{JoinDenied, JoinRequest, ReleaseInput, RequestInput, UpdatePlayerAngle},
 };
 
 #[main]
@@ -85,6 +84,11 @@ fn JoinScreen(hooks: &mut Hooks) -> Element {
     use_input_request(hooks);
 
     let (name, set_name) = hooks.use_state("".to_string());
+    let (denied_reason, set_denied_reason) = hooks.use_state("".to_string());
+
+    hooks.use_module_message(move |_, _, msg: &JoinDenied| {
+        set_denied_reason(msg.reason.clone());
+    });
 
     FocusRoot::el([WindowSized::el([FlowColumn::el([
         Text::el("Flowerpot").header_style(),
@@ -92,10 +96,11 @@ fn JoinScreen(hooks: &mut Hooks) -> Element {
         Text::el("Enter your name below. Press enter to join the game."),
         TextEditor::new(name.clone(), set_name.clone())
             .auto_focus()
-            .on_submit(|_name| Join::new().send_server_reliable())
+            .on_submit(|name| JoinRequest::new(name).send_server_reliable())
             .el()
             .with(min_height(), 16.0)
             .with(max_height(), 100.0),
+        Text::el(denied_reason).with(color(), vec4(1.0, 0.6, 0.6, 1.0)),
         Separator { vertical: false }.el(),
     ])
     .with(space_between_items(), STREET)])
