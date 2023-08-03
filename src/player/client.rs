@@ -1,4 +1,4 @@
-use std::f32::consts::{FRAC_PI_2, TAU};
+use std::f32::consts::FRAC_PI_2;
 
 use ambient_api::{
     components::core::{
@@ -8,12 +8,10 @@ use ambient_api::{
         transform::{local_to_parent, local_to_world, rotation, scale, translation},
     },
     concepts::{make_perspective_infinite_reverse_camera, make_transformable},
-    messages::Frame,
     prelude::*,
 };
 
-use components::{fauna, map, player::*, terrain};
-use messages::{Join, UpdatePlayerAngle, UpdatePlayerDirection};
+use components::{map, player::*, terrain};
 use shared::init_shared_player;
 
 mod shared;
@@ -107,69 +105,4 @@ fn main() {
                 entity::add_component(e, translation(), new_translation);
             }
         });
-
-    run_async(async_main());
-}
-
-async fn async_main() {
-    let local_player_entity = entity::get_component(entity::resources(), local_player_ref())
-        .expect("local_player_ref resource was deleted");
-
-    Frame::subscribe({
-        use pitch as pitch_component;
-        use yaw as yaw_component;
-
-        let mut cursor_lock = input::CursorLockGuard::new(true);
-        let mut pitch = 0.0;
-        let mut yaw = 0.0;
-
-        move |_| {
-            let input = input::get();
-            // TODO make cursor lock component-based for easier extension
-            if !cursor_lock.auto_unlock_on_escape(&input) {
-                return;
-            }
-
-            let pitch_factor = 0.01;
-            let yaw_factor = 0.01;
-            yaw = (yaw + input.mouse_delta.x * yaw_factor) % TAU;
-            pitch = (pitch + input.mouse_delta.y * pitch_factor).clamp(-FRAC_PI_2, FRAC_PI_2);
-
-            UpdatePlayerAngle::new(pitch, yaw).send_server_reliable();
-
-            entity::add_component(local_player_entity, yaw_component(), yaw);
-            entity::add_component(local_player_entity, pitch_component(), pitch);
-        }
-    });
-
-    Frame::subscribe({
-        move |_| {
-            let input = input::get();
-            // TODO interop with mouselook cursor lock?
-
-            let mut new_direction = Vec2::ZERO;
-            if input.keys.contains(&KeyCode::W) {
-                new_direction.y -= 1.0;
-            }
-            if input.keys.contains(&KeyCode::S) {
-                new_direction.y += 1.0;
-            }
-            if input.keys.contains(&KeyCode::A) {
-                new_direction.x -= 1.0;
-            }
-            if input.keys.contains(&KeyCode::D) {
-                new_direction.x += 1.0;
-            }
-
-            let new_direction = new_direction.clamp_length_max(1.0);
-            entity::add_component(local_player_entity, direction(), new_direction);
-            UpdatePlayerDirection::new(new_direction).send_server_reliable();
-        }
-    });
-
-    eprintln!("player mod loaded, waiting for fauna and map mods");
-    entity::wait_for_component(entity::resources(), fauna::mod_loaded()).await;
-    entity::wait_for_component(entity::resources(), map::mod_loaded()).await;
-    eprintln!("player, map, and fauna mods loaded; joining game");
-    Join::new().send_server_reliable();
 }
