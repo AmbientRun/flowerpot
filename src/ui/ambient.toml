@@ -1,3 +1,9 @@
 [components.ui]
 name = "UI"
 description = "Component namespace related to the UI mod."
+
+[messages.request_input]
+fields = {}
+
+[messages.release_input]
+fields = {}
