@@ -2,6 +2,12 @@
 name = "UI"
 description = "Component namespace related to the UI mod."
 
+[components."ui::joined"]
+type = "Bool"
+name = "Joined"
+attributes = ["Debuggable", "MaybeResource"]
+description = "Client-side resource declaring whether this client has joined the game."
+
 [messages.request_input]
 fields = {}
 
