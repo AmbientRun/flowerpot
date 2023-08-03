@@ -15,3 +15,6 @@ fields = { reason = "String" }
 name = "JoinRequest"
 description = "Client-to-server message to join the game."
 fields = { name = "String" }
+
+[messages.accept_join]
+fields = {}

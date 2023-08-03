@@ -15,7 +15,9 @@ mod shared;
 
 use crate::{
     components::{fauna, map, player::local_player_ref},
-    messages::{JoinDenied, JoinRequest, ReleaseInput, RequestInput, UpdatePlayerAngle},
+    messages::{
+        AcceptJoin, JoinDenied, JoinRequest, ReleaseInput, RequestInput, UpdatePlayerAngle,
+    },
 };
 
 #[main]
@@ -76,7 +78,17 @@ async fn async_main() {
 
 #[element_component]
 fn App(hooks: &mut Hooks) -> Element {
-    JoinScreen::el()
+    let (joined, set_joined) = hooks.use_state(false);
+
+    hooks.use_module_message(move |_, _, _msg: &AcceptJoin| {
+        set_joined(true);
+    });
+
+    if joined {
+        FocusRoot::el([])
+    } else {
+        JoinScreen::el()
+    }
 }
 
 #[element_component]
