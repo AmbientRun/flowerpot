@@ -6,7 +6,7 @@ publish = false
 version = "0.0.1"
 
 [dependencies]
-ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "c2ed4913" }
+ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "0475854" }
 lazy_static = "1.4"
 noise = "0.8"
 rapier3d = "0.17"
