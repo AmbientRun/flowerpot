@@ -4,9 +4,7 @@ use ambient_api::{
 };
 
 use components::{fauna, map, player::*};
-use messages::{
-    Join, LoadPlayerChunk, UnloadPlayerChunk, UpdatePlayerAngle, UpdatePlayerDirection,
-};
+use messages::{LoadPlayerChunk, UnloadPlayerChunk, UpdatePlayerAngle, UpdatePlayerDirection};
 
 mod shared;
 
@@ -16,20 +14,8 @@ fn main() {
 
     let chunks = flowerpot::init_map(map::chunk());
 
-    Join::subscribe(move |source, _data| {
-        let Some(e) = source.client_entity_id() else { return };
-
-        // player component must be attached before fauna spawn messages will
-        // be received
-        run_async(async move {
-            entity::wait_for_component(entity::resources(), map::mod_loaded()).await;
-            entity::wait_for_component(e, player()).await;
-
-            // deduplicate already-joined players
-            if entity::has_component(e, fauna::fauna()) {
-                return;
-            }
-
+    spawn_query((player(), fauna::fauna())).bind(move |entities| {
+        for (e, _) in entities {
             let left_hand = Entity::new().with(owner_ref(), e).spawn();
             let right_hand = Entity::new().with(owner_ref(), e).spawn();
 
@@ -51,7 +37,7 @@ fn main() {
                     .with(position(), vec2(0.0, 0.0))
                     .with(loaded_chunks(), vec![]),
             );
-        });
+        }
     });
 
     despawn_query((player(), user_id(), loaded_chunks())).bind({

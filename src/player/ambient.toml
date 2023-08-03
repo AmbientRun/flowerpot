@@ -87,11 +87,6 @@ name = "UpdatePlayerAngle"
 description = "Client-to-server message to update the client's player's angle."
 fields = { pitch = "F32", yaw = "F32" }
 
-[messages.join]
-name = "Join"
-description = "Client-to-server message to join the game."
-fields = {}
-
 [messages.update_player_direction]
 name = "UpdatePlayerDirection"
 description = "Client-to-server message to update the client's player's direction."
