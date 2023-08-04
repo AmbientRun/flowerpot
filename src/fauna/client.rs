@@ -6,6 +6,7 @@ use std::{
 use ambient_api::{
     components::core::{
         app::main_scene,
+        ecs::children,
         primitives::sphere_radius,
         rendering::color,
         transform::{
@@ -45,18 +46,23 @@ fn main() {
         entity::add_component(e, yaw(), data.yaw);
     });
 
-    // temp fauna rendering code
+    store.subscribe_update::<UpdateFaunaName>(move |e, data| {
+        entity::add_component(e, name(), data.name.clone());
 
-    spawn_query((fauna(), position(), terrain::height())).bind(move |entities| {
-        for (e, (_, position, height)) in entities {
-            use ambient_api::components::core::text::*;
+        use ambient_api::components::core::text::*;
+        let name = data.name;
+        if let Some(container) = entity::get_component(e, name_container()) {
+            for child in entity::get_component(container, children()).unwrap_or_default() {
+                entity::add_component(child, text(), name.clone());
+            }
+        } else {
             let display_name = Entity::new()
                 .with(
                     local_to_parent(),
                     Mat4::from_scale(Vec3::ONE * 0.02)
                         * Mat4::from_rotation_x(180_f32.to_radians()),
                 )
-                .with(text(), "Hello, world!".to_string())
+                .with(text(), name)
                 .with(font_size(), 36.0)
                 .with(font_family(), "Default".to_string())
                 .with(font_style(), "Regular".to_string())
@@ -68,19 +74,24 @@ fn main() {
                 .spawn();
 
             let container = make_transformable()
-                .with(translation(), position.extend(height))
                 .with_default(main_scene())
                 .with_default(local_to_world())
                 .with_default(spherical_billboard())
                 .spawn();
 
             entity::add_child(container, display_name);
+            entity::add_component(e, name_container(), container);
+        }
+    });
 
+    // temp fauna rendering code
+
+    spawn_query((fauna(), position(), terrain::height())).bind(move |entities| {
+        for (e, (_, position, height)) in entities {
             entity::add_components(
                 e,
                 make_transformable()
                     .with(translation(), position.extend(height))
-                    .with(display_name_container(), container)
                     .with_merge(make_sphere())
                     .with(sphere_radius(), 0.2)
                     .with(color(), vec4(1.0, 1.0, 0.0, 1.0)),
@@ -96,16 +107,9 @@ fn main() {
             }
         });
 
-    change_query((
-        fauna(),
-        position(),
-        terrain::height(),
-        display_name_container(),
-    ))
-    .track_change(position())
-    .bind(move |entities| {
+    query((fauna(), position(), terrain::height(), name_container())).each_frame(move |entities| {
         for (_e, (_, position, height, container)) in entities {
-            entity::add_component(container, translation(), position.extend(height + 2.0));
+            entity::add_component(container, translation(), position.extend(height + 2.5));
         }
     });
 
@@ -130,6 +134,7 @@ macro_rules! impl_update_for_eid {
 impl_update_for_eid!(DespawnFauna);
 impl_update_for_eid!(UpdateFaunaPosition);
 impl_update_for_eid!(UpdateFaunaYaw);
+impl_update_for_eid!(UpdateFaunaName);
 
 #[derive(Clone)]
 pub struct FaunaStore {

@@ -28,12 +28,18 @@ to locally-spawned fauna in order to translate between local fauna entities and
 their server-side entity IDs.
 """
 
-[components."fauna::display_name_container"]
+[components."fauna::name"]
+type = "String"
+name = "Name"
+attributes = ["Debuggable"]
+description = "This fauna's name. Updated with the UpdateFaunaName message."
+
+[components."fauna::name_container"]
 type = "EntityId"
-name = "DisplayNameContainer"
+name = "NameContainer"
 attributes = ["Debuggable"]
 description = """
-A client-side instance of this fauna's display name container entity.
+A client-side instance of this fauna's name container entity.
 """
 
 [components."fauna::mod_loaded"]
@@ -44,6 +50,11 @@ description = """
 A resource that is added when the fauna mod has completed loading.
 Used to signal to other mods that the client is ready to receive fauna updates.
 """
+
+[messages.on_spawn_fauna]
+name = "OnSpawnFauna"
+description = "Server-side event that is broadcast when a fauna is spawned on the given client."
+fields = { fauna = "EntityId", player_entity = "EntityId", player_uid = "String" }
 
 [messages.spawn_fauna]
 name = "SpawnFauna"
@@ -64,3 +75,8 @@ fields = { eid = "EntityId", position = "Vec2" }
 name = "UpdateFaunaYaw"
 description = "Updates a fauna's yaw on the receiving client."
 fields = { eid = "EntityId", yaw = "F32" }
+
+[messages.update_fauna_name]
+name = "UpdateFaunaName"
+description = "Updates a fauna's name on the receiving client."
+fields = { eid = "EntityId", name = "String" }
