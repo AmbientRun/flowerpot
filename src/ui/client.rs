@@ -3,13 +3,21 @@ use std::f32::consts::FRAC_PI_2;
 use ambient_api::{
     components::core::{
         app::name,
-        layout::{max_height, min_height, space_between_items},
+        layout::{
+            self, align_horizontal_begin, align_vertical_end, docking_bottom, docking_left,
+            fit_horizontal_children, fit_horizontal_none, fit_horizontal_parent,
+            fit_vertical_children, fit_vertical_none, max_height, min_height, min_width,
+            orientation_vertical, space_between_items, width, max_width,
+        },
+        rect::{background_color, line_from, line_to, line_width},
         rendering::color,
     },
     element::Setter,
-    messages::Frame,
+    input::CursorLockGuard,
+    messages::{Frame, WindowKeyboardInput},
     prelude::*,
 };
+use components::terrain::height;
 
 mod shared;
 
@@ -85,10 +93,112 @@ fn App(hooks: &mut Hooks) -> Element {
     });
 
     if joined.unwrap_or(false) {
-        FocusRoot::el([])
+        GameUI::el()
     } else {
         JoinScreen::el()
     }
+}
+
+#[element_component]
+fn GameUI(hooks: &mut Hooks) -> Element {
+    Group::el([Crosshair::el(), Controls::el(), Chat::el()])
+}
+
+// TODO: either yoink a better crosshair from AFPS when it has one or make one ourselves and share
+#[element_component]
+fn Crosshair(hooks: &mut Hooks) -> Element {
+    let size = hooks.use_window_logical_resolution();
+    let center_x = size.x as f32 / 2.;
+    let center_y = size.y as f32 / 2.;
+
+    Group::el([
+        Line.el()
+            .with(line_from(), vec3(center_x - 10., center_y, 0.))
+            .with(line_to(), vec3(center_x + 10., center_y, 0.))
+            .with(line_width(), 2.)
+            .with(background_color(), vec4(1., 1., 1., 1.)),
+        Line.el()
+            .with(line_from(), vec3(center_x, center_y - 10., 0.))
+            .with(line_to(), vec3(center_x, center_y + 10., 0.))
+            .with(line_width(), 2.)
+            .with(background_color(), vec4(1., 1., 1., 1.)),
+    ])
+}
+
+#[element_component]
+fn Controls(hooks: &mut Hooks) -> Element {
+    let (locked, set_locked) = hooks.use_state(false);
+
+    hooks.consume_context::<Focus>();
+
+    hooks.use_frame({
+        let set_locked = set_locked.clone();
+        move |_| {
+            if locked {
+                let (delta, _input) = input::get_delta();
+                if delta.keys.contains(&KeyCode::Escape) {
+                    eprintln!("escaping!");
+                    input::set_cursor_lock(false);
+                    input::set_cursor_visible(true);
+                    set_locked(false);
+                }
+            }
+        }
+    });
+
+    ClickArea::new(WindowSized::el([]))
+        .on_mouse_down(move |_, _, _| {
+            if !locked {
+                eprintln!("clicked!");
+                input::set_cursor_lock(true);
+                input::set_cursor_visible(false);
+                set_locked(true);
+            }
+        })
+        .el()
+}
+
+#[element_component]
+fn Chat(hooks: &mut Hooks) -> Element {
+    let (message, set_message) = hooks.use_state("".to_string());
+    let (messages, set_messages) = hooks.use_state(Vec::<String>::new());
+
+    let content = Flow::el(messages.iter().map(|message| Text::el(message)))
+        .with_default(orientation_vertical())
+        .with_default(align_horizontal_begin())
+        .with_default(align_vertical_end())
+        .with_default(fit_horizontal_parent())
+        .with_default(fit_vertical_children())
+        .with(space_between_items(), STREET)
+        .with_padding_even(STREET)
+        .with(background_color(), Vec3::ZERO.extend(0.1));
+
+    // let content = ScrollArea::el(ScrollAreaSizing::FitParentWidth, content);
+
+    let editor = TextEditor::new(message, set_message.clone())
+        .on_submit(move |new_message| {
+            let mut messages = messages.clone();
+            messages.push(new_message);
+            set_messages(messages);
+            set_message("".to_string());
+        })
+        .el()
+        .with_default(fit_horizontal_parent())
+        .with_padding_even(STREET)
+        .with(min_height(), 40.0)
+        .with(min_width(), 300.0);
+
+    let window = Flow::el([content, editor])
+        .with_default(orientation_vertical())
+        .with_default(align_horizontal_begin())
+        .with_default(align_vertical_end())
+        .with_default(fit_horizontal_children())
+        .with_default(fit_vertical_children())
+        .with(min_width(), 600.0);
+
+    FocusRoot::el([WindowSized::el([Dock::el([
+        window.with_default(docking_bottom())
+    ])])])
 }
 
 #[element_component]
@@ -110,6 +220,7 @@ fn JoinScreen(hooks: &mut Hooks) -> Element {
             .auto_focus()
             .on_submit(|name| JoinRequest::new(name).send_server_reliable())
             .el()
+            .with(min_width(), 100.0)
             .with(min_height(), 16.0)
             .with(max_height(), 100.0),
         Text::el(denied_reason).with(color(), vec4(1.0, 0.6, 0.6, 1.0)),
