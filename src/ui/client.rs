@@ -2,19 +2,14 @@ use std::f32::consts::FRAC_PI_2;
 
 use ambient_api::{
     components::core::{
-        app::name,
         layout::{
-            self, align_horizontal_begin, align_vertical_end, docking_bottom, docking_left,
-            fit_horizontal_children, fit_horizontal_none, fit_horizontal_parent,
-            fit_vertical_children, fit_vertical_none, max_height, min_height, min_width,
-            orientation_vertical, space_between_items, width, max_width,
+            align_horizontal_begin, align_vertical_end, docking_bottom, fit_horizontal_children,
+            fit_horizontal_parent, fit_vertical_children, max_height, min_height, min_width,
+            orientation_vertical, space_between_items,
         },
         rect::{background_color, line_from, line_to, line_width},
         rendering::color,
     },
-    element::Setter,
-    input::CursorLockGuard,
-    messages::{Frame, WindowKeyboardInput},
     prelude::*,
 };
 use components::terrain::height;
@@ -100,7 +95,7 @@ fn App(hooks: &mut Hooks) -> Element {
 }
 
 #[element_component]
-fn GameUI(hooks: &mut Hooks) -> Element {
+fn GameUI(_hooks: &mut Hooks) -> Element {
     Group::el([Crosshair::el(), Controls::el(), Chat::el()])
 }
 
@@ -163,15 +158,17 @@ fn Chat(hooks: &mut Hooks) -> Element {
     let (message, set_message) = hooks.use_state("".to_string());
     let (messages, set_messages) = hooks.use_state(Vec::<String>::new());
 
-    let content = Flow::el(messages.iter().map(|message| Text::el(message)))
-        .with_default(orientation_vertical())
-        .with_default(align_horizontal_begin())
-        .with_default(align_vertical_end())
-        .with_default(fit_horizontal_parent())
-        .with_default(fit_vertical_children())
-        .with(space_between_items(), STREET)
-        .with_padding_even(STREET)
-        .with(background_color(), Vec3::ZERO.extend(0.1));
+    let content = with_rect(
+        Flow::el(messages.iter().map(|message| Text::el(message)))
+            .with_default(orientation_vertical())
+            .with_default(align_horizontal_begin())
+            .with_default(align_vertical_end())
+            .with_default(fit_horizontal_parent())
+            .with_default(fit_vertical_children())
+            .with(space_between_items(), STREET)
+            .with_padding_even(STREET),
+    )
+    .with(background_color(), Vec3::ZERO.extend(0.7));
 
     // let content = ScrollArea::el(ScrollAreaSizing::FitParentWidth, content);
 
