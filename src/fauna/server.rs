@@ -21,6 +21,16 @@ fn main() {
         }
     });
 
+    let all_fauna = query(fauna()).build();
+    spawn_query((player(), user_id(), fauna())).bind(move |entities| {
+        for (player_entity, (_, player_uid, _)) in entities {
+            for (e, _) in all_fauna.evaluate() {
+                SpawnFauna::new(e).send_client_targeted_reliable(player_uid.clone());
+                OnSpawnFauna::new(e, player_entity, player_uid.clone()).send_local_broadcast(true);
+            }
+        }
+    });
+
     despawn_query(fauna()).bind(move |entities| {
         for (e, _) in entities {
             DespawnFauna::new(e).send_client_broadcast_reliable();
