@@ -25,14 +25,7 @@ use messages::*;
 
 #[main]
 fn main() {
-    SpawnFauna::subscribe(move |_, data| {
-        Entity::new()
-            .with_default(fauna())
-            .with(remote_entity(), data.eid)
-            .spawn();
-    });
-
-    let store = FaunaStore::new();
+    let store = FaunaStore::new(true);
 
     store.subscribe_update::<DespawnFauna>(move |e, _| {
         entity::despawn_recursive(e);
@@ -113,6 +106,12 @@ fn main() {
         }
     });
 
+    despawn_query((fauna(), name_container())).bind(move |entities| {
+        for (_e, (_, container)) in entities {
+            entity::despawn_recursive(container);
+        }
+    });
+
     eprintln!("fauna mod loaded");
     entity::add_component(entity::resources(), mod_loaded(), ());
 }
@@ -142,19 +141,39 @@ pub struct FaunaStore {
 }
 
 impl FaunaStore {
-    pub fn new() -> Self {
+    pub fn new(owns_remote_entitites: bool) -> Self {
         let inner = Default::default();
         let store = Self { inner };
 
-        spawn_query((fauna(), remote_entity())).bind({
-            let store = store.clone();
-            move |entities| {
-                let mut store = store.inner.lock().unwrap();
-                for (e, (_, remote)) in entities {
-                    store.insert(remote, e);
+        if owns_remote_entitites {
+            SpawnFauna::subscribe({
+                let store = store.clone();
+                move |_, data| {
+                    let mut store = store.inner.lock().unwrap();
+
+                    if store.contains_key(&data.eid) {
+                        return;
+                    }
+
+                    let e = Entity::new()
+                        .with_default(fauna())
+                        .with(remote_entity(), data.eid)
+                        .spawn();
+
+                    store.insert(data.eid, e);
                 }
-            }
-        });
+            });
+        } else {
+            spawn_query((fauna(), remote_entity())).bind({
+                let store = store.clone();
+                move |entities| {
+                    let mut store = store.inner.lock().unwrap();
+                    for (e, (_, remote)) in entities {
+                        store.insert(remote, e);
+                    }
+                }
+            });
+        }
 
         despawn_query((fauna(), remote_entity())).bind({
             let store = store.clone();
