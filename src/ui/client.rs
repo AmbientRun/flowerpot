@@ -1,4 +1,4 @@
-use std::f32::consts::FRAC_PI_2;
+use std::f32::consts::{FRAC_PI_2, TAU};
 
 use ambient_api::{
     components::core::{
@@ -10,16 +10,17 @@ use ambient_api::{
         rect::{background_color, line_from, line_to, line_width},
         rendering::color,
     },
+    input::{Input, InputDelta},
     prelude::*,
 };
-use components::terrain::height;
 
 mod shared;
 
 use crate::{
-    components::{fauna, map, player::local_player_ref, ui::*},
+    components::{fauna, map, ui::*},
     messages::{
-        AcceptJoin, JoinDenied, JoinRequest, ReleaseInput, RequestInput, UpdatePlayerAngle,
+        AcceptJoin, JoinDenied, JoinRequest, PerformCraftingAction, ReleaseInput, RequestInput,
+        UpdatePlayerAngle, UpdatePlayerDirection,
     },
 };
 
@@ -29,48 +30,6 @@ fn main() {
 }
 
 async fn async_main() {
-    let local_player_entity = entity::get_component(entity::resources(), local_player_ref())
-        .expect("local_player_ref resource was deleted");
-
-    /*let mut yaw = 0.0;
-    let mut pitch = 0.0;
-    Frame::subscribe(move |_| {
-        let (delta, input) = input::get_delta();
-
-        let pitch_factor = 0.01;
-        let yaw_factor = 0.01;
-        yaw = (yaw + input.mouse_delta.x * yaw_factor) % TAU;
-        pitch = (pitch + input.mouse_delta.y * pitch_factor).clamp(-FRAC_PI_2, FRAC_PI_2);
-
-        UpdatePlayerAngle::new(pitch, yaw).send_server_reliable();
-
-        use components::player::{pitch as pitch_component, yaw as yaw_component};
-        entity::add_component(local_player_entity, yaw_component(), yaw);
-        entity::add_component(local_player_entity, pitch_component(), pitch);
-
-        let mut new_direction = Vec2::ZERO;
-        if input.keys.contains(&KeyCode::W) {
-            new_direction.y -= 1.0;
-        }
-        if input.keys.contains(&KeyCode::S) {
-            new_direction.y += 1.0;
-        }
-        if input.keys.contains(&KeyCode::A) {
-            new_direction.x -= 1.0;
-        }
-        if input.keys.contains(&KeyCode::D) {
-            new_direction.x += 1.0;
-        }
-
-        let new_direction = new_direction.clamp_length_max(1.0);
-        entity::add_component(local_player_entity, direction(), new_direction);
-        UpdatePlayerDirection::new(new_direction).send_server_reliable();
-
-        if delta.keys.contains(&KeyCode::Q) {
-            PerformCraftingAction::new().send_local_broadcast(true);
-        }
-    });*/
-
     eprintln!("UI mod loaded, waiting for fauna and map mods");
     entity::wait_for_component(entity::resources(), fauna::mod_loaded()).await;
     entity::wait_for_component(entity::resources(), map::mod_loaded()).await;
@@ -130,12 +89,14 @@ fn Controls(hooks: &mut Hooks) -> Element {
         let set_locked = set_locked.clone();
         move |_| {
             if locked {
-                let (delta, _input) = input::get_delta();
+                let (delta, input) = input::get_delta();
                 if delta.keys.contains(&KeyCode::Escape) {
                     eprintln!("escaping!");
                     input::set_cursor_lock(false);
                     input::set_cursor_visible(true);
                     set_locked(false);
+                } else {
+                    update_controls(delta, input);
                 }
             }
         }
@@ -151,6 +112,49 @@ fn Controls(hooks: &mut Hooks) -> Element {
             }
         })
         .el()
+}
+
+fn update_controls(delta: InputDelta, input: Input) {
+    use components::player::*;
+
+    let local_player_entity = entity::get_component(entity::resources(), local_player_ref())
+        .expect("local_player_ref resource was deleted");
+
+    let old_yaw = entity::get_component(local_player_entity, yaw()).unwrap_or(0.0);
+    let old_pitch = entity::get_component(local_player_entity, pitch()).unwrap_or(0.0);
+
+    let pitch_factor = 0.01;
+    let yaw_factor = 0.01;
+
+    let new_yaw = (old_yaw + input.mouse_delta.x * yaw_factor) % TAU;
+    let new_pitch = (old_pitch + input.mouse_delta.y * pitch_factor).clamp(-FRAC_PI_2, FRAC_PI_2);
+
+    UpdatePlayerAngle::new(new_pitch, new_yaw).send_server_reliable();
+
+    entity::add_component(local_player_entity, yaw(), new_yaw);
+    entity::add_component(local_player_entity, pitch(), new_pitch);
+
+    let mut new_direction = Vec2::ZERO;
+    if input.keys.contains(&KeyCode::W) {
+        new_direction.y -= 1.0;
+    }
+    if input.keys.contains(&KeyCode::S) {
+        new_direction.y += 1.0;
+    }
+    if input.keys.contains(&KeyCode::A) {
+        new_direction.x -= 1.0;
+    }
+    if input.keys.contains(&KeyCode::D) {
+        new_direction.x += 1.0;
+    }
+
+    let new_direction = new_direction.clamp_length_max(1.0);
+    entity::add_component(local_player_entity, direction(), new_direction);
+    UpdatePlayerDirection::new(new_direction).send_server_reliable();
+
+    if delta.keys.contains(&KeyCode::Q) {
+        PerformCraftingAction::new().send_local_broadcast(true);
+    }
 }
 
 #[element_component]
