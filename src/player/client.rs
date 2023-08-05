@@ -12,6 +12,7 @@ use ambient_api::{
 };
 
 use components::{map, player::*, terrain};
+use messages::{UpdatePlayerAngle, UpdatePlayerDirection};
 use shared::init_shared_player;
 
 mod shared;
@@ -103,6 +104,22 @@ fn main() {
             for (e, (_, position, height)) in entities {
                 let new_translation = position.extend(height);
                 entity::add_component(e, translation(), new_translation);
+            }
+        });
+
+    change_query((player(), pitch(), yaw()))
+        .track_change((pitch(), yaw()))
+        .bind(move |entities| {
+            for (_, (_, pitch, yaw)) in entities {
+                UpdatePlayerAngle::new(pitch, yaw).send_server_reliable();
+            }
+        });
+
+    change_query((player(), direction()))
+        .track_change(direction())
+        .bind(move |entities| {
+            for (_, (_, direction)) in entities {
+                UpdatePlayerDirection::new(direction).send_server_reliable();
             }
         });
 }
