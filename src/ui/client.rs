@@ -20,7 +20,6 @@ use crate::{
     components::{fauna, map, ui::*},
     messages::{
         AcceptJoin, JoinDenied, JoinRequest, PerformCraftingAction, ReleaseInput, RequestInput,
-        UpdatePlayerAngle, UpdatePlayerDirection,
     },
 };
 
@@ -120,37 +119,39 @@ fn update_controls(delta: InputDelta, input: Input) {
     let local_player_entity = entity::get_component(entity::resources(), local_player_ref())
         .expect("local_player_ref resource was deleted");
 
-    let old_yaw = entity::get_component(local_player_entity, yaw()).unwrap_or(0.0);
-    let old_pitch = entity::get_component(local_player_entity, pitch()).unwrap_or(0.0);
-
     let pitch_factor = 0.01;
     let yaw_factor = 0.01;
 
-    let new_yaw = (old_yaw + input.mouse_delta.x * yaw_factor) % TAU;
-    let new_pitch = (old_pitch + input.mouse_delta.y * pitch_factor).clamp(-FRAC_PI_2, FRAC_PI_2);
+    entity::mutate_component_with_default(local_player_entity, yaw(), 0.0, |yaw| {
+        *yaw = (*yaw + input.mouse_delta.x * yaw_factor) % TAU;
+    });
 
-    UpdatePlayerAngle::new(new_pitch, new_yaw).send_server_reliable();
+    entity::mutate_component_with_default(local_player_entity, pitch(), 0.0, |pitch| {
+        *pitch = (*pitch + input.mouse_delta.y * pitch_factor).clamp(-FRAC_PI_2, FRAC_PI_2);
+    });
 
-    entity::add_component(local_player_entity, yaw(), new_yaw);
-    entity::add_component(local_player_entity, pitch(), new_pitch);
+    entity::mutate_component_with_default(
+        local_player_entity,
+        direction(),
+        Vec2::ZERO,
+        |direction| {
+            *direction = Vec2::ZERO;
+            if input.keys.contains(&KeyCode::W) {
+                direction.y -= 1.0;
+            }
+            if input.keys.contains(&KeyCode::S) {
+                direction.y += 1.0;
+            }
+            if input.keys.contains(&KeyCode::A) {
+                direction.x -= 1.0;
+            }
+            if input.keys.contains(&KeyCode::D) {
+                direction.x += 1.0;
+            }
 
-    let mut new_direction = Vec2::ZERO;
-    if input.keys.contains(&KeyCode::W) {
-        new_direction.y -= 1.0;
-    }
-    if input.keys.contains(&KeyCode::S) {
-        new_direction.y += 1.0;
-    }
-    if input.keys.contains(&KeyCode::A) {
-        new_direction.x -= 1.0;
-    }
-    if input.keys.contains(&KeyCode::D) {
-        new_direction.x += 1.0;
-    }
-
-    let new_direction = new_direction.clamp_length_max(1.0);
-    entity::add_component(local_player_entity, direction(), new_direction);
-    UpdatePlayerDirection::new(new_direction).send_server_reliable();
+            *direction = direction.clamp_length_max(1.0);
+        },
+    );
 
     if delta.keys.contains(&KeyCode::Q) {
         PerformCraftingAction::new().send_local_broadcast(true);
