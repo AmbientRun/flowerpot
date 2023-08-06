@@ -24,3 +24,15 @@ fields = { name = "String" }
 
 [messages.accept_join]
 fields = {}
+
+[messages.announcement]
+fields = { content = "String" }
+
+[messages.chat_message]
+fields = { author = "String", content = "String" }
+
+[messages.player_message]
+fields = { content = "String" }
+
+[messages.chat_denied]
+fields = { reason = "String" }

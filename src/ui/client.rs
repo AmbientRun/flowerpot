@@ -13,13 +13,15 @@ use ambient_api::{
     input::{Input, InputDelta},
     prelude::*,
 };
+use messages::{Announcement, ChatMessage};
 
 mod shared;
 
 use crate::{
     components::{fauna, map, ui::*},
     messages::{
-        AcceptJoin, JoinDenied, JoinRequest, PerformCraftingAction, ReleaseInput, RequestInput,
+        AcceptJoin, JoinDenied, JoinRequest, PerformCraftingAction, PlayerMessage, ReleaseInput,
+        RequestInput,
     },
 };
 
@@ -160,11 +162,57 @@ fn update_controls(delta: InputDelta, input: Input) {
 
 #[element_component]
 fn Chat(hooks: &mut Hooks) -> Element {
+    #[derive(Clone, Debug)]
+    struct MessageContent {
+        author: Option<String>,
+        content: String,
+    }
+
+    impl MessageContent {
+        fn render(&self) -> Element {
+            if let Some(author) = self.author.as_ref() {
+                Text::el(format!("{}: {}", author, self.content))
+            } else {
+                Text::el(&self.content).with(color(), Vec3::splat(0.8).extend(1.0))
+            }
+        }
+    }
+
     let (message, set_message) = hooks.use_state("".to_string());
-    let (messages, set_messages) = hooks.use_state(Vec::<String>::new());
+    let (messages, set_messages) = hooks.use_state(Vec::<MessageContent>::new());
+
+    hooks.use_module_message({
+        let messages = messages.clone();
+        let set_messages = set_messages.clone();
+        move |_, _, data: &Announcement| {
+            let new_message = MessageContent {
+                author: None,
+                content: data.content.clone(),
+            };
+
+            let mut messages = messages.clone();
+            messages.push(new_message);
+            set_messages(messages);
+        }
+    });
+
+    hooks.use_module_message({
+        let messages = messages.clone();
+        let set_messages = set_messages.clone();
+        move |_, _, data: &ChatMessage| {
+            let new_message = MessageContent {
+                author: Some(data.author.clone()),
+                content: data.content.clone(),
+            };
+
+            let mut messages = messages.clone();
+            messages.push(new_message);
+            set_messages(messages);
+        }
+    });
 
     let content = with_rect(
-        Flow::el(messages.iter().map(|message| Text::el(message)))
+        Flow::el(messages.iter().map(MessageContent::render))
             .with_default(orientation_vertical())
             .with_default(align_horizontal_begin())
             .with_default(align_vertical_end())
@@ -179,9 +227,7 @@ fn Chat(hooks: &mut Hooks) -> Element {
 
     let editor = TextEditor::new(message, set_message.clone())
         .on_submit(move |new_message| {
-            let mut messages = messages.clone();
-            messages.push(new_message);
-            set_messages(messages);
+            PlayerMessage::new(new_message).send_server_reliable();
             set_message("".to_string());
         })
         .el()
