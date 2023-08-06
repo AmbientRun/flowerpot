@@ -10,6 +10,7 @@ ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "047585
 lazy_static = "1.4"
 noise = "0.8"
 rapier3d = "0.17"
+rustrict = "0.7"
 
 [lib]
 

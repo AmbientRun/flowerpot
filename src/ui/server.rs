@@ -6,7 +6,20 @@ use ambient_api::{
 mod shared;
 
 use components::fauna;
-use messages::{AcceptJoin, Announcement, ChatMessage, JoinDenied, JoinRequest, PlayerMessage};
+use messages::{
+    AcceptJoin, Announcement, ChatDenied, ChatMessage, JoinDenied, JoinRequest, PlayerMessage,
+};
+use rustrict::Censor;
+
+fn moderate_content(input: &str) -> Option<String> {
+    let analysis = Censor::from_str(input).analyze();
+
+    if analysis.is(rustrict::Type::ANY) {
+        Some(format!("Inappropriate: {:?}", analysis))
+    } else {
+        None
+    }
+}
 
 #[main]
 fn main() {
@@ -19,6 +32,22 @@ fn main() {
     JoinRequest::subscribe(move |source, data| {
         let Some(player_entity) = source.client_entity_id() else { return };
         let Some(uid) = source.client_user_id() else { return };
+
+        let name = data.name.trim().to_string();
+
+        let deny_reason = if name.is_empty() {
+            Some("Name must not be empty".to_string())
+        } else if name.chars().count() > 32 {
+            Some("Name must be 32 characters or less".to_string())
+        } else {
+            moderate_content(&name)
+        };
+
+        if let Some(deny_reason) = deny_reason {
+            JoinDenied::new(deny_reason).send_client_targeted_reliable(uid);
+            return;
+        }
+
         AcceptJoin::new().send_client_targeted_reliable(uid);
         entity::add_component(player_entity, fauna::fauna(), ());
         entity::add_component(player_entity, fauna::name(), data.name);
@@ -56,7 +85,19 @@ fn main() {
     let players = make_player_query();
     PlayerMessage::subscribe(move |source, data| {
         let Some(player) = source.client_entity_id() else { return };
+        let Some(uid) = source.client_user_id() else { return };
         let Some(name) = entity::get_component(player, fauna::name()) else { return };
+
+        let deny_reason = if data.content.is_empty() {
+            Some("empty chat message".to_string())
+        } else {
+            moderate_content(&data.content)
+        };
+
+        if let Some(deny_reason) = deny_reason {
+            ChatDenied::new(deny_reason).send_client_targeted_reliable(uid);
+            return;
+        }
 
         let message = ChatMessage::new(name, data.content);
         for (_e, (uid, _name)) in players.evaluate() {

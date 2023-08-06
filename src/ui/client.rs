@@ -13,7 +13,7 @@ use ambient_api::{
     input::{Input, InputDelta},
     prelude::*,
 };
-use messages::{Announcement, ChatMessage};
+use messages::{Announcement, ChatDenied, ChatMessage};
 
 mod shared;
 
@@ -179,6 +179,7 @@ fn Chat(hooks: &mut Hooks) -> Element {
     }
 
     let (message, set_message) = hooks.use_state("".to_string());
+    let (deny_reason, set_deny_reason) = hooks.use_state("".to_string());
     let (messages, set_messages) = hooks.use_state(Vec::<MessageContent>::new());
 
     hooks.use_module_message({
@@ -211,6 +212,13 @@ fn Chat(hooks: &mut Hooks) -> Element {
         }
     });
 
+    hooks.use_module_message({
+        let set_deny_reason = set_deny_reason.clone();
+        move |_, _, data: &ChatDenied| {
+            set_deny_reason(data.reason.clone());
+        }
+    });
+
     let content = with_rect(
         Flow::el(messages.iter().map(MessageContent::render))
             .with_default(orientation_vertical())
@@ -229,6 +237,7 @@ fn Chat(hooks: &mut Hooks) -> Element {
         .on_submit(move |new_message| {
             PlayerMessage::new(new_message).send_server_reliable();
             set_message("".to_string());
+            set_deny_reason("".to_string());
         })
         .el()
         .with_default(fit_horizontal_parent())
@@ -236,7 +245,9 @@ fn Chat(hooks: &mut Hooks) -> Element {
         .with(min_height(), 40.0)
         .with(min_width(), 300.0);
 
-    let window = Flow::el([content, editor])
+    let deny = Text::el(deny_reason).error_text_style();
+
+    let window = Flow::el([content, editor, deny])
         .with_default(orientation_vertical())
         .with_default(align_horizontal_begin())
         .with_default(align_vertical_end())

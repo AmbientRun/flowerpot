@@ -27,23 +27,14 @@ big topics:
   - [ ] crops: deterministic crop tile angles
 - [ ] UX
   - [ ] ui: deduplicate display names
-  - [ ] ui: only allow non-empty display names
-  - [ ] ui: upper limit on display name length
-  - [x] ui: define `Announcement` message
-  - [x] ui: define `ChatMessage` message
-  - [x] ui: define `PlayerMessage` message
-  - [x] ui: define `ChatDenied` message
-  - [x] ui: relay `Announcement` to all player fauna
-  - [x] ui: make announcements when players join and leave
-  - [x] ui: subscribe to `PlayerMessage` and broadcast `ChatMessage`
-  - [x] ui: send `PlayerMessage` from chat UI
-  - [x] ui: subscribe to `ChatMessage` and add to chat content
-  - [x] ui: subscribe to `Announcement` and add to chat content
-  - [ ] ui: subscribe to `ChatDenied` to display errors on chat send
-  - [ ] ui: add current coordinates to game HUD
-  - [ ] ui: use rustrict to moderate display names and chat messages
+  - [x] ui: only allow non-empty display names
+  - [x] ui: upper limit on display name length
+  - [x] ui: subscribe to `ChatDenied` to display errors on chat send
+  - [x] ui: use rustrict to moderate display names and chat messages
   - [ ] ui: generate colors for display names?
   - [ ] ui: document messages
+  - [ ] ui: add current coordinates to game HUD
+  - [ ] ui: display player list in tab menu
 - [ ] crops
   - [ ] crops: sort out all of the medium crop assets
   - [ ] crops: define a `small_crop_class` component
