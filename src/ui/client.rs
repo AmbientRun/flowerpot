@@ -241,14 +241,24 @@ fn Chat(hooks: &mut Hooks) -> Element {
             set_deny_reason("".to_string());
         })
         .el()
-        .with_default(fit_horizontal_parent())
-        .with_padding_even(STREET)
-        .with(min_height(), 40.0)
-        .with(min_width(), 300.0);
+        .with_default(fit_horizontal_parent());
 
-    let deny = Text::el(deny_reason).error_text_style();
+    let entry = if deny_reason.is_empty() {
+        FlowColumn::el([editor])
+    } else {
+        let deny = Text::el(deny_reason).error_text_style();
+        FlowColumn::el([editor, deny])
+    };
 
-    let window = Flow::el([content, editor, deny])
+    let entry = with_rect(
+        entry
+            .with(space_between_items(), STREET)
+            .with_padding_even(STREET)
+            .with(min_width(), 600.0),
+    )
+    .with(background_color(), app_background_color().into());
+
+    let window = Flow::el([content, entry])
         .with_default(orientation_vertical())
         .with_default(align_horizontal_begin())
         .with_default(align_vertical_end())
