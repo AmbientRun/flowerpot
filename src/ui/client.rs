@@ -172,8 +172,9 @@ fn Chat(hooks: &mut Hooks) -> Element {
         fn render(&self) -> Element {
             if let Some(author) = self.author.as_ref() {
                 Text::el(format!("{}: {}", author, self.content))
+                    .with(color(), Vec3::splat(0.8).extend(1.0))
             } else {
-                Text::el(&self.content).with(color(), Vec3::splat(0.8).extend(1.0))
+                Text::el(&self.content).with(color(), Vec3::splat(0.5).extend(1.0))
             }
         }
     }
