@@ -183,6 +183,12 @@ fn Chat(hooks: &mut Hooks) -> Element {
     let (deny_reason, set_deny_reason) = hooks.use_state("".to_string());
     let (messages, set_messages) = hooks.use_state(Vec::<MessageContent>::new());
 
+    if messages.len() > 10 {
+        let len = messages.len();
+        let start = len - 10;
+        set_messages(messages[start..].to_owned());
+    }
+
     hooks.use_module_message({
         let messages = messages.clone();
         let set_messages = set_messages.clone();
