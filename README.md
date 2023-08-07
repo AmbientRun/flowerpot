@@ -15,7 +15,9 @@ big topics:
 - [ ] cancel large crops before launch?
 
 - [ ] tech
-  - [ ] fauna: center names and color them white
+  - [ ] fauna: color names white
+  - [ ] fauna: make names monospace
+  - [ ] fauna: center names
   - [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
   - [ ] fauna: add a synced `prefab_path` component
   - [ ] fauna: instantiate fauna prefabs client-side
@@ -27,14 +29,15 @@ big topics:
   - [ ] crops: deterministic crop tile angles
 - [ ] UX
   - [ ] ui: deduplicate display names
-  - [x] ui: only allow non-empty display names
-  - [x] ui: upper limit on display name length
-  - [x] ui: subscribe to `ChatDenied` to display errors on chat send
-  - [x] ui: use rustrict to moderate display names and chat messages
   - [ ] ui: generate colors for display names?
   - [ ] ui: document messages
   - [ ] ui: add current coordinates to game HUD
   - [ ] ui: display player list in tab menu
+  - [ ] ui: clean up appearance of chat window
+  - [ ] ui: upper cap on chat history length
+  - [ ] ui: scroll chat contents?
+  - [ ] ui: add "i'm not picky" name button to randomly select nickname
+  - [ ] ui: break chat system out into a standard ember
 - [ ] crops
   - [ ] crops: sort out all of the medium crop assets
   - [ ] crops: define a `small_crop_class` component
