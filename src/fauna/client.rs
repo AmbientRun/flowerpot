@@ -200,7 +200,11 @@ impl FaunaStore {
         T::subscribe(move |_, data| {
             let remote = data.get_remote_entity();
             let Some(local) = store.remote_to_local(remote) else { return };
-            cb(local, data);
+
+            // sanity check in case of race condition with DespawnFauna
+            if entity::exists(local) {
+                cb(local, data);
+            }
         });
     }
 }
