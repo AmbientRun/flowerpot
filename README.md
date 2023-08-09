@@ -15,17 +15,14 @@ big topics:
 - [ ] cancel large crops before launch?
 
 - [ ] tech
-  - [x] fauna: color names white
   - [ ] fauna: make names monospace
-  - [x] fauna: center names
   - [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
   - [ ] fauna: add a synced `prefab_path` component
   - [ ] fauna: instantiate fauna prefabs client-side
   - [ ] fauna: copy the placeholder player model from the prototype
   - [ ] reorganize codebase into embers
-  - [ ] lib: write a helper function to track the set of matching entities in each chunk
-  - [ ] fauna: define a `last_chunk` component
-  - [ ] fauna: when a fauna moves chunks, diff the subscribers of `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
+  - [x] lib: write a helper function to track the set of matching entities in each chunk
+  - [x] fauna: when a fauna moves chunks, diff the subscribers of `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
   - [ ] crops: deterministic crop tile angles
 - [ ] UX
   - [ ] ui: deduplicate display names
