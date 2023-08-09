@@ -40,3 +40,45 @@ pub fn init_map(position_component: Component<IVec2>) -> PositionMap {
 
     chunks
 }
+
+/// A utility function to diff two sorted iterators.
+pub fn diff_sorted<'a, V>(
+    mut a_iter: impl Iterator<Item = V>,
+    mut b_iter: impl Iterator<Item = V>,
+    mut on_a: impl FnMut(&V),
+    mut on_b: impl FnMut(&V),
+) where
+    V: Ord,
+{
+    let mut current_a = a_iter.next();
+    let mut current_b = b_iter.next();
+
+    loop {
+        use std::cmp::Ordering;
+        match (current_a.as_ref(), current_b.as_ref()) {
+            (Some(a), Some(b)) => match a.cmp(&b) {
+                Ordering::Less => {
+                    on_a(a);
+                    current_a = a_iter.next();
+                }
+                Ordering::Equal => {
+                    current_a = a_iter.next();
+                    current_b = b_iter.next();
+                }
+                Ordering::Greater => {
+                    on_b(b);
+                    current_b = b_iter.next();
+                }
+            },
+            (Some(a), None) => {
+                on_a(a);
+                current_a = a_iter.next();
+            }
+            (None, Some(b)) => {
+                on_b(b);
+                current_b = b_iter.next();
+            }
+            (None, None) => break,
+        }
+    }
+}
