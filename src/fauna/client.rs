@@ -44,22 +44,25 @@ fn main() {
 
         use ambient_api::components::core::text::*;
         let name = data.name;
+        const APPROXIMATE_CHAR_WIDTH: f32 = 36.0;
+        let width = name.chars().count() as f32 * APPROXIMATE_CHAR_WIDTH;
+        let transform = Mat4::from_scale(Vec3::ONE * 0.005)
+            * Mat4::from_rotation_x(180_f32.to_radians())
+            * Mat4::from_translation(Vec3::new(-width / 2.0, 0.0, 0.0));
+
         if let Some(container) = entity::get_component(e, name_container()) {
             for child in entity::get_component(container, children()).unwrap_or_default() {
                 entity::add_component(child, text(), name.clone());
+                entity::add_component(child, local_to_parent(), transform);
             }
         } else {
             let display_name = Entity::new()
-                .with(
-                    local_to_parent(),
-                    Mat4::from_scale(Vec3::ONE * 0.02)
-                        * Mat4::from_rotation_x(180_f32.to_radians()),
-                )
+                .with(local_to_parent(), transform)
                 .with(text(), name)
-                .with(font_size(), 36.0)
-                .with(font_family(), "Default".to_string())
+                .with(font_size(), 72.0)
+                .with(font_family(), "Code".to_string())
                 .with(font_style(), "Regular".to_string())
-                .with(color(), vec4(1.0, 0.0, 1.0, 1.0))
+                .with(color(), vec4(1.0, 1.0, 1.0, 1.0))
                 .with_default(main_scene())
                 .with_default(local_to_world())
                 .with_default(mesh_to_local())

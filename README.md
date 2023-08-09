@@ -15,9 +15,9 @@ big topics:
 - [ ] cancel large crops before launch?
 
 - [ ] tech
-  - [ ] fauna: color names white
+  - [x] fauna: color names white
   - [ ] fauna: make names monospace
-  - [ ] fauna: center names
+  - [x] fauna: center names
   - [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
   - [ ] fauna: add a synced `prefab_path` component
   - [ ] fauna: instantiate fauna prefabs client-side
