@@ -2,19 +2,19 @@
 id = "fauna"
 name = "fauna"
 
-[components."fauna::fauna"]
+[components.fauna]
 type = "Empty"
 name = "Fauna"
 attributes = ["Debuggable"]
 description = "A tag given to all fauna entities."
 
-[components."fauna::yaw"]
+[components.yaw]
 type = "F32"
 name = "Yaw"
 attributes = ["Debuggable"]
 description = "A fauna's yaw."
 
-[components."fauna::remote_entity"]
+[components.remote_entity]
 type = "EntityId"
 name = "RemoteEntity"
 attributes = ["Debuggable"]
@@ -28,13 +28,13 @@ to locally-spawned fauna in order to translate between local fauna entities and
 their server-side entity IDs.
 """
 
-[components."fauna::name"]
+[components.name]
 type = "String"
 name = "Name"
 attributes = ["Debuggable"]
 description = "This fauna's name. Updated with the UpdateFaunaName message."
 
-[components."fauna::name_container"]
+[components.name_container]
 type = "EntityId"
 name = "NameContainer"
 attributes = ["Debuggable"]
@@ -42,7 +42,7 @@ description = """
 A client-side instance of this fauna's name container entity.
 """
 
-[components."fauna::mod_loaded"]
+[components.mod_loaded]
 type = "Empty"
 name = "ModLoaded"
 attributes = ["Debuggable", "MaybeResource"]

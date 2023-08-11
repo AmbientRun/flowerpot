@@ -2,13 +2,13 @@
 id = "items"
 name = "items"
 
-[components."items::held_ref"]
+[components.held_ref]
 type = "EntityId"
 name = "HeldRef"
 attributes = ["Debuggable"]
 description = "Attached to a hand entity and references the item instance that the hand is holding. Can be null."
 
-[components."items::class"]
+[components.class]
 type = "EntityId"
 name = "Class"
 attributes = ["Debuggable"]

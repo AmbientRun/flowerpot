@@ -2,7 +2,7 @@
 id = "ui"
 name = "ui"
 
-[components."ui::joined"]
+[components.joined]
 type = "Bool"
 name = "Joined"
 attributes = ["Debuggable", "MaybeResource"]

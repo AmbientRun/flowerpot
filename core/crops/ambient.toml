@@ -2,37 +2,37 @@
 id = "crops"
 name = "crops"
 
-[components."crops::medium_crop_class"]
+[components.medium_crop_class]
 type = "Empty"
 name = "MediumCropClass"
 attributes = ["Debuggable", "Networked"]
 description = "A tag for medium crop class entities."
 
-[components."crops::model_prefab_path"]
+[components.model_prefab_path]
 type = "String"
 name = "ModelPrefabPath"
 attributes = ["Debuggable", "Networked"]
 description = "The asset path to a model prefab to use for this crop class."
 
-[components."crops::age"]
+[components.age]
 type = "U16"
 name = "GrowthProgress"
 attributes = ["Debuggable"]
 description = "The age in growth ticks of this crop."
 
-[components."crops::seed"]
+[components.seed]
 type = "EntityId"
 name = "Seed"
 attributes = ["Debuggable"]
 description = "The entity ID of the crop class that this crop reproduces into."
 
-[components."crops::seeding_interval"]
+[components.seeding_interval]
 type = "U16"
 name = "SeedingInterval"
 attributes = ["Debuggable"]
 description = "The age between each attempt at seeding this crop."
 
-[components."crops::next_growth_stage"]
+[components.next_growth_stage]
 type = "EntityId"
 name = "NextGrowthStage"
 attributes = ["Debuggable"]
@@ -41,31 +41,31 @@ The entity ID of the crop class that this crop grows into.
 If null, then the crop is removed from the tile when it grows.
 """
 
-[components."crops::next_growth_age"]
+[components.next_growth_age]
 type = "U16"
 name = "GrowthInterval"
 attributes = ["Debuggable"]
 description = "The age that this crop needs to reach to grow into its next growth stage."
 
-[components."crops::medium_crop"]
+[components.medium_crop]
 type = "Empty"
 name = "MediumCrop"
 attributes = ["Debuggable"]
 description = "A tag for instantiated medium crop entities."
 
-[components."crops::medium_crop_occupant"]
+[components.medium_crop_occupant]
 type = "EntityId"
 name = "MediumCropOccupant"
 attributes = ["Debuggable"]
 description = "A reference to the medium crop that occupies this tile. Can be null for no occupant."
 
-[components."crops::class"]
+[components.class]
 type = "EntityId"
 name = "Class"
 attributes = ["Debuggable"]
 description = "A reference to the crop class that this crop is an instance of."
 
-[components."crops::on_tile"]
+[components.on_tile]
 type = "EntityId"
 name = "OnTile"
 attributes = ["Debuggable"]

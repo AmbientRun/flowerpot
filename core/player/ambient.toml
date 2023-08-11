@@ -2,25 +2,25 @@
 id = "player"
 name = "player"
 
-[components."player::loaded_chunks"]
+[components.loaded_chunks]
 type = { type = "Vec", element_type = "Ivec2" }
 name = "LoadedChunks"
 attributes = ["Debuggable"]
 description = "The list of chunk positions that this player currently has loaded."
 
-[components."player::pitch"]
+[components.pitch]
 type = "F32"
 name = "Pitch"
 attributes = ["Debuggable"]
 description = "The client-side player's pitch. NOT the player's fauna pitch."
 
-[components."player::yaw"]
+[components.yaw]
 type = "F32"
 name = "Yaw"
 attributes = ["Debuggable"]
 description = "The client-side player's yaw. NOT the player's fauna yaw."
 
-[components."player::position"]
+[components.position]
 type = "Vec2"
 name = "Position"
 attributes = ["Debuggable"]
@@ -32,13 +32,13 @@ The client interpolates this with the player's fauna position to implement rubbe
 The server uses this in conjunction with the direction component to implement player movement code.
 """
 
-[components."player::speed"]
+[components.speed]
 type = "F32"
 name = "Speed"
 attributes = ["Debuggable"]
 description = "The speed of a player."
 
-[components."player::direction"]
+[components.direction]
 type = "Vec2"
 name = "Direction"
 attributes = ["Debuggable"]
@@ -49,7 +49,7 @@ Maximum length is clamped to 1.0, and use in conjunction with the speed
 component to determine the actual player movement.
 """
 
-[components."player::head_ref"]
+[components.head_ref]
 type = "EntityId"
 name = "HeadRef"
 attributes = ["Debuggable"]
@@ -58,25 +58,25 @@ A reference to this player's head entity. Used client-side only in order to
 update the main camera's transform.
 """
 
-[components."player::left_hand_ref"]
+[components.left_hand_ref]
 type = "EntityId"
 name = "LeftHandRef"
 attributes = ["Debuggable"]
 description = "A reference to this player's left hand entity."
 
-[components."player::right_hand_ref"]
+[components.right_hand_ref]
 type = "EntityId"
 name = "RightHandRef"
 attributes = ["Debuggable"]
 description = "A reference to this player's right hand entity."
 
-[components."player::owner_ref"]
+[components.owner_ref]
 type = "EntityId"
 name = "OwnerRef"
 attributes = ["Debuggable"]
 description = "A reference to the player that this entity is owned by."
 
-[components."player::local_player_ref"]
+[components.local_player_ref]
 type = "EntityId"
 name = "LocalPlayerRef"
 attributes = ["Debuggable", "MaybeResource"]

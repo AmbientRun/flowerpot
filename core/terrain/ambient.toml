@@ -2,7 +2,7 @@
 id = "terrain"
 name = "terrain"
 
-[components."terrain::heightmap"]
+[components.heightmap]
 type = { type = "Vec", element_type = "I16" }
 name = "Heightmap"
 attributes = ["Debuggable"]
@@ -22,7 +22,7 @@ V
 ```
 """
 
-[components."terrain::height"]
+[components.height]
 type = "F32"
 name = "Height"
 attributes = ["Debuggable"]

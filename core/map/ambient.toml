@@ -2,7 +2,7 @@
 id = "map"
 name = "map"
 
-[components."map::mod_loaded"]
+[components.mod_loaded]
 type = "Empty"
 name = "ModLoaded"
 attributes = ["Debuggable", "MaybeResource"]
@@ -10,13 +10,13 @@ description = """
 A resource that is added when the map mod has completed loading.
 """
 
-[components."map::chunk"]
+[components.chunk]
 name = "Chunk"
 attributes = ["Debuggable"]
 type = "Ivec2"
 description = "A component given to all chunk entities. Contains its own chunk position."
 
-[components."map::chunk_tile_refs"]
+[components.chunk_tile_refs]
 name = "ChunkTileRefs"
 type = { type = "Vec", element_type = "EntityId" }
 attributes = ["Debuggable"]
@@ -33,7 +33,7 @@ V
 ```
 """
 
-[components."map::players_observing"]
+[components.players_observing]
 name = "PlayersObserving"
 type = { type = "Vec", element_type = "EntityId" }
 attributes = ["Debuggable"]
@@ -47,25 +47,25 @@ OnPlayerLoadChunk and OnPlayerUnloadChunk messages, so do not modify this
 component directly.
 """
 
-[components."map::position"]
+[components.position]
 name = "Position"
 attributes = ["Debuggable"]
 type = "Vec2"
 description = "The map position of this entity."
 
-[components."map::in_chunk"]
+[components.in_chunk]
 name = "InChunk"
 attributes = ["Debuggable"]
 type = "EntityId"
 description = "A reference to the chunk that this entity is in. Automatically updated according to its position."
 
-[components."map::chunk_tile_index"]
+[components.chunk_tile_index]
 name = "ChunkTileIndex"
 attributes = ["Debuggable"]
 type = "U8"
 description = "The index of this tile in the parent chunk's tile list."
 
-[components."map::north_neighbor"]
+[components.north_neighbor]
 name = "EntityId"
 attributes = ["Debuggable"]
 type = "EntityId"
@@ -74,7 +74,7 @@ The entity neighboring this entity to the north (-Y).
 For chunks, this is another chunk. For tiles, this is another tile.
 """
 
-[components."map::east_neighbor"]
+[components.east_neighbor]
 name = "EntityId"
 attributes = ["Debuggable"]
 type = "EntityId"
@@ -83,7 +83,7 @@ The entity neighboring this entity to the east (+X).
 For chunks, this is another chunk. For tiles, this is another tile.
 """
 
-[components."map::south_neighbor"]
+[components.south_neighbor]
 name = "EntityId"
 attributes = ["Debuggable"]
 type = "EntityId"
@@ -92,7 +92,7 @@ The entity neighboring this entity to the south (+Y).
 For chunks, this is another chunk. For tiles, this is another tile.
 """
 
-[components."map::west_neighbor"]
+[components.west_neighbor]
 name = "EntityId"
 attributes = ["Debuggable"]
 type = "EntityId"
