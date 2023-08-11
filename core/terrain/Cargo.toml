@@ -6,6 +6,8 @@ version = "0.0.1"
 
 [dependencies]
 ambient_api.workspace = true
+flowerpot-common.workspace = true
+noise.workspace = true
 
 [[bin]]
 name = "flowerpot_terrain_client"

@@ -1,15 +1,18 @@
 use ambient_api::{
-    components::core::{
-        procedurals::procedural_mesh,
-        rendering::{color, pbr_material_from_url},
+    core::{
+        procedurals::components::procedural_mesh,
+        rendering::components::{color, pbr_material_from_url},
+        transform::concepts::make_transformable,
     },
-    concepts::make_transformable,
     mesh::{self, Vertex},
     prelude::*,
 };
-use flowerpot::CHUNK_SIZE;
+use flowerpot_common::CHUNK_SIZE;
 
-use components::{map::chunk, terrain::heightmap};
+use embers::{
+    map::components::chunk,
+    terrain::{assets, components::heightmap},
+};
 
 mod shared;
 
@@ -18,18 +21,18 @@ fn main() {
     shared::init_shared_terrain();
 
     spawn_query((chunk(), heightmap())).bind(move |entities| {
-        for (e, (chunk_xy, heights)) in entities {
+        for (e, (chunk_xy, altitudes)) in entities {
             let vertex_num = CHUNK_SIZE * CHUNK_SIZE * 6;
-            let heights_dim = CHUNK_SIZE + 1;
+            let altitudes_dim = CHUNK_SIZE + 1;
 
             let mut vertices = Vec::with_capacity(vertex_num);
             let mut indices = Vec::with_capacity(vertex_num);
 
             let v_pos = |v: (usize, usize)| {
                 let (x, y) = v;
-                let idx = y * heights_dim + x;
-                let height = heights[idx];
-                let z = height as f32 / 4.0;
+                let idx = y * altitudes_dim + x;
+                let altitude = altitudes[idx];
+                let z = altitude as f32 / 4.0;
                 let chunk_offset = chunk_xy * (CHUNK_SIZE as i32);
                 let xy = vec2(x as f32, y as f32) + chunk_offset.as_vec2();
                 xy.extend(z)
@@ -85,7 +88,7 @@ fn main() {
                 .with(procedural_mesh(), mesh)
                 .with(
                     pbr_material_from_url(),
-                    asset::url("assets/pipeline.toml/0/mat.json").unwrap(),
+                    assets::url("assets/pipeline.toml/0/mat.json"),
                 )
                 .with(color(), Vec4::ONE)
                 .spawn();

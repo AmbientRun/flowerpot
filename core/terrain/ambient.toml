@@ -3,6 +3,9 @@ id = "terrain"
 name = "terrain"
 version = "0.0.1"
 
+[dependencies]
+map = { path = "../map" }
+
 [components.heightmap]
 type = { type = "Vec", element_type = "I16" }
 name = "Heightmap"
@@ -23,8 +26,8 @@ V
 ```
 """
 
-[components.height]
+[components.altitude]
 type = "F32"
-name = "Height"
+name = "Altitude"
 attributes = ["Debuggable"]
-description = "The height of this entity on the map. Computed using map::position."
+description = "The height of this entity on the map above sea level. Computed using map::position."
