@@ -6,3 +6,4 @@ version = "0.0.1"
 [dependencies]
 map = { path = "core/map" }
 terrain = { path = "core/terrain" }
+weather = { path = "core/weather" }

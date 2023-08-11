@@ -1,10 +1,9 @@
 use ambient_api::{
-    components::core::{
-        app::main_scene,
-        rendering::{light_diffuse, sky, sun},
-        transform::rotation,
+    core::{
+        app::components::main_scene,
+        rendering::components::{light_diffuse, sky, sun},
+        transform::{components::rotation, concepts::make_transformable},
     },
-    concepts::make_transformable,
     prelude::*,
 };
 
