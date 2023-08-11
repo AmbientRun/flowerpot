@@ -1,18 +1,6 @@
 [ember]
 id = "flowerpot"
-name = "flowerpot"
+name = "Flowerpot"
 version = "0.0.1"
 
-includes = [
-  "src/actions/ambient.toml",
-  "src/crafting/ambient.toml",
-  "src/crops/ambient.toml",
-  "src/fauna/ambient.toml",
-  "src/items/ambient.toml",
-  "src/game/ambient.toml",
-  "src/map/ambient.toml",
-  "src/player/ambient.toml",
-  "src/terrain/ambient.toml",
-  "src/ui/ambient.toml",
-  "src/weather/ambient.toml",
-]
+[dependencies]

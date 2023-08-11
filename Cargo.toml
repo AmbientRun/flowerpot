@@ -1,128 +1,22 @@
-[package]
-name = "flowerpot"
+[workspace]
+members = [ "core/*" ]
 
-edition = "2021"
-publish = false
-version = "0.0.1"
-
-[dependencies]
+[workspace.dependencies]
 ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "55a2f2c" }
+flowerpot-common = { path = "." }
 lazy_static = "1.4"
 noise = "0.8"
 rapier3d = "0.17"
 rustrict = "0.7"
 
-[lib]
+[package]
+name = "flowerpot-common"
+edition = "2021"
+publish = false
+version = "0.0.1"
 
-[[bin]]
-name = "flowerpot_actions_client"
-path = "src/actions/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_actions_server"
-path = "src/actions/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_crafting_client"
-path = "src/crafting/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_crafting_server"
-path = "src/crafting/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_crops_client"
-path = "src/crops/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_crops_server"
-path = "src/crops/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_fauna_client"
-path = "src/fauna/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_fauna_server"
-path = "src/fauna/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_game_client"
-path = "src/game/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_game_server"
-path = "src/game/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_items_client"
-path = "src/items/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_items_server"
-path = "src/items/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_map_client"
-path = "src/map/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_map_server"
-path = "src/map/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_player_client"
-path = "src/player/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_player_server"
-path = "src/player/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_terrain_client"
-path = "src/terrain/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_terrain_server"
-path = "src/terrain/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_ui_client"
-path = "src/ui/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_ui_server"
-path = "src/ui/server.rs"
-required-features = ["server"]
-
-[[bin]]
-name = "flowerpot_weather_client"
-path = "src/weather/client.rs"
-required-features = ["client"]
-
-[[bin]]
-name = "flowerpot_weather_server"
-path = "src/weather/server.rs"
-required-features = ["server"]
+[dependencies]
+ambient_api.workspace = true
 
 [features]
 client = ["ambient_api/client"]
