@@ -1,6 +1,7 @@
 [ember]
 id = "crafting"
 name = "crafting"
+version = "0.0.1"
 
 [components.recipe]
 type = "Empty"

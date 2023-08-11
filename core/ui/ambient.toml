@@ -1,6 +1,7 @@
 [ember]
 id = "ui"
 name = "ui"
+version = "0.0.1"
 
 [components.joined]
 type = "Bool"

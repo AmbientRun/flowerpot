@@ -1,6 +1,7 @@
 [ember]
 id = "terrain"
 name = "terrain"
+version = "0.0.1"
 
 [components.heightmap]
 type = { type = "Vec", element_type = "I16" }

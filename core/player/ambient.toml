@@ -1,6 +1,7 @@
 [ember]
 id = "player"
 name = "player"
+version = "0.0.1"
 
 [components.loaded_chunks]
 type = { type = "Vec", element_type = "Ivec2" }

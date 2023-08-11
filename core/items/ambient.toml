@@ -1,6 +1,7 @@
 [ember]
 id = "items"
 name = "items"
+version = "0.0.1"
 
 [components.held_ref]
 type = "EntityId"

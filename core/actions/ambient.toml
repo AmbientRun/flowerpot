@@ -1,6 +1,7 @@
 [ember]
 id = "actions"
 name = "actions"
+version = "0.0.1"
 
 [messages.register_crafting_action]
 name = "RegisterCraftingAction"

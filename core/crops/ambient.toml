@@ -1,6 +1,7 @@
 [ember]
 id = "crops"
 name = "crops"
+version = "0.0.1"
 
 [components.medium_crop_class]
 type = "Empty"

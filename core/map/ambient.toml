@@ -1,6 +1,7 @@
 [ember]
 id = "map"
 name = "map"
+version = "0.0.1"
 
 [components.mod_loaded]
 type = "Empty"
