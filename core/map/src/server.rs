@@ -1,13 +1,9 @@
 use std::collections::HashMap;
 
 use ambient_api::prelude::*;
-use flowerpot::CHUNK_SIZE;
+use flowerpot_common::CHUNK_SIZE;
 
-use components::map::*;
-use messages::{
-    LoadChunk, LoadPlayerChunk, OnPlayerLoadChunk, OnPlayerUnloadChunk, UnloadChunk,
-    UnloadPlayerChunk,
-};
+use embers::map::{components::*, messages::*};
 
 mod shared;
 

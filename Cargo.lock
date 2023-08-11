@@ -522,6 +522,7 @@ name = "flowerpot-map"
 version = "0.0.1"
 dependencies = [
  "ambient_api",
+ "flowerpot-common",
 ]
 
 [[package]]

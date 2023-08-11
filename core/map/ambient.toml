@@ -102,58 +102,57 @@ The entity neighboring this entity to the west (-X).
 For chunks, this is another chunk. For tiles, this is another tile.
 """
 
-[messages.load_chunk]
-name = "LoadChunk"
+[messages.LoadChunk]
 description = "Server-to-client message to command a client to load a chunk."
 fields = { pos = "Ivec2" }
 
-[messages.unload_chunk]
+[messages.UnloadChunk]
 name = "UnloadChunk"
 description = "Server-to-client emssage to command a client to unload a chunk."
 fields = { pos = "Ivec2" }
 
-[messages.load_player_chunk]
+[messages.LoadPlayerChunk]
 name = "LoadPlayerChunk"
 description = """
 Server-local message commanding the map mod to load a chunk on a player.
 The map mod follows this up by broadcasting OnPlayerLoadChunk.
 """
 
-[messages.load_player_chunk.fields]
+[messages.LoadPlayerChunk.fields]
 player_entity = "EntityId"
 player_uid = "String"
 chunk_pos = "Ivec2"
 chunk_entity = "EntityId"
 
-[messages.unload_player_chunk]
+[messages.UnloadPlayerChunk]
 name = "UnloadPlayerChunk"
 description = """
 Server-local message commanding the map mod to unload a chunk on a player.
 The map mod follows this up by broadcasting OnPlayerUnloadChunk.
 """
 
-[messages.unload_player_chunk.fields]
+[messages.UnloadPlayerChunk.fields]
+chunk_entity = "EntityId"
+chunk_pos = "Ivec2"
 player_entity = "EntityId"
 player_uid = "String"
-chunk_pos = "Ivec2"
-chunk_entity = "EntityId"
 
-[messages.on_player_load_chunk]
+[messages.OnPlayerLoadChunk]
 name = "OnPlayerLoadChunk"
 description = "Server-local message emitted after a chunk has been loaded on a player."
 
-[messages.on_player_load_chunk.fields]
+[messages.OnPlayerLoadChunk.fields]
+chunk_entity = "EntityId"
+chunk_pos = "Ivec2"
 player_entity = "EntityId"
 player_uid = "String"
-chunk_pos = "Ivec2"
-chunk_entity = "EntityId"
 
-[messages.on_player_unload_chunk]
+[messages.OnPlayerUnloadChunk]
 name = "OnPlayerUnloadChunk"
 description = "Server-local message emitted after a chunk has been unloaded on a player."
 
-[messages.on_player_unload_chunk.fields]
+[messages.OnPlayerUnloadChunk.fields]
+chunk_entity = "EntityId"
+chunk_pos = "Ivec2"
 player_entity = "EntityId"
 player_uid = "String"
-chunk_pos = "Ivec2"
-chunk_entity = "EntityId"

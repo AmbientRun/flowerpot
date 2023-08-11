@@ -9,31 +9,31 @@ name = "Joined"
 attributes = ["Debuggable", "MaybeResource"]
 description = "Client-side resource declaring whether this client has joined the game."
 
-[messages.request_input]
+[messages.RequestInput]
 fields = {}
 
-[messages.release_input]
+[messages.ReleaseInput]
 fields = {}
 
-[messages.join_denied]
+[messages.JoinDenied]
 fields = { reason = "String" }
 
-[messages.join_request]
+[messages.JoinRequest]
 name = "JoinRequest"
 description = "Client-to-server message to join the game."
 fields = { name = "String" }
 
-[messages.accept_join]
+[messages.AcceptJoin]
 fields = {}
 
-[messages.announcement]
+[messages.Announcement]
 fields = { content = "String" }
 
-[messages.chat_message]
+[messages.ChatMessage]
 fields = { author = "String", content = "String" }
 
-[messages.player_message]
+[messages.PlayerMessage]
 fields = { content = "String" }
 
-[messages.chat_denied]
+[messages.ChatDenied]
 fields = { reason = "String" }
