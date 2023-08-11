@@ -2,10 +2,6 @@
 id = "actions"
 name = "actions"
 
-[components.actions]
-name = "Actions"
-description = "Component namespace related to the actions mod."
-
 [messages.register_crafting_action]
 name = "RegisterCraftingAction"
 description = "Registers a crafting action with the action store."

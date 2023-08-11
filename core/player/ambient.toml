@@ -2,10 +2,6 @@
 id = "player"
 name = "player"
 
-[components.player]
-name = "Player"
-description = "Component namespace related to the player mod."
-
 [components."player::loaded_chunks"]
 type = { type = "Vec", element_type = "Ivec2" }
 name = "LoadedChunks"

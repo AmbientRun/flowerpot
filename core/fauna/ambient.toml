@@ -2,10 +2,6 @@
 id = "fauna"
 name = "fauna"
 
-[components.fauna]
-name = "Fauna"
-description = "Component namespace related to the fauna mod."
-
 [components."fauna::fauna"]
 type = "Empty"
 name = "Fauna"

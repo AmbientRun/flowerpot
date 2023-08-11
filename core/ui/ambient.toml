@@ -2,10 +2,6 @@
 id = "ui"
 name = "ui"
 
-[components.ui]
-name = "UI"
-description = "Component namespace related to the UI mod."
-
 [components."ui::joined"]
 type = "Bool"
 name = "Joined"

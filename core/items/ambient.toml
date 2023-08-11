@@ -2,10 +2,6 @@
 id = "items"
 name = "items"
 
-[components.items]
-name = "Items"
-description = "Component namespace related to the items mod."
-
 [components."items::held_ref"]
 type = "EntityId"
 name = "HeldRef"

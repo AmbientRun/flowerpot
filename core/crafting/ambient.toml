@@ -2,10 +2,6 @@
 id = "crafting"
 name = "crafting"
 
-[components.crafting]
-name = "Crafting"
-description = "Component namespace related to the crafting mod."
-
 [components."crafting::recipe"]
 type = "Empty"
 name = "Recipe"

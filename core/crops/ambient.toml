@@ -2,10 +2,6 @@
 id = "crops"
 name = "crops"
 
-[components.crops]
-name = "crops"
-description = "Component namespace related to the crops mod."
-
 [components."crops::medium_crop_class"]
 type = "Empty"
 name = "MediumCropClass"

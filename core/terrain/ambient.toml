@@ -2,10 +2,6 @@
 id = "terrain"
 name = "terrain"
 
-[components.terrain]
-name = "Terrain"
-description = "Component namespace related to the terrain mod."
-
 [components."terrain::heightmap"]
 type = { type = "Vec", element_type = "I16" }
 name = "Heightmap"

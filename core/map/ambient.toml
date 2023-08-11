@@ -2,10 +2,6 @@
 id = "map"
 name = "map"
 
-[components.map]
-name = "Map"
-description = "Map mod-related components."
-
 [components."map::mod_loaded"]
 type = "Empty"
 name = "ModLoaded"
