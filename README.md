@@ -15,6 +15,7 @@ big topics:
 - [ ] cancel large crops before launch?
 
 - [ ] tech
+  - [ ] prefix all tag components with "is_"
   - [ ] fauna: make names monospace
   - [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
   - [ ] fauna: add a synced `prefab_path` component
@@ -24,6 +25,7 @@ big topics:
   - [x] lib: write a helper function to track the set of matching entities in each chunk
   - [x] fauna: when a fauna moves chunks, diff the subscribers of `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
   - [ ] crops: deterministic crop tile angles
+  - [ ] player: remove `local_player_ref` in favor of `ambient_api`'s `player::get_local()`
 - [ ] UX
   - [ ] ui: deduplicate display names
   - [ ] ui: generate colors for display names?
@@ -84,17 +86,6 @@ big topics that still need to be planned here:
   - [ ] terrain: calculate height according to `cut_direction`
   - [ ] terrain: experiment with different `cut_direction` heuristics
   - [ ] terrain: define and use a terrain seed resource
-
-## Pre-Launch
-
-big topics:
-- [ ] fences
-- [ ] foundation data representation
-- [ ] foundation UX
-- [ ] workshop data rep
-- [ ] workshop placement UX
-- [ ] workshop usage UX
-
 - [ ] meta
   - [ ] outline this README
   - [ ] add instructions for making a mod from the template
