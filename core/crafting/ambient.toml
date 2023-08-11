@@ -1,3 +1,32 @@
 [ember]
 id = "crafting"
 name = "crafting"
+
+[components.crafting]
+name = "Crafting"
+description = "Component namespace related to the crafting mod."
+
+[components."crafting::recipe"]
+type = "Empty"
+name = "Recipe"
+attributes = ["Debuggable"]
+
+[components."crafting::primary_ingredient"]
+type = "EntityId"
+name = "PrimaryIngredient"
+attributes = ["Debuggable"]
+
+[components."crafting::secondary_ingredient"]
+type = "EntityId"
+name = "SecondaryIngredient"
+attributes = ["Debuggable"]
+
+[components."crafting::primary_yield"]
+type = "EntityId"
+name = "PrimaryYield"
+attributes = ["Debuggable"]
+
+[components."crafting::secondary_yield"]
+type = "EntityId"
+name = "SecondaryYield"
+attributes = ["Debuggable"]

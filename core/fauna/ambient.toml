@@ -1,3 +1,86 @@
 [ember]
 id = "fauna"
 name = "fauna"
+
+[components.fauna]
+name = "Fauna"
+description = "Component namespace related to the fauna mod."
+
+[components."fauna::fauna"]
+type = "Empty"
+name = "Fauna"
+attributes = ["Debuggable"]
+description = "A tag given to all fauna entities."
+
+[components."fauna::yaw"]
+type = "F32"
+name = "Yaw"
+attributes = ["Debuggable"]
+description = "A fauna's yaw."
+
+[components."fauna::remote_entity"]
+type = "EntityId"
+name = "RemoteEntity"
+attributes = ["Debuggable"]
+description = """
+The remote entity ID of this fauna.
+
+When the SpawnFauna message is received on the client, the client spawns a
+corresponding local ID. However, the new ID may not (and probably will not)
+match the entity ID given in the SpawnFauna message. This component is attached
+to locally-spawned fauna in order to translate between local fauna entities and
+their server-side entity IDs.
+"""
+
+[components."fauna::name"]
+type = "String"
+name = "Name"
+attributes = ["Debuggable"]
+description = "This fauna's name. Updated with the UpdateFaunaName message."
+
+[components."fauna::name_container"]
+type = "EntityId"
+name = "NameContainer"
+attributes = ["Debuggable"]
+description = """
+A client-side instance of this fauna's name container entity.
+"""
+
+[components."fauna::mod_loaded"]
+type = "Empty"
+name = "ModLoaded"
+attributes = ["Debuggable", "MaybeResource"]
+description = """
+A resource that is added when the fauna mod has completed loading.
+Used to signal to other mods that the client is ready to receive fauna updates.
+"""
+
+[messages.on_spawn_fauna]
+name = "OnSpawnFauna"
+description = "Server-side event that is broadcast when a fauna is spawned on the given client."
+fields = { fauna = "EntityId", player_entity = "EntityId", player_uid = "String" }
+
+[messages.spawn_fauna]
+name = "SpawnFauna"
+description = "Server-to-client message spawning a fauna on a client."
+fields = { eid = "EntityId" }
+
+[messages.despawn_fauna]
+name = "DespawnFauna"
+description = "Server-to-client message despawning a fauna on a client."
+fields = { eid = "EntityId" }
+
+[messages.update_fauna_position]
+name = "UpdateFaunaPosition"
+description = "Updates a fauna's position on the receiving client."
+fields = { eid = "EntityId", position = "Vec2" }
+
+[messages.update_fauna_yaw]
+name = "UpdateFaunaYaw"
+description = "Updates a fauna's yaw on the receiving client."
+fields = { eid = "EntityId", yaw = "F32" }
+
+[messages.update_fauna_name]
+name = "UpdateFaunaName"
+description = "Updates a fauna's name on the receiving client."
+fields = { eid = "EntityId", name = "String" }
