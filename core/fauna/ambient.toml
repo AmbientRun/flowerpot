@@ -3,6 +3,10 @@ id = "fauna"
 name = "fauna"
 version = "0.0.1"
 
+[dependencies]
+map = { path = "../map" }
+terrain = { path = "../terrain" }
+
 [components.fauna]
 type = "Empty"
 name = "Fauna"
@@ -52,32 +56,32 @@ A resource that is added when the fauna mod has completed loading.
 Used to signal to other mods that the client is ready to receive fauna updates.
 """
 
-[messages.on_spawn_fauna]
+[messages.OnSpawnFauna]
 name = "OnSpawnFauna"
 description = "Server-side event that is broadcast when a fauna is spawned on the given client."
 fields = { fauna = "EntityId", player_entity = "EntityId", player_uid = "String" }
 
-[messages.spawn_fauna]
+[messages.SpawnFauna]
 name = "SpawnFauna"
 description = "Server-to-client message spawning a fauna on a client."
 fields = { eid = "EntityId" }
 
-[messages.despawn_fauna]
+[messages.DespawnFauna]
 name = "DespawnFauna"
 description = "Server-to-client message despawning a fauna on a client."
 fields = { eid = "EntityId" }
 
-[messages.update_fauna_position]
+[messages.UpdateFaunaPosition]
 name = "UpdateFaunaPosition"
 description = "Updates a fauna's position on the receiving client."
 fields = { eid = "EntityId", position = "Vec2" }
 
-[messages.update_fauna_yaw]
+[messages.UpdateFaunaYaw]
 name = "UpdateFaunaYaw"
 description = "Updates a fauna's yaw on the receiving client."
 fields = { eid = "EntityId", yaw = "F32" }
 
-[messages.update_fauna_name]
+[messages.UpdateFaunaName]
 name = "UpdateFaunaName"
 description = "Updates a fauna's name on the receiving client."
 fields = { eid = "EntityId", name = "String" }

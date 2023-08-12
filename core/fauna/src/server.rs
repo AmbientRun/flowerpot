@@ -3,15 +3,17 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use ambient_api::{components::core::player::user_id, ecs::SupportedValue, prelude::*};
+use ambient_api::{core::player::components::user_id, ecs::SupportedValue, prelude::*};
 
 mod shared;
 
-use components::{
-    fauna::*,
-    map::{in_chunk, players_observing, position},
+use embers::{
+    fauna::{components::*, messages::*},
+    map::{
+        components::{in_chunk, players_observing, position},
+        messages::{OnPlayerLoadChunk, OnPlayerUnloadChunk},
+    },
 };
-use messages::*;
 
 #[main]
 fn main() {
@@ -182,7 +184,7 @@ impl ChunkOccupants {
         let new_observers = Self::get_observers(new_chunk).into_iter();
         let on_old = |old: &EntityId| Self::despawn_from_observer(occupant, *old);
         let on_new = |new: &EntityId| Self::spawn_to_observer(occupant, *new);
-        flowerpot::diff_sorted(old_observers, new_observers, on_old, on_new);
+        flowerpot_common::diff_sorted(old_observers, new_observers, on_old, on_new);
     }
 
     fn get_observers(chunk: EntityId) -> Vec<EntityId> {

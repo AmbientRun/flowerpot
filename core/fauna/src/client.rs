@@ -4,24 +4,23 @@ use std::{
 };
 
 use ambient_api::{
-    components::core::{
-        app::main_scene,
-        ecs::children,
-        primitives::sphere_radius,
-        rendering::color,
-        transform::{
-            local_to_parent, local_to_world, mesh_to_local, mesh_to_world, spherical_billboard,
-            translation,
-        },
+    core::{
+        app::components::main_scene,
+        ecs::components::children,
+        primitives::{components::sphere_radius, concepts::make_sphere},
+        rendering::components::color,
+        transform::{components::*, concepts::make_transformable}, text::types::FontStyle,
     },
-    concepts::{make_sphere, make_transformable},
     prelude::*,
 };
 
 mod shared;
 
-use components::{fauna::*, map::position, terrain};
-use messages::*;
+use embers::{
+    fauna::{components::*, messages::*},
+    map::components::position,
+    terrain::components::altitude,
+};
 
 #[main]
 fn main() {
@@ -42,7 +41,7 @@ fn main() {
     store.subscribe_update::<UpdateFaunaName>(move |e, data| {
         entity::add_component(e, name(), data.name.clone());
 
-        use ambient_api::components::core::text::*;
+        use ambient_api::core::text::components::*;
         let name = data.name;
         const APPROXIMATE_CHAR_WIDTH: f32 = 36.0;
         let width = name.chars().count() as f32 * APPROXIMATE_CHAR_WIDTH;
@@ -61,7 +60,7 @@ fn main() {
                 .with(text(), name)
                 .with(font_size(), 72.0)
                 .with(font_family(), "Code".to_string())
-                .with(font_style(), "Regular".to_string())
+                .with(font_style(), FontStyle::Regular)
                 .with(color(), vec4(1.0, 1.0, 1.0, 1.0))
                 .with_default(main_scene())
                 .with_default(local_to_world())
@@ -82,7 +81,7 @@ fn main() {
 
     // temp fauna rendering code
 
-    spawn_query((fauna(), position(), terrain::height())).bind(move |entities| {
+    spawn_query((fauna(), position(), altitude())).bind(move |entities| {
         for (e, (_, position, height)) in entities {
             entity::add_components(
                 e,
@@ -95,7 +94,7 @@ fn main() {
         }
     });
 
-    change_query((fauna(), position(), terrain::height()))
+    change_query((fauna(), position(), altitude()))
         .track_change(position())
         .bind(move |entities| {
             for (e, (_, position, height)) in entities {
@@ -103,7 +102,7 @@ fn main() {
             }
         });
 
-    query((fauna(), position(), terrain::height(), name_container())).each_frame(move |entities| {
+    query((fauna(), position(), altitude(), name_container())).each_frame(move |entities| {
         for (_e, (_, position, height, container)) in entities {
             entity::add_component(container, translation(), position.extend(height + 2.5));
         }
