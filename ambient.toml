@@ -4,6 +4,7 @@ name = "Flowerpot"
 version = "0.0.1"
 
 [dependencies]
+crops = { path = "core/crops" }
 fauna = { path = "core/fauna" }
 map = { path = "core/map" }
 player = { path = "core/player" }

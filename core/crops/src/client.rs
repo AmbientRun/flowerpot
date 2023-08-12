@@ -1,26 +1,25 @@
 use ambient_api::{
-    components::core::{
-        prefab::prefab_from_url,
-        primitives::cube,
-        transform::{local_to_parent, local_to_world, rotation, translation},
+    core::{
+        prefab::components::prefab_from_url,
+        transform::{
+            components::{local_to_parent, local_to_world, rotation, translation},
+            concepts::make_transformable,
+        },
     },
-    concepts::make_transformable,
     prelude::*,
 };
 
-use components::{
-    crops::*,
-    map::{chunk_tile_index, chunk_tile_refs, in_chunk, position},
-    terrain::height,
+use embers::{
+    crops::{components::*, messages::*},
+    map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk, position},
 };
-use flowerpot::CHUNK_SIZE;
-use messages::UpdateMediumCrops;
+use flowerpot_common::CHUNK_SIZE;
 
 mod shared;
 
 #[main]
 fn main() {
-    let chunks = flowerpot::init_map(components::map::chunk());
+    let chunks = flowerpot_common::init_map(chunk());
 
     UpdateMediumCrops::subscribe({
         let chunks = chunks.clone();
@@ -81,10 +80,10 @@ fn main() {
         }
     });
 
-    spawn_query((position(), height(), medium_crop(), model_prefab_path())).bind(move |entities| {
-        for (e, (position, height, _, prefab_path)) in entities {
+    spawn_query((position(), height(), medium_crop(), model_prefab_url())).bind(move |entities| {
+        for (e, (position, height, _, prefab_url)) in entities {
             let model = Entity::new()
-                .with(prefab_from_url(), asset::url(prefab_path).unwrap())
+                .with(prefab_from_url(), prefab_url)
                 .with_default(local_to_parent())
                 .spawn();
 

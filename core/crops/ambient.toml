@@ -3,17 +3,20 @@ id = "crops"
 name = "crops"
 version = "0.0.1"
 
+[dependencies]
+map = { path = "../map" }
+
 [components.medium_crop_class]
 type = "Empty"
 name = "MediumCropClass"
 attributes = ["Debuggable", "Networked"]
 description = "A tag for medium crop class entities."
 
-[components.model_prefab_path]
+[components.model_prefab_url]
 type = "String"
-name = "ModelPrefabPath"
+name = "ModelPrefabUrl"
 attributes = ["Debuggable", "Networked"]
-description = "The asset path to a model prefab to use for this crop class."
+description = "The asset URL to a model prefab to use for this crop class."
 
 [components.age]
 type = "U16"
@@ -72,11 +75,11 @@ name = "OnTile"
 attributes = ["Debuggable"]
 description = "A reference to the tile that this crop is on."
 
-[messages.update_medium_crops]
+[messages.UpdateMediumCrops]
 name = "UpdateMediumCrops"
 description = "Server-to-client batch update for the medium crops in a chunk."
 
-[messages.update_medium_crops.fields]
+[messages.UpdateMediumCrops.fields]
 chunk = "Ivec2"
-crop_tiles = { type = "Vec", element_type = "U8" }
 crop_classes = { type = "Vec", element_type = "EntityId" }
+crop_tiles = { type = "Vec", element_type = "U8" }
