@@ -1,6 +1,6 @@
-use ambient_api::{components::core::player::player, prelude::*};
+use ambient_api::{core::player::components::is_player, prelude::*};
 
-use crate::components::player::*;
+use crate::embers::player::components::*;
 
 /// Moves the player with the given position by the given delta.
 pub fn move_player(position: Vec2, delta: Vec2) -> Vec2 {
@@ -11,14 +11,14 @@ pub fn move_player(position: Vec2, delta: Vec2) -> Vec2 {
 pub fn init_shared_player() {
     // TODO terrain-based speed
     // TODO sprinting + stamina?
-    spawn_query((player(), position())).bind(move |entities| {
+    spawn_query((is_player(), position())).bind(move |entities| {
         for (e, _) in entities {
             entity::set_component(e, speed(), 3.0);
         }
     });
 
     // move players
-    query((player(), position(), direction(), yaw(), speed())).each_frame(move |entities| {
+    query((is_player(), position(), direction(), yaw(), speed())).each_frame(move |entities| {
         for (e, (_player, old_position, direction, yaw, speed)) in entities {
             let rotate = Mat2::from_angle(yaw);
             let delta = rotate * direction * speed;

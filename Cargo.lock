@@ -531,6 +531,7 @@ name = "flowerpot-player"
 version = "0.0.1"
 dependencies = [
  "ambient_api",
+ "flowerpot-common",
 ]
 
 [[package]]

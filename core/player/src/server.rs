@@ -1,10 +1,16 @@
 use ambient_api::{
-    components::core::player::{player, user_id},
+    core::player::components::{is_player, user_id},
     prelude::*,
 };
 
-use components::{fauna, map, player::*};
-use messages::{LoadPlayerChunk, UnloadPlayerChunk, UpdatePlayerAngle, UpdatePlayerDirection};
+use embers::{
+    fauna::components::is_fauna,
+    map::{
+        components::{chunk, in_chunk},
+        messages::{LoadPlayerChunk, UnloadPlayerChunk},
+    },
+    player::{components::*, messages::*},
+};
 
 mod shared;
 
@@ -12,9 +18,9 @@ mod shared;
 fn main() {
     shared::init_shared_player();
 
-    let chunks = flowerpot::init_map(map::chunk());
+    let chunks = flowerpot_common::init_map(chunk());
 
-    spawn_query((player(), fauna::fauna())).bind(move |entities| {
+    spawn_query((is_player(), is_fauna())).bind(move |entities| {
         for (e, _) in entities {
             let left_hand = Entity::new().with(owner_ref(), e).spawn();
             let right_hand = Entity::new().with(owner_ref(), e).spawn();
@@ -22,7 +28,7 @@ fn main() {
             entity::add_components(
                 e,
                 Entity::new()
-                    .with_default(fauna::fauna())
+                    .with_default(is_fauna())
                     .with(speed(), 1.0)
                     .with(position(), vec2(0.0, 0.0))
                     .with(direction(), vec2(0.0, 0.0))
@@ -40,7 +46,7 @@ fn main() {
         }
     });
 
-    despawn_query((player(), user_id(), loaded_chunks())).bind({
+    despawn_query((is_player(), user_id(), loaded_chunks())).bind({
         let chunks = chunks.clone();
         move |entities| {
             let chunks = chunks.read().unwrap();
@@ -54,14 +60,14 @@ fn main() {
         }
     });
 
-    change_query((user_id(), loaded_chunks(), map::in_chunk()))
-        .track_change(map::in_chunk())
+    change_query((user_id(), loaded_chunks(), in_chunk()))
+        .track_change(in_chunk())
         .bind({
             let chunks = chunks.clone();
             move |entities| {
                 let chunks = chunks.read().unwrap();
                 for (e, (uid, old_chunks, current_chunk)) in entities {
-                    let current_pos = entity::get_component(current_chunk, map::chunk()).unwrap();
+                    let current_pos = entity::get_component(current_chunk, chunk()).unwrap();
                     let mut new_chunks = Vec::new();
                     for y in -4..4 {
                         for x in -4..4 {
@@ -103,10 +109,10 @@ fn main() {
     });
 
     query(position())
-        .requires(player())
+        .requires(is_player())
         .each_frame(move |entities| {
             for (e, pos) in entities {
-                entity::add_component(e, map::position(), pos);
+                entity::add_component(e, position(), pos);
             }
         });
 }

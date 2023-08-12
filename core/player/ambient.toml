@@ -3,6 +3,10 @@ id = "player"
 name = "player"
 version = "0.0.1"
 
+[dependencies]
+fauna = { path = "../fauna" }
+map = { path = "../map" }
+
 [components.loaded_chunks]
 type = { type = "Vec", element_type = "Ivec2" }
 name = "LoadedChunks"
@@ -83,12 +87,12 @@ name = "LocalPlayerRef"
 attributes = ["Debuggable", "MaybeResource"]
 description = "A resource referencing the local player's entity."
 
-[messages.update_player_angle]
+[messages.UpdatePlayerAngle]
 name = "UpdatePlayerAngle"
 description = "Client-to-server message to update the client's player's angle."
 fields = { pitch = "F32", yaw = "F32" }
 
-[messages.update_player_direction]
+[messages.UpdatePlayerDirection]
 name = "UpdatePlayerDirection"
 description = "Client-to-server message to update the client's player's direction."
 fields = { direction = "Vec2" }

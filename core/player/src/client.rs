@@ -1,18 +1,25 @@
 use std::f32::consts::FRAC_PI_2;
 
 use ambient_api::{
-    components::core::{
-        app::main_scene,
-        camera::aspect_ratio_from_window,
-        player::{local_user_id, player, user_id},
-        transform::{local_to_parent, local_to_world, rotation, scale, translation},
+    core::{
+        app::components::main_scene,
+        camera::components::aspect_ratio_from_window,
+        camera::concepts::make_perspective_infinite_reverse_camera,
+        player::components::{is_player, local_user_id, user_id},
+        transform::{
+            components::{local_to_parent, local_to_world, rotation, scale, translation},
+            concepts::make_transformable,
+        },
     },
-    concepts::{make_perspective_infinite_reverse_camera, make_transformable},
     prelude::*,
 };
 
-use components::{map, player::*, terrain};
-use messages::{UpdatePlayerAngle, UpdatePlayerDirection};
+use embers::{
+    player::{components::*, messages::*},
+    terrain::components::altitude,
+    map::components::position as map_position,
+};
+
 use shared::init_shared_player;
 
 mod shared;
@@ -22,7 +29,7 @@ const HEAD_HEIGHT: f32 = 1.5;
 
 #[main]
 fn main() {
-    spawn_query((player(), user_id())).bind(move |players| {
+    spawn_query((is_player(), user_id())).bind(move |players| {
         let local_user_id = entity::get_component(entity::resources(), local_user_id()).unwrap();
         for (player_entity, (_, user)) in players {
             if user != local_user_id {
@@ -73,7 +80,7 @@ fn main() {
         }
     });
 
-    change_query((player(), yaw(), pitch()))
+    change_query((is_player(), yaw(), pitch()))
         .track_change((yaw(), pitch()))
         .bind(move |players| {
             for (e, (_player, yaw, pitch)) in players {
@@ -90,24 +97,24 @@ fn main() {
 
     init_shared_player();
 
-    change_query((player(), position()))
+    change_query((is_player(), position()))
         .track_change(position())
         .bind(move |entities| {
             for (e, (_, position)) in entities {
-                entity::add_component(e, map::position(), position);
+                entity::add_component(e, map_position(), position);
             }
         });
 
-    change_query((player(), map::position(), terrain::height()))
-        .track_change((map::position(), terrain::height()))
+    change_query((is_player(), map_position(), altitude()))
+        .track_change((map_position(), altitude()))
         .bind(move |entities| {
-            for (e, (_, position, height)) in entities {
-                let new_translation = position.extend(height);
+            for (e, (_, position, altitude)) in entities {
+                let new_translation = position.extend(altitude);
                 entity::add_component(e, translation(), new_translation);
             }
         });
 
-    change_query((player(), pitch(), yaw()))
+    change_query((is_player(), pitch(), yaw()))
         .track_change((pitch(), yaw()))
         .bind(move |entities| {
             for (_, (_, pitch, yaw)) in entities {
@@ -115,7 +122,7 @@ fn main() {
             }
         });
 
-    change_query((player(), direction()))
+    change_query((is_player(), direction()))
         .track_change(direction())
         .bind(move |entities| {
             for (_, (_, direction)) in entities {
