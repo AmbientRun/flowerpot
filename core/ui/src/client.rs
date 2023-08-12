@@ -1,28 +1,22 @@
 use std::f32::consts::{FRAC_PI_2, TAU};
 
 use ambient_api::{
-    components::core::{
-        layout::{
-            align_horizontal_begin, align_vertical_end, docking_bottom, fit_horizontal_children,
-            fit_horizontal_parent, fit_vertical_children, max_height, min_height, min_width,
-            orientation_vertical, space_between_items,
-        },
-        rect::{background_color, line_from, line_to, line_width},
-        rendering::color,
+    core::{
+        layout::components::*,
+        rect::components::{background_color, line_from, line_to, line_width},
+        rendering::components::color,
     },
     input::{Input, InputDelta},
     prelude::*,
 };
-use messages::{Announcement, ChatDenied, ChatMessage};
 
 mod shared;
 
-use crate::{
-    components::{fauna, map, ui::*},
-    messages::{
-        AcceptJoin, JoinDenied, JoinRequest, PerformCraftingAction, PlayerMessage, ReleaseInput,
-        RequestInput,
-    },
+use embers::{
+    actions::messages::PerformCraftingAction,
+    fauna::components::mod_loaded as fauna_loaded,
+    map::components::mod_loaded as map_loaded,
+    ui::{components::*, messages::*},
 };
 
 #[main]
@@ -32,8 +26,8 @@ fn main() {
 
 async fn async_main() {
     eprintln!("UI mod loaded, waiting for fauna and map mods");
-    entity::wait_for_component(entity::resources(), fauna::mod_loaded()).await;
-    entity::wait_for_component(entity::resources(), map::mod_loaded()).await;
+    entity::wait_for_component(entity::resources(), fauna_loaded()).await;
+    entity::wait_for_component(entity::resources(), map_loaded()).await;
     eprintln!("UI, map, and fauna mods loaded; showing UI");
 
     App.el().spawn_interactive();
@@ -116,7 +110,7 @@ fn Controls(hooks: &mut Hooks) -> Element {
 }
 
 fn update_controls(delta: InputDelta, input: Input) {
-    use components::player::*;
+    use embers::player::components::*;
 
     let local_player_entity = entity::get_component(entity::resources(), local_player_ref())
         .expect("local_player_ref resource was deleted");
@@ -228,11 +222,11 @@ fn Chat(hooks: &mut Hooks) -> Element {
 
     let content = with_rect(
         Flow::el(messages.iter().map(MessageContent::render))
-            .with_default(orientation_vertical())
-            .with_default(align_horizontal_begin())
-            .with_default(align_vertical_end())
-            .with_default(fit_horizontal_parent())
-            .with_default(fit_vertical_children())
+            .with(orientation(), Orientation::Vertical)
+            .with(align_horizontal(), Align::Begin)
+            .with(align_vertical(), Align::End)
+            .with(fit_horizontal(), Fit::Parent)
+            .with(fit_vertical(), Fit::Children)
             .with(space_between_items(), STREET)
             .with_padding_even(STREET),
     )
@@ -247,7 +241,7 @@ fn Chat(hooks: &mut Hooks) -> Element {
             set_deny_reason("".to_string());
         })
         .el()
-        .with_default(fit_horizontal_parent());
+        .with(fit_horizontal(), Fit::Parent);
 
     let entry = if deny_reason.is_empty() {
         FlowColumn::el([editor])
@@ -265,15 +259,15 @@ fn Chat(hooks: &mut Hooks) -> Element {
     .with(background_color(), app_background_color().into());
 
     let window = Flow::el([content, entry])
-        .with_default(orientation_vertical())
-        .with_default(align_horizontal_begin())
-        .with_default(align_vertical_end())
-        .with_default(fit_horizontal_children())
-        .with_default(fit_vertical_children())
+        .with(orientation(), Orientation::Vertical)
+        .with(align_horizontal(), Align::Begin)
+        .with(align_vertical(), Align::End)
+        .with(fit_horizontal(), Fit::Children)
+        .with(fit_vertical(), Fit::Children)
         .with(min_width(), 600.0);
 
     FocusRoot::el([WindowSized::el([Dock::el([
-        window.with_default(docking_bottom())
+        window.with(docking(), Docking::Bottom)
     ])])])
 }
 

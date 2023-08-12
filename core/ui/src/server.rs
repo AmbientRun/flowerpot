@@ -1,14 +1,15 @@
 use ambient_api::{
-    components::core::player::{player, user_id},
+    core::player::components::{is_player, user_id},
     prelude::*,
 };
 
 mod shared;
 
-use components::fauna;
-use messages::{
-    AcceptJoin, Announcement, ChatDenied, ChatMessage, JoinDenied, JoinRequest, PlayerMessage,
+use embers::{
+    fauna::components::{is_fauna, name},
+    ui::messages::*,
 };
+
 use rustrict::Censor;
 
 fn moderate_content(input: &str) -> Option<String> {
@@ -24,8 +25,8 @@ fn moderate_content(input: &str) -> Option<String> {
 #[main]
 fn main() {
     let make_player_query = || {
-        query((user_id(), fauna::name()))
-            .requires((player(), fauna::fauna()))
+        query((user_id(), name()))
+            .requires((is_player(), is_fauna()))
             .build()
     };
 
@@ -33,14 +34,14 @@ fn main() {
         let Some(player_entity) = source.client_entity_id() else { return };
         let Some(uid) = source.client_user_id() else { return };
 
-        let name = data.name.trim().to_string();
+        let new_name = data.name.trim().to_string();
 
-        let deny_reason = if name.is_empty() {
+        let deny_reason = if new_name.is_empty() {
             Some("Name must not be empty".to_string())
-        } else if name.chars().count() > 32 {
+        } else if new_name.chars().count() > 32 {
             Some("Name must be 32 characters or less".to_string())
         } else {
-            moderate_content(&name)
+            moderate_content(&new_name)
         };
 
         if let Some(deny_reason) = deny_reason {
@@ -49,12 +50,12 @@ fn main() {
         }
 
         AcceptJoin::new().send_client_targeted_reliable(uid);
-        entity::add_component(player_entity, fauna::fauna(), ());
-        entity::add_component(player_entity, fauna::name(), data.name);
+        entity::add_component(player_entity, is_fauna(), ());
+        entity::add_component(player_entity, name(), data.name);
     });
 
-    spawn_query(fauna::name())
-        .requires((player(), fauna::fauna()))
+    spawn_query(name())
+        .requires((is_player(), is_fauna()))
         .bind(move |entities| {
             for (_e, name) in entities {
                 let content = format!("Player {} has joined the game", name);
@@ -62,8 +63,8 @@ fn main() {
             }
         });
 
-    despawn_query(fauna::name())
-        .requires((player(), fauna::fauna()))
+    despawn_query(name())
+        .requires((is_player(), is_fauna()))
         .bind(move |entities| {
             for (_e, name) in entities {
                 let content = format!("Player {} has left the game", name);
@@ -86,7 +87,7 @@ fn main() {
     PlayerMessage::subscribe(move |source, data| {
         let Some(player) = source.client_entity_id() else { return };
         let Some(uid) = source.client_user_id() else { return };
-        let Some(name) = entity::get_component(player, fauna::name()) else { return };
+        let Some(name) = entity::get_component(player, name()) else { return };
 
         let deny_reason = if data.content.is_empty() {
             Some("empty chat message".to_string())

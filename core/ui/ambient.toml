@@ -3,6 +3,11 @@ id = "ui"
 name = "ui"
 version = "0.0.1"
 
+[dependencies]
+actions = { path = "../actions" }
+fauna = { path = "../fauna" }
+player = { path = "../player" }
+
 [components.joined]
 type = "Bool"
 name = "Joined"

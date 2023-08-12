@@ -12,4 +12,5 @@ items = { path = "core/items" }
 map = { path = "core/map" }
 player = { path = "core/player" }
 terrain = { path = "core/terrain" }
+ui = { path = "core/ui" }
 weather = { path = "core/weather" }

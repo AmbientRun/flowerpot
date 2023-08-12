@@ -6,6 +6,7 @@ version = "0.0.1"
 
 [dependencies]
 ambient_api.workspace = true
+rustrict.workspace = true
 
 [[bin]]
 name = "flowerpot_ui_client"
