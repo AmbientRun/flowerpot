@@ -119,10 +119,10 @@ The map mod follows this up by broadcasting OnPlayerLoadChunk.
 """
 
 [messages.LoadPlayerChunk.fields]
+chunk_entity = "EntityId"
+chunk_pos = "Ivec2"
 player_entity = "EntityId"
 player_uid = "String"
-chunk_pos = "Ivec2"
-chunk_entity = "EntityId"
 
 [messages.UnloadPlayerChunk]
 name = "UnloadPlayerChunk"
