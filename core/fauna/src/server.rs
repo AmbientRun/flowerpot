@@ -39,7 +39,7 @@ fn bind_fauna_update<T: Clone + SupportedValue + 'static>(
 ) {
     change_query((in_chunk(), component))
         .track_change(component)
-        .requires(fauna())
+        .requires(is_fauna())
         .bind({
             let cb = cb.clone();
             move |entities| {
@@ -79,7 +79,7 @@ impl ChunkOccupants {
 
         let store = Arc::new(Mutex::new(store));
 
-        spawn_query(in_chunk()).requires(fauna()).bind({
+        spawn_query(in_chunk()).requires(is_fauna()).bind({
             let store = store.clone();
             move |entities| {
                 let mut store = store.lock().unwrap();
@@ -91,7 +91,7 @@ impl ChunkOccupants {
 
         change_query(in_chunk())
             .track_change(in_chunk())
-            .requires(fauna())
+            .requires(is_fauna())
             .bind({
                 let store = store.clone();
                 move |entities| {
@@ -102,7 +102,7 @@ impl ChunkOccupants {
                 }
             });
 
-        despawn_query(()).requires((fauna(), in_chunk())).bind({
+        despawn_query(()).requires((is_fauna(), in_chunk())).bind({
             let store = store.clone();
             move |entities| {
                 let mut store = store.lock().unwrap();

@@ -7,7 +7,7 @@ version = "0.0.1"
 map = { path = "../map" }
 terrain = { path = "../terrain" }
 
-[components.fauna]
+[components.is_fauna]
 type = "Empty"
 name = "Fauna"
 attributes = ["Debuggable"]

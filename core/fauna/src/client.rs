@@ -9,7 +9,8 @@ use ambient_api::{
         ecs::components::children,
         primitives::{components::sphere_radius, concepts::make_sphere},
         rendering::components::color,
-        transform::{components::*, concepts::make_transformable}, text::types::FontStyle,
+        text::types::FontStyle,
+        transform::{components::*, concepts::make_transformable},
     },
     prelude::*,
 };
@@ -81,7 +82,7 @@ fn main() {
 
     // temp fauna rendering code
 
-    spawn_query((fauna(), position(), altitude())).bind(move |entities| {
+    spawn_query((is_fauna(), position(), altitude())).bind(move |entities| {
         for (e, (_, position, height)) in entities {
             entity::add_components(
                 e,
@@ -94,7 +95,7 @@ fn main() {
         }
     });
 
-    change_query((fauna(), position(), altitude()))
+    change_query((is_fauna(), position(), altitude()))
         .track_change(position())
         .bind(move |entities| {
             for (e, (_, position, height)) in entities {
@@ -102,13 +103,13 @@ fn main() {
             }
         });
 
-    query((fauna(), position(), altitude(), name_container())).each_frame(move |entities| {
+    query((is_fauna(), position(), altitude(), name_container())).each_frame(move |entities| {
         for (_e, (_, position, height, container)) in entities {
             entity::add_component(container, translation(), position.extend(height + 2.5));
         }
     });
 
-    despawn_query((fauna(), name_container())).bind(move |entities| {
+    despawn_query((is_fauna(), name_container())).bind(move |entities| {
         for (_e, (_, container)) in entities {
             entity::despawn_recursive(container);
         }
@@ -158,7 +159,7 @@ impl FaunaStore {
                     }
 
                     let e = Entity::new()
-                        .with_default(fauna())
+                        .with_default(is_fauna())
                         .with(remote_entity(), data.eid)
                         .spawn();
 
@@ -166,7 +167,7 @@ impl FaunaStore {
                 }
             });
         } else {
-            spawn_query((fauna(), remote_entity())).bind({
+            spawn_query((is_fauna(), remote_entity())).bind({
                 let store = store.clone();
                 move |entities| {
                     let mut store = store.inner.lock().unwrap();
@@ -177,7 +178,7 @@ impl FaunaStore {
             });
         }
 
-        despawn_query((fauna(), remote_entity())).bind({
+        despawn_query((is_fauna(), remote_entity())).bind({
             let store = store.clone();
             move |entities| {
                 let mut store = store.inner.lock().unwrap();
