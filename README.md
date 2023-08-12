@@ -26,6 +26,7 @@ big topics:
   - [x] fauna: when a fauna moves chunks, diff the subscribers of `in_chunk` against `last_chunk` (which are sorted; so use rapid diffing) to spawn and despawn fauna to clients, then update `last_chunk`
   - [ ] crops: deterministic crop tile angles
   - [ ] player: remove `local_player_ref` in favor of `ambient_api`'s `player::get_local()`
+  - [ ] player: replace `position` with map ember's `position`
 - [ ] UX
   - [ ] ui: deduplicate display names
   - [ ] ui: generate colors for display names?

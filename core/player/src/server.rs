@@ -112,7 +112,7 @@ fn main() {
         .requires(is_player())
         .each_frame(move |entities| {
             for (e, pos) in entities {
-                entity::add_component(e, position(), pos);
+                entity::add_component(e, embers::map::components::position(), pos);
             }
         });
 }
