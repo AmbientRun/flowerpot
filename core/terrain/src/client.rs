@@ -88,7 +88,7 @@ fn main() {
                 .with(procedural_mesh(), mesh)
                 .with(
                     pbr_material_from_url(),
-                    assets::url("assets/pipeline.toml/0/mat.json"),
+                    assets::url("pipeline.toml/0/mat.json"),
                 )
                 .with(color(), Vec4::ONE)
                 .spawn();
