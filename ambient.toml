@@ -4,6 +4,7 @@ name = "Flowerpot"
 version = "0.0.1"
 
 [dependencies]
+actions = { path = "core/actions" }
 crops = { path = "core/crops" }
 fauna = { path = "core/fauna" }
 items = { path = "core/items" }

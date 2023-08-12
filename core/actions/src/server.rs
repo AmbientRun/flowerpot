@@ -5,11 +5,11 @@ use std::{
 
 use ambient_api::prelude::*;
 
-use components::{
-    items::held_ref,
-    player::{left_hand_ref, right_hand_ref},
+use embers::{
+    actions::messages::*,
+    items::components::held_ref,
+    player::components::{left_hand_ref, right_hand_ref},
 };
-use messages::{OnCraftingAction, PerformCraftingAction, RegisterCraftingAction};
 
 mod shared;
 

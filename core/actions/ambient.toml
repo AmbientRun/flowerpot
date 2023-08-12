@@ -3,25 +3,29 @@ id = "actions"
 name = "actions"
 version = "0.0.1"
 
-[messages.register_crafting_action]
+[dependencies]
+items = { path = "../items" }
+player = { path = "../player" }
+
+[messages.RegisterCraftingAction]
 name = "RegisterCraftingAction"
 description = "Registers a crafting action with the action store."
 
-[messages.register_crafting_action.fields]
+[messages.RegisterCraftingAction.fields]
 primary_held  = "EntityId"
 secondary_held  = "EntityId"
 id = "String"
 
-[messages.on_crafting_action]
+[messages.OnCraftingAction]
 name = "OnCraftingAction"
 description = "Sent to the registering module when the registered action is performed."
 
-[messages.on_crafting_action.fields]
-player = "EntityId"
+[messages.OnCraftingAction.fields]
 id = "String"
+player = "EntityId"
 right_is_primary = "Bool"
 
-[messages.perform_crafting_action]
+[messages.PerformCraftingAction]
 name = "PerformCraftingAction"
 description = "Client-to-server message to perform a crafting action."
 fields = {}

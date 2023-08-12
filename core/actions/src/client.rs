@@ -1,6 +1,6 @@
-use ambient_api::{messages::Frame, prelude::*};
+use ambient_api::prelude::*;
 
-use crate::messages::PerformCraftingAction;
+use embers::actions::messages::PerformCraftingAction;
 
 mod shared;
 
