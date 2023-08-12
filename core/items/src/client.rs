@@ -1,15 +1,15 @@
 use ambient_api::{
-    components::core::{
-        ecs::children, primitives::cube, rendering::color, transform::local_to_parent,
+    core::{
+        ecs::components::children, primitives::components::cube, rendering::components::color,
+        transform::components::local_to_parent,
     },
     prelude::*,
 };
 
-use components::{
-    items::*,
-    player::{left_hand_ref, local_player_ref, right_hand_ref},
+use embers::{
+    items::{components::*, messages::*},
+    player::components::{left_hand_ref, local_player_ref, right_hand_ref},
 };
-use messages::UpdateHeldItems;
 
 mod shared;
 

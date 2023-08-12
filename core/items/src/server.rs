@@ -1,12 +1,11 @@
 use std::collections::HashSet;
 
-use ambient_api::{components::core::player::user_id, prelude::*};
+use ambient_api::{core::player::components::user_id, prelude::*};
 
-use components::{
-    items::*,
-    player::{left_hand_ref, owner_ref, right_hand_ref},
+use embers::{
+    items::{components::*, messages::*},
+    player::components::{left_hand_ref, owner_ref, right_hand_ref},
 };
-use messages::UpdateHeldItems;
 
 mod shared;
 

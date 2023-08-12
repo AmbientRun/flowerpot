@@ -3,6 +3,9 @@ id = "items"
 name = "items"
 version = "0.0.1"
 
+[dependencies]
+player = { path = "../player" }
+
 [components.held_ref]
 type = "EntityId"
 name = "HeldRef"
@@ -15,7 +18,7 @@ name = "Class"
 attributes = ["Debuggable"]
 description = "A reference to the item class that this entity is an instance of."
 
-[messages.update_held_items]
+[messages.UpdateHeldItems]
 name = "UpdateHeldItems"
 description = "Server-to-client message to update the classes of items that the player is holding."
 fields = { left = "EntityId", right = "EntityId" }
