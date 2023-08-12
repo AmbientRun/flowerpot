@@ -5,6 +5,7 @@ version = "0.0.1"
 
 [dependencies]
 actions = { path = "core/actions" }
+crafting = { path = "core/crafting" }
 crops = { path = "core/crops" }
 fauna = { path = "core/fauna" }
 items = { path = "core/items" }

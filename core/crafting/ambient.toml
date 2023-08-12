@@ -3,6 +3,9 @@ id = "crafting"
 name = "crafting"
 version = "0.0.1"
 
+[dependencies]
+actions = { path = "../actions" }
+
 [components.recipe]
 type = "Empty"
 name = "Recipe"

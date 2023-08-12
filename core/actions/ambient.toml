@@ -12,9 +12,9 @@ name = "RegisterCraftingAction"
 description = "Registers a crafting action with the action store."
 
 [messages.RegisterCraftingAction.fields]
+id = "String"
 primary_held  = "EntityId"
 secondary_held  = "EntityId"
-id = "String"
 
 [messages.OnCraftingAction]
 name = "OnCraftingAction"
