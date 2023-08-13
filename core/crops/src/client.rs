@@ -1,6 +1,6 @@
 use ambient_api::{
     core::{
-        prefab::components::prefab_from_url,
+        prefab::components::{prefab_from_url, spawned},
         transform::{
             components::{local_to_parent, local_to_world, rotation, translation},
             concepts::make_transformable,
@@ -50,14 +50,14 @@ fn main() {
                 {
                     let tile = tiles[tile_idx as usize];
 
-                    if let Some(old_occupant) = entity::get_component(tile, medium_crop_occupant())
-                    {
+                    let old_occupant =
+                        entity::get_component(tile, medium_crop_occupant()).unwrap_or_default();
+
+                    if class.is_null() {
                         if !old_occupant.is_null() {
                             entity::despawn_recursive(old_occupant);
                         }
-                    }
 
-                    if class.is_null() {
                         continue;
                     }
 
@@ -73,11 +73,31 @@ fn main() {
                         .with(position(), occupant_position)
                         .with(in_chunk(), chunk)
                         .with(chunk_tile_index(), tile_idx)
+                        .with(despawn_when_loaded(), old_occupant)
                         .spawn();
 
                     entity::add_component(tile, medium_crop_occupant(), new_occupant);
                 }
             });
+        }
+    });
+
+    // despawn old crops once the new one has finished loading
+    spawn_query((despawn_when_loaded(), spawned())).bind(move |entities| {
+        for (e, (old, _)) in entities {
+            if entity::exists(old) {
+                entity::remove_component(e, despawn_when_loaded());
+                entity::despawn_recursive(old);
+            }
+        }
+    });
+
+    // despawn old crops if the new crop hasn't finished loading
+    despawn_query(despawn_when_loaded()).bind(move |entities| {
+        for (_e, old) in entities {
+            if entity::exists(old) {
+                entity::despawn_recursive(old);
+            }
         }
     });
 
@@ -88,6 +108,11 @@ fn main() {
                     .with(prefab_from_url(), prefab_url)
                     .with_default(local_to_parent())
                     .spawn();
+
+                // inherit old crop reference to model
+                if let Some(despawn) = entity::get_component(e, despawn_when_loaded()) {
+                    entity::add_component(model, despawn_when_loaded(), despawn);
+                }
 
                 // TODO deterministic angle using tile coordinates
                 let angle = random::<f32>() * std::f32::consts::TAU;
