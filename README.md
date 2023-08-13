@@ -25,7 +25,7 @@ big topics:
   - [ ] ui: deduplicate display names
   - [ ] ui: generate colors for display names?
   - [ ] ui: document messages
-  - [ ] ui: add current coordinates to game HUD
+  - [x] ui: add current coordinates to game HUD
   - [ ] ui: display player list in tab menu
   - [ ] ui: scroll chat contents?
   - [ ] ui: add "i'm not picky" name button to randomly select nickname

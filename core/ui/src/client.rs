@@ -15,7 +15,7 @@ mod shared;
 use embers::{
     actions::messages::PerformCraftingAction,
     fauna::components::is_mod_loaded as is_fauna_loaded,
-    map::components::is_mod_loaded as is_map_loaded,
+    map::components::{is_mod_loaded as is_map_loaded, position},
     ui::{components::*, messages::*},
 };
 
@@ -50,7 +50,7 @@ fn App(hooks: &mut Hooks) -> Element {
 
 #[element_component]
 fn GameUI(_hooks: &mut Hooks) -> Element {
-    Group::el([Crosshair::el(), Controls::el(), Chat::el()])
+    Group::el([Crosshair::el(), Controls::el(), Chat::el(), Status::el()])
 }
 
 // TODO: either yoink a better crosshair from AFPS when it has one or make one ourselves and share
@@ -269,6 +269,19 @@ fn Chat(hooks: &mut Hooks) -> Element {
     FocusRoot::el([WindowSized::el([Dock::el([
         window.with(docking(), Docking::Bottom)
     ])])])
+}
+
+#[element_component]
+fn Status(hooks: &mut Hooks) -> Element {
+    let (coords, _) = hooks.use_entity_component(player::get_local(), position());
+
+    let coords = coords
+        .map(|coords| format!("Map position: ({:.1}, {:.1})", coords.x, coords.y))
+        .unwrap_or_default();
+
+    FlowColumn::el([Text::el(coords)])
+        .with_padding_even(10.0)
+        .with_background(Vec3::ZERO.extend(0.8))
 }
 
 #[element_component]
