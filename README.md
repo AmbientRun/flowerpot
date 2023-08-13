@@ -23,7 +23,7 @@ big topics:
   - [ ] fauna: copy the placeholder player model from the prototype
   - [ ] give more appropriate/distinctive ember IDs to all embers
 - [ ] UX
-  - [ ] ui: deduplicate display names
+  - [x] ui: deduplicate display names
   - [ ] ui: generate colors for display names?
   - [ ] ui: document messages
   - [x] ui: add current coordinates to game HUD
