@@ -17,10 +17,11 @@ big topics:
   - [x] crops: deterministic crop tile angles
   - [x] player: replace `position` with map ember's `position`
   - [ ] fauna: make names monospace
-  - [ ] fauna: add a synced `prefab_path` component
+  - [ ] fauna: add a synced `prefab_url` component
   - [ ] fauna: define and sync fauna classes
   - [ ] fauna: instantiate fauna class prefabs client-side
   - [ ] fauna: copy the placeholder player model from the prototype
+  - [ ] give more appropriate/distinctive ember IDs to all embers
 - [ ] UX
   - [ ] ui: deduplicate display names
   - [ ] ui: generate colors for display names?
@@ -31,7 +32,7 @@ big topics:
   - [ ] ui: add "i'm not picky" name button to randomly select nickname
   - [ ] ui: break chat system out into a standard ember
 - [ ] crops
-  - [ ] crops: define a `small_crop_class` component
+  - [ ] crops: define a `is_small_crop_class` component
   - [ ] crops: define `SpawnSmallCrops` (can update class) and `DespawnSmallCrops` messages (similar to fauna)
   - [ ] crops: spawn test irises on chunks
   - [ ] crops: reuse fauna chunk occupancy code to track small crops
@@ -40,7 +41,7 @@ big topics:
   - [ ] crops: spawn and update small crops client-side
 - [ ] items and actions
   - [ ] crafting: better semantics for secondary items?
-  - [ ] items: define a `model_prefab_path` component
+  - [ ] items: define a `prefab_url` component
   - [ ] game: grab some usable item models and define items for them
   - [ ] game: define some workable crafting recipes
 - [ ] worldgen
@@ -61,6 +62,10 @@ big topics that still need to be planned here:
 - [ ] optimized diff-based crop sync?
 - [ ] seeing items other players are holding
 - [ ] crop neighbor counting and available neighbor tags
+- [ ] animated walking animations
+- [ ] SFX
+- [ ] music
+- [ ] animated player character
 
 - [ ] tech
   - [ ] refactor chunk storage away from per-tile entities
