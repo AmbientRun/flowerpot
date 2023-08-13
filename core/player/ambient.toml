@@ -25,18 +25,6 @@ name = "Yaw"
 attributes = ["Debuggable"]
 description = "The client-side player's yaw. NOT the player's fauna yaw."
 
-[components.position]
-type = "Vec2"
-name = "Position"
-attributes = ["Debuggable"]
-description = """
-A player's map position.
-
-The client interpolates this with the player's fauna position to implement rubberbanding.
-
-The server uses this in conjunction with the direction component to implement player movement code.
-"""
-
 [components.speed]
 type = "F32"
 name = "Speed"

@@ -15,7 +15,7 @@ big topics:
 - [ ] tech
   - [x] prefix all tag components with "is_"
   - [x] crops: deterministic crop tile angles
-  - [ ] player: replace `position` with map ember's `position`
+  - [x] player: replace `position` with map ember's `position`
   - [ ] fauna: make names monospace
   - [ ] fauna: add a synced `prefab_path` component
   - [ ] fauna: define and sync fauna classes

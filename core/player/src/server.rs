@@ -6,7 +6,7 @@ use ambient_api::{
 use embers::{
     fauna::components::is_fauna,
     map::{
-        components::{chunk, in_chunk},
+        components::{chunk, in_chunk, position},
         messages::{LoadPlayerChunk, UnloadPlayerChunk},
     },
     player::{components::*, messages::*},

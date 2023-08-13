@@ -17,7 +17,7 @@ use ambient_api::{
 use embers::{
     player::{components::*, messages::*},
     terrain::components::altitude,
-    map::components::position as map_position,
+    map::components::position,
 };
 
 use shared::init_shared_player;
@@ -97,16 +97,8 @@ fn main() {
 
     init_shared_player();
 
-    change_query((is_player(), position()))
-        .track_change(position())
-        .bind(move |entities| {
-            for (e, (_, position)) in entities {
-                entity::add_component(e, map_position(), position);
-            }
-        });
-
-    change_query((is_player(), map_position(), altitude()))
-        .track_change((map_position(), altitude()))
+    change_query((is_player(), position(), altitude()))
+        .track_change((position(), altitude()))
         .bind(move |entities| {
             for (e, (_, position, altitude)) in entities {
                 let new_translation = position.extend(altitude);
