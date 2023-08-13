@@ -60,7 +60,11 @@ fn main() {
                 .with(local_to_parent(), transform)
                 .with(text(), name)
                 .with(font_size(), 72.0)
-                .with(font_family(), "Code".to_string())
+                .with(
+                    font_family(),
+                    "https://github.com/madmalik/mononoki/raw/main/export/mononoki-Regular.ttf"
+                        .to_string(),
+                )
                 .with(font_style(), FontStyle::Regular)
                 .with(color(), vec4(1.0, 1.0, 1.0, 1.0))
                 .with_default(main_scene())

@@ -16,7 +16,7 @@ big topics:
   - [x] prefix all tag components with "is_"
   - [x] crops: deterministic crop tile angles
   - [x] player: replace `position` with map ember's `position`
-  - [ ] fauna: make names monospace
+  - [x] fauna: make names monospace
   - [ ] fauna: add a synced `prefab_url` component
   - [ ] fauna: define and sync fauna classes
   - [ ] fauna: instantiate fauna class prefabs client-side
@@ -66,6 +66,7 @@ big topics that still need to be planned here:
 - [ ] SFX
 - [ ] music
 - [ ] animated player character
+- [ ] credit use of mononoki font *somewhere*
 
 - [ ] tech
   - [ ] refactor chunk storage away from per-tile entities
