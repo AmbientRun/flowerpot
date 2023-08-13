@@ -1,11 +1,12 @@
 use std::sync::atomic::AtomicBool;
 
-use ambient_api::{components::core::app::name, once_cell::sync::OnceCell, prelude::*};
-use components::{
-    crops::{age, class, medium_crop, medium_crop_occupant, on_tile},
-    items::held_ref,
-    map::{chunk, chunk_tile_refs},
-    player::{left_hand_ref, right_hand_ref},
+use ambient_api::{core::app::components::name, once_cell::sync::OnceCell, prelude::*};
+
+use embers::{
+    crops::components::{age, class, medium_crop, medium_crop_occupant, on_tile},
+    items::components::held_ref,
+    map::components::{chunk, chunk_tile_refs},
+    player::components::{left_hand_ref, right_hand_ref},
 };
 
 mod shared;
@@ -63,9 +64,8 @@ macro_rules! def_prototype {
 pub mod crops {
     use super::*;
 
-    use crate::components::crops::{
-        model_prefab_path as prefab, next_growth_age as next_age, next_growth_stage as next_stage,
-        *,
+    use crate::embers::crops::components::{
+        model_prefab_url as prefab, next_growth_age as next_age, next_growth_stage as next_stage, *,
     };
 
     pub mod beans {
@@ -162,7 +162,7 @@ pub mod items {
     pub mod debug {
         use super::*;
 
-        use ambient_api::{components::core::rendering::color, prelude::vec4};
+        use ambient_api::{core::rendering::components::color, prelude::vec4};
 
         def_prototype!(
             BLUE,
@@ -209,7 +209,7 @@ fn main() {
         }
     });
 
-    use crate::components::crafting::*;
+    use embers::crafting::components::*;
     def_entity!(
         recipe: (),
         primary_ingredient: items::debug::YELLOW.get(),

@@ -8,6 +8,7 @@ actions = { path = "core/actions" }
 crafting = { path = "core/crafting" }
 crops = { path = "core/crops" }
 fauna = { path = "core/fauna" }
+game = { path = "core/game" }
 items = { path = "core/items" }
 map = { path = "core/map" }
 player = { path = "core/player" }

@@ -3,3 +3,9 @@ id = "game"
 name = "game"
 version = "0.0.1"
 
+[dependencies]
+crafting = { path = "../crafting" }
+crops = { path = "../crops" }
+items = { path = "../items" }
+map = { path = "../map" }
+player = { path = "../player" }

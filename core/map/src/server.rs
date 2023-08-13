@@ -30,8 +30,8 @@ pub fn main() {
 
     let mut chunks = HashMap::new();
     let mut tiles = HashMap::new();
-    for x in -8..=8 {
-        for y in -8..=8 {
+    for x in -1..=1 {
+        for y in -1..=1 {
             let position = IVec2::new(x, y);
             let chunk = Entity::new()
                 .with(chunk(), position)

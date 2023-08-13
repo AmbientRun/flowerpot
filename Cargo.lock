@@ -528,6 +528,8 @@ name = "flowerpot-game"
 version = "0.0.1"
 dependencies = [
  "ambient_api",
+ "flowerpot-common",
+ "lazy_static",
 ]
 
 [[package]]
