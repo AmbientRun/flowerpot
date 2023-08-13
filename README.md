@@ -13,7 +13,7 @@ big topics:
 - [ ] heightmap raycasting
 
 - [ ] tech
-  - [ ] prefix all tag components with "is_"
+  - [x] prefix all tag components with "is_"
   - [ ] crops: deterministic crop tile angles
   - [ ] player: remove `local_player_ref` in favor of `ambient_api`'s `player::get_local()`
   - [ ] player: replace `position` with map ember's `position`

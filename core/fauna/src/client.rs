@@ -116,7 +116,7 @@ fn main() {
     });
 
     eprintln!("fauna mod loaded");
-    entity::add_component(entity::resources(), mod_loaded(), ());
+    entity::add_component(entity::resources(), is_mod_loaded(), ());
 }
 
 pub trait FaunaUpdate: ModuleMessage {

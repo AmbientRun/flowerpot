@@ -7,9 +7,9 @@ version = "0.0.1"
 map = { path = "../map" }
 terrain = { path = "../terrain" }
 
-[components.medium_crop_class]
+[components.is_medium_crop_class]
 type = "Empty"
-name = "MediumCropClass"
+name = "IsMediumCropClass"
 attributes = ["Debuggable", "Networked"]
 description = "A tag for medium crop class entities."
 
@@ -52,9 +52,9 @@ name = "GrowthInterval"
 attributes = ["Debuggable"]
 description = "The age that this crop needs to reach to grow into its next growth stage."
 
-[components.medium_crop]
+[components.is_medium_crop]
 type = "Empty"
-name = "MediumCrop"
+name = "IsMediumCrop"
 attributes = ["Debuggable"]
 description = "A tag for instantiated medium crop entities."
 

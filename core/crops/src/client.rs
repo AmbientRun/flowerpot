@@ -69,7 +69,7 @@ fn main() {
                         + 0.5;
 
                     let new_occupant = entity::get_all_components(class)
-                        .with_default(medium_crop())
+                        .with_default(is_medium_crop())
                         .with(position(), occupant_position)
                         .with(in_chunk(), chunk)
                         .with(chunk_tile_index(), tile_idx)
@@ -101,7 +101,7 @@ fn main() {
         }
     });
 
-    spawn_query((position(), altitude(), medium_crop(), model_prefab_url())).bind(
+    spawn_query((position(), altitude(), is_medium_crop(), model_prefab_url())).bind(
         move |entities| {
             for (e, (position, altitude, _, prefab_url)) in entities {
                 let model = Entity::new()

@@ -3,9 +3,9 @@ id = "map"
 name = "map"
 version = "0.0.1"
 
-[components.mod_loaded]
+[components.is_mod_loaded]
 type = "Empty"
-name = "ModLoaded"
+name = "IsModLoaded"
 attributes = ["Debuggable", "MaybeResource"]
 description = """
 A resource that is added when the map mod has completed loading.

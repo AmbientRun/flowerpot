@@ -47,9 +47,9 @@ description = """
 A client-side instance of this fauna's name container entity.
 """
 
-[components.mod_loaded]
+[components.is_mod_loaded]
 type = "Empty"
-name = "ModLoaded"
+name = "IsModLoaded"
 attributes = ["Debuggable", "MaybeResource"]
 description = """
 A resource that is added when the fauna mod has completed loading.

@@ -3,7 +3,7 @@ use std::sync::atomic::AtomicBool;
 use ambient_api::{once_cell::sync::OnceCell, prelude::*};
 
 use embers::{
-    crops::components::{class, medium_crop, medium_crop_occupant, on_tile},
+    crops::components::{class, is_medium_crop, medium_crop_occupant, on_tile},
     game::assets::url,
     items::components::held_ref,
     map::components::{chunk, chunk_tile_refs},
@@ -194,7 +194,7 @@ fn main() {
 
             let crop_class = crops::beans::YOUNG_0.get();
             let dummy_crop = Entity::new()
-                .with_default(medium_crop())
+                .with_default(is_medium_crop())
                 .with(class(), crop_class)
                 .with(on_tile(), tile)
                 .spawn();
@@ -212,7 +212,7 @@ fn main() {
 
     use embers::crafting::components::*;
     def_entity!(
-        recipe: (),
+        is_recipe: (),
         primary_ingredient: items::debug::YELLOW.get(),
         secondary_ingredient: items::debug::BLUE.get(),
         primary_yield: items::debug::GREEN.get(),

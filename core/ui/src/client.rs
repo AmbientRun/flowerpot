@@ -14,8 +14,8 @@ mod shared;
 
 use embers::{
     actions::messages::PerformCraftingAction,
-    fauna::components::mod_loaded as fauna_loaded,
-    map::components::mod_loaded as map_loaded,
+    fauna::components::is_mod_loaded as is_fauna_loaded,
+    map::components::is_mod_loaded as is_map_loaded,
     ui::{components::*, messages::*},
 };
 
@@ -26,8 +26,8 @@ fn main() {
 
 async fn async_main() {
     eprintln!("UI mod loaded, waiting for fauna and map mods");
-    entity::wait_for_component(entity::resources(), fauna_loaded()).await;
-    entity::wait_for_component(entity::resources(), map_loaded()).await;
+    entity::wait_for_component(entity::resources(), is_fauna_loaded()).await;
+    entity::wait_for_component(entity::resources(), is_map_loaded()).await;
     eprintln!("UI, map, and fauna mods loaded; showing UI");
 
     App.el().spawn_interactive();

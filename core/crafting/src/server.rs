@@ -25,7 +25,7 @@ fn main() {
     let store = Arc::new(Mutex::new(HashMap::<String, CraftingYield>::new()));
 
     spawn_query((
-        recipe(),
+        is_recipe(),
         primary_ingredient(),
         secondary_ingredient(),
         primary_yield(),

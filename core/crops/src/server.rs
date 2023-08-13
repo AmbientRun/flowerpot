@@ -79,7 +79,7 @@ fn main() {
             }
         });
 
-    spawn_query((medium_crop(), class(), on_tile())).bind(move |entities| {
+    spawn_query((is_medium_crop(), class(), on_tile())).bind(move |entities| {
         for (e, (_medium, crop_class, tile)) in entities {
             if let Some(old_occupant) = entity::get_component(tile, medium_crop_occupant()) {
                 if !old_occupant.is_null() && old_occupant != e {
@@ -99,7 +99,7 @@ fn main() {
         }
     });
 
-    despawn_query((medium_crop(), class(), on_tile())).bind(move |entities| {
+    despawn_query((is_medium_crop(), class(), on_tile())).bind(move |entities| {
         for (e, (_medium, _class, tile)) in entities {
             if entity::get_component(tile, medium_crop_occupant()) == Some(e) {
                 entity::set_component(tile, medium_crop_occupant(), EntityId::null());
@@ -108,7 +108,7 @@ fn main() {
     });
 
     run_async(async move {
-        let all_crops = query((medium_crop(), on_tile(), age())).build();
+        let all_crops = query((is_medium_crop(), on_tile(), age())).build();
         loop {
             sleep(0.1).await;
 
@@ -119,7 +119,7 @@ fn main() {
         }
     });
 
-    change_query((medium_crop(), on_tile(), age(), seeding_interval(), seed()))
+    change_query((is_medium_crop(), on_tile(), age(), seeding_interval(), seed()))
         .track_change(age())
         .bind(move |entities| {
             for (_e, (_, tile, age, interval, seed)) in entities {
@@ -148,7 +148,7 @@ fn main() {
                     }
 
                     Entity::new()
-                        .with_default(medium_crop())
+                        .with_default(is_medium_crop())
                         .with(class(), seed)
                         .with(on_tile(), neighbor)
                         .spawn();
@@ -159,7 +159,7 @@ fn main() {
         });
 
     change_query((
-        medium_crop(),
+        is_medium_crop(),
         on_tile(),
         age(),
         next_growth_age(),
@@ -176,7 +176,7 @@ fn main() {
 
             if !next.is_null() {
                 Entity::new()
-                    .with_default(medium_crop())
+                    .with_default(is_medium_crop())
                     .with(class(), next)
                     .with(on_tile(), tile)
                     .spawn();

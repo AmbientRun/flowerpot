@@ -6,9 +6,9 @@ version = "0.0.1"
 [dependencies]
 actions = { path = "../actions" }
 
-[components.recipe]
+[components.is_recipe]
 type = "Empty"
-name = "Recipe"
+name = "IsRecipe"
 attributes = ["Debuggable"]
 
 [components.primary_ingredient]
