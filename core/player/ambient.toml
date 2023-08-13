@@ -85,7 +85,7 @@ description = "A reference to the player that this entity is owned by."
 type = "EntityId"
 name = "LocalPlayerRef"
 attributes = ["Debuggable", "MaybeResource"]
-description = "A resource referencing the local player's entity."
+description = "A resource referencing the local player's entity *once the player has joined the game*."
 
 [messages.UpdatePlayerAngle]
 name = "UpdatePlayerAngle"

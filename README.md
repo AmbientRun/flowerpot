@@ -15,7 +15,6 @@ big topics:
 - [ ] tech
   - [x] prefix all tag components with "is_"
   - [x] crops: deterministic crop tile angles
-  - [ ] player: remove `local_player_ref` in favor of `ambient_api`'s `player::get_local()`
   - [ ] player: replace `position` with map ember's `position`
   - [ ] fauna: make names monospace
   - [ ] fauna: add a synced `prefab_path` component
@@ -69,6 +68,7 @@ big topics that still need to be planned here:
   - [ ] per-tile entity refactor
   - [ ] rename chunks to regions
   - [ ] break out region networking into its own ember
+  - [ ] player: change `local_player_ref` into `is_joined`?
 - [ ] items and actions
   - [ ] crafting: comprehensively document components
 - [ ] worldgen
