@@ -114,8 +114,9 @@ fn main() {
                     entity::add_component(model, despawn_when_loaded(), despawn);
                 }
 
-                // TODO deterministic angle using tile coordinates
-                let angle = random::<f32>() * std::f32::consts::TAU;
+                // pseudo-randomly generate the angle so that when a crop on
+                // this tile grows it doesn't also rotate
+                let angle = position.dot(vec2(12.9898, 78.233)) * 43758.5453;
 
                 let transform = make_transformable()
                     .with(translation(), position.extend(altitude))
