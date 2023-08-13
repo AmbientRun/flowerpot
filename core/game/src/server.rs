@@ -1,9 +1,10 @@
 use std::sync::atomic::AtomicBool;
 
-use ambient_api::{core::app::components::name, once_cell::sync::OnceCell, prelude::*};
+use ambient_api::{once_cell::sync::OnceCell, prelude::*};
 
 use embers::{
-    crops::components::{age, class, medium_crop, medium_crop_occupant, on_tile},
+    crops::components::{class, medium_crop, medium_crop_occupant, on_tile},
+    game::assets::url,
     items::components::held_ref,
     map::components::{chunk, chunk_tile_refs},
     player::components::{left_hand_ref, right_hand_ref},
@@ -73,35 +74,35 @@ pub mod crops {
 
         def_prototype!(
             YOUNG_0,
-            prefab: "assets/crops/beans/Beans_0.fbx",
+            prefab: url("crops/beans/Beans_0.fbx"),
             next_stage: YOUNG_1.get(),
             next_age: 2u16,
         );
 
         def_prototype!(
             YOUNG_1,
-            prefab: "assets/crops/beans/Beans_1.fbx",
+            prefab: url("crops/beans/Beans_1.fbx"),
             next_stage: YOUNG_2.get(),
             next_age: 3u16,
         );
 
         def_prototype!(
             YOUNG_2,
-            prefab: "assets/crops/beans/Beans_2.fbx",
+            prefab: url("crops/beans/Beans_2.fbx"),
             next_stage: FLOWERING.get(),
             next_age: 7u16,
         );
 
         def_prototype!(
             FLOWERING,
-            prefab: "assets/crops/beans/Beans_3.fbx",
+            prefab: url("crops/beans/Beans_3.fbx"),
             next_stage: FRUITING.get(),
             next_age: 21u16,
         );
 
         def_prototype!(
             FRUITING,
-            prefab: "assets/crops/beans/Beans_4.fbx",
+            prefab: url("crops/beans/Beans_4.fbx"),
             next_stage: DEAD.get(),
             next_age: 50u16,
             seed: YOUNG_0.get(),
@@ -110,14 +111,14 @@ pub mod crops {
 
         def_prototype!(
             HARVESTED,
-            prefab: "assets/crops/beans/Beans_5.fbx",
+            prefab: url("crops/beans/Beans_5.fbx"),
             next_stage: DEAD.get(),
             next_age: 10u16,
         );
 
         def_prototype!(
             DEAD,
-            prefab: "assets/crops/beans/Beans_6.fbx",
+            prefab: url("crops/beans/Beans_6.fbx"),
             next_stage: EntityId::null(),
             next_age: 50u16,
         );
