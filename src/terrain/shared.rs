@@ -78,4 +78,13 @@ pub fn init_shared_terrain() {
                 entity::add_component(e, height(), new_height);
             }
         });
+
+    init_spatial_queries();
+}
+
+fn init_spatial_queries() {
+    use rapier3d::prelude::*;
+
+    let mut bodies = RigidBodySet::new();
+    let mut colliders = ColliderSet::new();
 }

@@ -1,7 +1,6 @@
 use ambient_api::{
     components::core::{
         prefab::prefab_from_url,
-        primitives::cube,
         transform::{local_to_parent, local_to_world, rotation, translation},
     },
     concepts::make_transformable,
@@ -10,7 +9,7 @@ use ambient_api::{
 
 use components::{
     crops::*,
-    map::{chunk_tile_index, chunk_tile_refs, in_chunk, position},
+    map::{chunk_tile_index, in_chunk, position},
     terrain::height,
 };
 use flowerpot::CHUNK_SIZE;
@@ -20,6 +19,14 @@ mod shared;
 
 #[main]
 fn main() {
+    spawn_query(components::map::chunk()).bind(move |entities| {
+        for (e, _) in entities {
+            let tile_num = CHUNK_SIZE * CHUNK_SIZE;
+            let occupants = vec![EntityId::null(); tile_num];
+            entity::add_component(e, medium_crop_occupants(), occupants.clone());
+        }
+    });
+
     let chunks = flowerpot::init_map(components::map::chunk());
 
     UpdateMediumCrops::subscribe({
@@ -34,6 +41,11 @@ fn main() {
                             break Some(chunk);
                         }
                     } else {
+                        eprintln!(
+                            "warning: dropping medium crop update on unloaded chunk {}",
+                            data.chunk
+                        );
+
                         break None;
                     }
 
@@ -41,20 +53,21 @@ fn main() {
                 };
 
                 let Some(chunk) = chunk else { return };
-                let Some(tiles) = entity::get_component(chunk, chunk_tile_refs()) else { return };
+                let Some(mut occupants) = entity::get_component(chunk, medium_crop_occupants()) else { return };
+
+                eprintln!("update: {:#?}", data.crop_tiles);
 
                 for (tile_idx, class) in data
                     .crop_tiles
                     .into_iter()
                     .zip(data.crop_classes.into_iter())
                 {
-                    let tile = tiles[tile_idx as usize];
+                    eprintln!("updating {} with {:?}", tile_idx, class);
 
-                    if let Some(old_occupant) = entity::get_component(tile, medium_crop_occupant())
-                    {
-                        if !old_occupant.is_null() {
-                            entity::despawn_recursive(old_occupant);
-                        }
+                    let occupant = &mut occupants[tile_idx as usize];
+
+                    if !occupant.is_null() {
+                        entity::despawn_recursive(*occupant);
                     }
 
                     if class.is_null() {
@@ -68,15 +81,15 @@ fn main() {
                         )
                         + 0.5;
 
-                    let new_occupant = entity::get_all_components(class)
+                    *occupant = entity::get_all_components(class)
                         .with_default(medium_crop())
                         .with(position(), occupant_position)
                         .with(in_chunk(), chunk)
                         .with(chunk_tile_index(), tile_idx)
                         .spawn();
-
-                    entity::add_component(tile, medium_crop_occupant(), new_occupant);
                 }
+
+                entity::set_component(chunk, medium_crop_occupants(), occupants);
             });
         }
     });
@@ -102,10 +115,12 @@ fn main() {
         }
     });
 
-    despawn_query(medium_crop_occupant()).bind(move |entities| {
-        for (_, occupant) in entities {
-            if !occupant.is_null() {
-                entity::despawn_recursive(occupant);
+    despawn_query(medium_crop_occupants()).bind(move |entities| {
+        for (_, occupants) in entities {
+            for occupant in occupants {
+                if !occupant.is_null() {
+                    entity::despawn_recursive(occupant);
+                }
             }
         }
     });

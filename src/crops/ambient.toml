@@ -53,23 +53,29 @@ name = "MediumCrop"
 attributes = ["Debuggable"]
 description = "A tag for instantiated medium crop entities."
 
-[components."crops::medium_crop_occupant"]
-type = "EntityId"
+[components."crops::medium_crop_occupants"]
+type = { type = "Vec", element_type = "EntityId" }
 name = "MediumCropOccupant"
 attributes = ["Debuggable"]
-description = "A reference to the medium crop that occupies this tile. Can be null for no occupant."
+description = """
+A list of the medium crops occupying this chunk.
+Each element may be null if there is no occupant.
+"""
+
+[components."crops::last_medium_crop_occupants"]
+type = { type = "Vec", element_type = "EntityId" }
+name = "MediumCropOccupant"
+attributes = ["Debuggable"]
+description = """
+A list of the medium crops occupying this chunk during the last network update.
+This is diffed against medium_crop_occupants to get new network updates.
+"""
 
 [components."crops::class"]
 type = "EntityId"
 name = "Class"
 attributes = ["Debuggable"]
 description = "A reference to the crop class that this crop is an instance of."
-
-[components."crops::on_tile"]
-type = "EntityId"
-name = "OnTile"
-attributes = ["Debuggable"]
-description = "A reference to the tile that this crop is on."
 
 [messages.update_medium_crops]
 name = "UpdateMediumCrops"

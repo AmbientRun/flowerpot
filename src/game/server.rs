@@ -1,11 +1,16 @@
 use std::sync::atomic::AtomicBool;
 
-use ambient_api::{components::core::app::name, once_cell::sync::OnceCell, prelude::*};
+use ambient_api::{once_cell::sync::OnceCell, prelude::*};
 use components::{
-    crops::{age, class, medium_crop, medium_crop_occupant, on_tile},
+    crops::{class, medium_crop},
     items::held_ref,
-    map::{chunk, chunk_tile_refs},
+    map::chunk,
     player::{left_hand_ref, right_hand_ref},
+};
+
+use crate::components::{
+    crops::medium_crop_occupants,
+    map::{chunk_tile_index, in_chunk},
 };
 
 mod shared;
@@ -183,24 +188,23 @@ pub mod items {
 
 #[main]
 fn main() {
-    spawn_query((chunk(), chunk_tile_refs())).bind(move |entities| {
-        for (_, (chunk, tiles)) in entities {
-            if chunk != IVec2::ZERO {
-                continue;
+    spawn_query(chunk())
+        .requires(medium_crop_occupants())
+        .bind(move |entities| {
+            for (e, chunk) in entities {
+                if chunk != IVec2::ZERO {
+                    continue;
+                }
+
+                let crop_class = crops::beans::YOUNG_0.get();
+                Entity::new()
+                    .with_default(medium_crop())
+                    .with(class(), crop_class)
+                    .with(in_chunk(), e)
+                    .with(chunk_tile_index(), 0)
+                    .spawn();
             }
-
-            let tile = tiles[0];
-
-            let crop_class = crops::beans::YOUNG_0.get();
-            let dummy_crop = Entity::new()
-                .with_default(medium_crop())
-                .with(class(), crop_class)
-                .with(on_tile(), tile)
-                .spawn();
-
-            entity::add_component(tile, medium_crop_occupant(), dummy_crop);
-        }
-    });
+        });
 
     spawn_query((left_hand_ref(), right_hand_ref())).bind(move |entities| {
         for (_player, (left, right)) in entities {

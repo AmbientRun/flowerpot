@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use ambient_api::prelude::*;
-use flowerpot::CHUNK_SIZE;
 
 use components::map::*;
 use messages::{
@@ -33,7 +32,6 @@ pub fn main() {
     shared::init_shared_map();
 
     let mut chunks = HashMap::new();
-    let mut tiles = HashMap::new();
     for x in -8..=8 {
         for y in -8..=8 {
             let position = IVec2::new(x, y);
@@ -42,32 +40,12 @@ pub fn main() {
                 .with(players_observing(), vec![])
                 .spawn();
 
-            let tile_num = CHUNK_SIZE * CHUNK_SIZE;
-            let mut chunk_tiles = Vec::with_capacity(tile_num);
-            let mut tile_idx = 0;
-            for ty in 0..CHUNK_SIZE {
-                for tx in 0..CHUNK_SIZE {
-                    let tile = Entity::new()
-                        .with(in_chunk(), chunk)
-                        .with(chunk_tile_index(), tile_idx)
-                        .spawn();
-
-                    chunk_tiles.push(tile);
-                    let position = position * CHUNK_SIZE as i32 + ivec2(tx as i32, ty as i32);
-                    tiles.insert(position, tile);
-                    tile_idx += 1;
-                }
-            }
-
-            entity::add_component(chunk, chunk_tile_refs(), chunk_tiles);
-
             chunks.insert(position, chunk);
         }
     }
 
     // TODO faster stitching inside of the loop
     stitch_neighbors(chunks);
-    stitch_neighbors(tiles);
 
     LoadPlayerChunk::subscribe(move |_, data| {
         entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
