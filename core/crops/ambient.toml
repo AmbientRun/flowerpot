@@ -5,6 +5,7 @@ version = "0.0.1"
 
 [dependencies]
 map = { path = "../map" }
+terrain = { path = "../terrain" }
 
 [components.medium_crop_class]
 type = "Empty"

@@ -12,6 +12,7 @@ use ambient_api::{
 use embers::{
     crops::{components::*, messages::*},
     map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk, position},
+    terrain::components::altitude,
 };
 use flowerpot_common::CHUNK_SIZE;
 
@@ -80,26 +81,28 @@ fn main() {
         }
     });
 
-    spawn_query((position(), height(), medium_crop(), model_prefab_url())).bind(move |entities| {
-        for (e, (position, height, _, prefab_url)) in entities {
-            let model = Entity::new()
-                .with(prefab_from_url(), prefab_url)
-                .with_default(local_to_parent())
-                .spawn();
+    spawn_query((position(), altitude(), medium_crop(), model_prefab_url())).bind(
+        move |entities| {
+            for (e, (position, altitude, _, prefab_url)) in entities {
+                let model = Entity::new()
+                    .with(prefab_from_url(), prefab_url)
+                    .with_default(local_to_parent())
+                    .spawn();
 
-            // TODO deterministic angle using tile coordinates
-            let angle = random::<f32>() * std::f32::consts::TAU;
+                // TODO deterministic angle using tile coordinates
+                let angle = random::<f32>() * std::f32::consts::TAU;
 
-            let transform = make_transformable()
-                .with(translation(), position.extend(height))
-                .with(rotation(), Quat::from_rotation_z(angle))
-                .with_default(local_to_world())
-                .spawn();
+                let transform = make_transformable()
+                    .with(translation(), position.extend(altitude))
+                    .with(rotation(), Quat::from_rotation_z(angle))
+                    .with_default(local_to_world())
+                    .spawn();
 
-            entity::add_child(transform, model);
-            entity::add_child(e, transform);
-        }
-    });
+                entity::add_child(transform, model);
+                entity::add_child(e, transform);
+            }
+        },
+    );
 
     despawn_query(medium_crop_occupant()).bind(move |entities| {
         for (_, occupant) in entities {
