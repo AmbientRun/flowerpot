@@ -13,6 +13,12 @@ name = "Fauna"
 attributes = ["Debuggable"]
 description = "A tag given to all fauna entities."
 
+[components.pitch]
+type = "F32"
+name = "Pitch"
+attributes = ["Debuggable"]
+description = "A fauna's pitch."
+
 [components.yaw]
 type = "F32"
 name = "Yaw"
@@ -75,6 +81,11 @@ fields = { eid = "EntityId" }
 name = "UpdateFaunaPosition"
 description = "Updates a fauna's position on the receiving client."
 fields = { eid = "EntityId", position = "Vec2" }
+
+[messages.UpdateFaunaPitch]
+name = "UpdateFaunaPitch"
+description = "Updates a fauna's pitch on the receiving client."
+fields = { eid = "EntityId", pitch = "F32" }
 
 [messages.UpdateFaunaYaw]
 name = "UpdateFaunaYaw"

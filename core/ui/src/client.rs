@@ -14,7 +14,7 @@ mod shared;
 
 use embers::{
     actions::messages::PerformCraftingAction,
-    fauna::components::is_mod_loaded as is_fauna_loaded,
+    fauna::components::{is_mod_loaded as is_fauna_loaded, pitch, yaw},
     map::components::{is_mod_loaded as is_map_loaded, position},
     ui::{components::*, messages::*},
 };

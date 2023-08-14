@@ -13,18 +13,6 @@ name = "LoadedChunks"
 attributes = ["Debuggable"]
 description = "The list of chunk positions that this player currently has loaded."
 
-[components.pitch]
-type = "F32"
-name = "Pitch"
-attributes = ["Debuggable"]
-description = "The client-side player's pitch. NOT the player's fauna pitch."
-
-[components.yaw]
-type = "F32"
-name = "Yaw"
-attributes = ["Debuggable"]
-description = "The client-side player's yaw. NOT the player's fauna yaw."
-
 [components.speed]
 type = "F32"
 name = "Speed"

@@ -15,9 +15,10 @@ use ambient_api::{
 };
 
 use embers::{
+    fauna::components::{pitch, yaw},
+    map::components::position,
     player::{components::*, messages::*},
     terrain::components::altitude,
-    map::components::position,
 };
 
 use shared::init_shared_player;

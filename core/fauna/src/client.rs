@@ -35,6 +35,10 @@ fn main() {
         entity::add_component(e, position(), data.position);
     });
 
+    store.subscribe_update::<UpdateFaunaPitch>(move |e, data| {
+        entity::add_component(e, pitch(), data.pitch);
+    });
+
     store.subscribe_update::<UpdateFaunaYaw>(move |e, data| {
         entity::add_component(e, yaw(), data.yaw);
     });
@@ -139,6 +143,7 @@ macro_rules! impl_update_for_eid {
 
 impl_update_for_eid!(DespawnFauna);
 impl_update_for_eid!(UpdateFaunaPosition);
+impl_update_for_eid!(UpdateFaunaPitch);
 impl_update_for_eid!(UpdateFaunaYaw);
 impl_update_for_eid!(UpdateFaunaName);
 

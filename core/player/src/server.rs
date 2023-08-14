@@ -4,7 +4,7 @@ use ambient_api::{
 };
 
 use embers::{
-    fauna::components::is_fauna,
+    fauna::components::{is_fauna, pitch, yaw},
     map::{
         components::{chunk, in_chunk, position},
         messages::{LoadPlayerChunk, UnloadPlayerChunk},
@@ -105,6 +105,7 @@ fn main() {
 
     UpdatePlayerAngle::subscribe(move |source, data| {
         let Some(e) = source.client_entity_id() else { return };
+        entity::add_component(e, pitch(), data.pitch);
         entity::add_component(e, yaw(), data.yaw);
     });
 

@@ -23,6 +23,10 @@ fn main() {
         UpdateFaunaPosition::new(e, position).send_client_targeted_reliable(player);
     });
 
+    bind_fauna_update(pitch(), move |e, player, pitch| {
+        UpdateFaunaPitch::new(e, pitch).send_client_targeted_reliable(player);
+    });
+
     bind_fauna_update(yaw(), move |e, player, yaw| {
         UpdateFaunaYaw::new(e, yaw).send_client_targeted_reliable(player);
     });
