@@ -7,31 +7,24 @@
 big topics:
 - [ ] migrate tasks from journal here (IMPORTANT)
 - [ ] tile outline rendering
+- [ ] swap hand items
+- [ ] map items
+- [ ] place/drop map items
 - [ ] player targeting
 - [ ] player reach
 - [ ] player items/crafting UX
 - [ ] heightmap raycasting
 
 - [ ] tech
-  - [x] prefix all tag components with "is_"
-  - [x] crops: deterministic crop tile angles
-  - [x] player: replace `position` with map ember's `position`
-  - [x] fauna: make names monospace
-  - [x] fauna: define and sync fauna classes
-  - [x] fauna: add a synced `prefab_url` component
-  - [x] fauna: instantiate fauna class prefabs client-side
-  - [x] fauna: copy the placeholder player model from the prototype
-  - [x] fauna: exclude rendering local player's model
   - [ ] give more appropriate/distinctive ember IDs to all embers
+  - [ ] break out region networking into its own ember
+  - [ ] break chat and naming system out into a standard ember
 - [ ] UX
-  - [x] ui: deduplicate display names
   - [ ] ui: generate colors for display names?
   - [ ] ui: document messages
-  - [x] ui: add current coordinates to game HUD
   - [ ] ui: display player list in tab menu
   - [ ] ui: scroll chat contents?
   - [ ] ui: add "i'm not picky" name button to randomly select nickname
-  - [ ] ui: break chat system out into a standard ember
 - [ ] crops
   - [ ] crops: define a `is_small_crop_class` component
   - [ ] crops: define `SpawnSmallCrops` (can update class) and `DespawnSmallCrops` messages (similar to fauna)
@@ -53,9 +46,9 @@ big topics:
 ## Pre-Launch
 
 big topics that still need to be planned here:
-- [ ] harvesting small crops
 - [ ] huge map gen
 - [ ] water
+- [ ] animated player character
 - [ ] day/night cycle
 - [ ] non-walkable tiles and movement code
 - [ ] how do small crops reproduce?
@@ -63,18 +56,20 @@ big topics that still need to be planned here:
 - [ ] optimized diff-based crop sync?
 - [ ] seeing items other players are holding
 - [ ] crop neighbor counting and available neighbor tags
-- [ ] animated walking animations
+- [ ] animated item/head bobbing during walking
+- [ ] held item animations
+- [ ] crafting animations
+- [ ] crop and item raycast targeting
+- [ ] harvesting small crops
 - [ ] SFX
 - [ ] music
-- [ ] animated player character
 - [ ] credit use of mononoki font *somewhere*
 
 - [ ] tech
-  - [ ] refactor chunk storage away from per-tile entities
-  - [ ] player: rubberbanding (how can this be integrated with fauna rubberbanding?)
+  - [ ] fauna: rubberbanding
+  - [ ] player: input prediction
   - [ ] per-tile entity refactor
   - [ ] rename chunks to regions
-  - [ ] break out region networking into its own ember
   - [ ] player: change `local_player_ref` into `is_joined`?
 - [ ] items and actions
   - [ ] crafting: comprehensively document components
