@@ -7,11 +7,29 @@ version = "0.0.1"
 map = { path = "../map" }
 terrain = { path = "../terrain" }
 
+[components.is_class]
+type = "Empty"
+name = "IsClass"
+attributes = ["Debuggable", "Networked"]
+description = "A tag for networked fauna class entities."
+
+[components.model_prefab_url]
+type = "String"
+name = "ModelPrefabUrl"
+attributes = ["Debuggable", "Networked"]
+description = "The asset URL to a model prefab to use for this fauna class."
+
 [components.is_fauna]
 type = "Empty"
 name = "Fauna"
 attributes = ["Debuggable"]
 description = "A tag given to all fauna entities."
+
+[components.class]
+type = "EntityId"
+name = "Class"
+attributes = ["Debuggable"]
+description = "A reference to the crop class that this crop is an instance of."
 
 [components.pitch]
 type = "F32"
@@ -70,7 +88,7 @@ fields = { fauna = "EntityId", player_entity = "EntityId", player_uid = "String"
 [messages.SpawnFauna]
 name = "SpawnFauna"
 description = "Server-to-client message spawning a fauna on a client."
-fields = { eid = "EntityId" }
+fields = { eid = "EntityId", class = "EntityId" }
 
 [messages.DespawnFauna]
 name = "DespawnFauna"

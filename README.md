@@ -17,10 +17,11 @@ big topics:
   - [x] crops: deterministic crop tile angles
   - [x] player: replace `position` with map ember's `position`
   - [x] fauna: make names monospace
-  - [ ] fauna: add a synced `prefab_url` component
-  - [ ] fauna: define and sync fauna classes
-  - [ ] fauna: instantiate fauna class prefabs client-side
-  - [ ] fauna: copy the placeholder player model from the prototype
+  - [x] fauna: define and sync fauna classes
+  - [x] fauna: add a synced `prefab_url` component
+  - [x] fauna: instantiate fauna class prefabs client-side
+  - [x] fauna: copy the placeholder player model from the prototype
+  - [x] fauna: exclude rendering local player's model
   - [ ] give more appropriate/distinctive ember IDs to all embers
 - [ ] UX
   - [x] ui: deduplicate display names

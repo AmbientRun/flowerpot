@@ -4,12 +4,12 @@ use ambient_api::{
 };
 
 use embers::{
-    fauna::components::{is_fauna, pitch, yaw},
+    fauna::components::{class, is_class, is_fauna, model_prefab_url, pitch, yaw},
     map::{
         components::{chunk, in_chunk, position},
         messages::{LoadPlayerChunk, UnloadPlayerChunk},
     },
-    player::{components::*, messages::*},
+    player::{assets::url, components::*, messages::*},
 };
 
 mod shared;
@@ -17,6 +17,11 @@ mod shared;
 #[main]
 fn main() {
     shared::init_shared_player();
+
+    let player_class = Entity::new()
+        .with_default(is_class())
+        .with(model_prefab_url(), url("player.glb"))
+        .spawn();
 
     let chunks = flowerpot_common::init_map(chunk());
 
@@ -29,6 +34,7 @@ fn main() {
                 e,
                 Entity::new()
                     .with_default(is_fauna())
+                    .with(class(), player_class)
                     .with(speed(), 1.0)
                     .with(position(), vec2(0.0, 0.0))
                     .with(direction(), vec2(0.0, 0.0))

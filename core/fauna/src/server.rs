@@ -202,7 +202,8 @@ impl ChunkOccupants {
 
     fn spawn_to_observer(e: EntityId, player_entity: EntityId) {
         let Some(player_uid) = entity::get_component(player_entity, user_id()) else { return };
-        SpawnFauna::new(e).send_client_targeted_reliable(player_uid.clone());
+        let class = entity::get_component(e, class()).unwrap_or_default();
+        SpawnFauna::new(e, class).send_client_targeted_reliable(player_uid.clone());
         OnSpawnFauna::new(e, player_entity, player_uid.clone()).send_local_broadcast(true);
     }
 }

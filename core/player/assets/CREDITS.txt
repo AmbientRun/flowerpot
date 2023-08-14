@@ -1,0 +1,2 @@
+player.glb is licensed under CC0.
+Source: https://comp3interactive.itch.io/low-poly-human-mesh

@@ -7,6 +7,7 @@ use ambient_api::{
     core::{
         app::components::main_scene,
         ecs::components::children,
+        prefab::components::prefab_from_url,
         primitives::{components::sphere_radius, concepts::make_sphere},
         rendering::components::color,
         text::types::FontStyle,
@@ -88,26 +89,40 @@ fn main() {
         }
     });
 
-    // temp fauna rendering code
-
-    spawn_query((is_fauna(), position(), altitude())).bind(move |entities| {
-        for (e, (_, position, height)) in entities {
-            entity::add_components(
-                e,
-                make_transformable()
-                    .with(translation(), position.extend(height))
-                    .with_merge(make_sphere())
-                    .with(sphere_radius(), 0.2)
-                    .with(color(), vec4(1.0, 1.0, 0.0, 1.0)),
-            );
-        }
-    });
-
-    change_query((is_fauna(), position(), altitude()))
-        .track_change(position())
+    spawn_query((remote_entity(), position(), altitude(), model_prefab_url()))
+        .requires(is_fauna())
         .bind(move |entities| {
-            for (e, (_, position, height)) in entities {
+            for (e, (remote, position, height, prefab_url)) in entities {
+                if remote == player::get_local() {
+                    // don't spawn a prefab for the local player
+                    continue;
+                }
+
+                entity::add_components(
+                    e,
+                    make_transformable()
+                        .with(translation(), position.extend(height))
+                        .with(prefab_from_url(), prefab_url),
+                );
+            }
+        });
+
+    change_query((position(), altitude()))
+        .track_change(position())
+        .requires(is_fauna())
+        .bind(move |entities| {
+            for (e, (position, height)) in entities {
                 entity::add_component(e, translation(), position.extend(height));
+            }
+        });
+
+    change_query(yaw())
+        .track_change(position())
+        .requires((is_fauna(), rotation()))
+        .bind(move |entities| {
+            for (e, yaw) in entities {
+                let new_rotation = Quat::from_rotation_z(yaw);
+                entity::set_component(e, rotation(), new_rotation);
             }
         });
 
@@ -167,7 +182,13 @@ impl FaunaStore {
                         return;
                     }
 
-                    let e = Entity::new()
+                    let base = if data.class.is_null() {
+                        Entity::new()
+                    } else {
+                        entity::get_all_components(data.class)
+                    };
+
+                    let e = base
                         .with_default(is_fauna())
                         .with(remote_entity(), data.eid)
                         .spawn();
