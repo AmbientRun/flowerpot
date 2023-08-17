@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use ambient_api::{core::player::components::user_id, prelude::*};
 
-use embers::{
+use packages::{
     crops::{components::*, messages::*},
     map::{components::*, messages::OnPlayerLoadChunk},
 };
@@ -148,7 +148,7 @@ fn main() {
                     }
 
                     Entity::new()
-                        .with_default(is_medium_crop())
+                        .with(is_medium_crop(), ())
                         .with(class(), seed)
                         .with(on_tile(), neighbor)
                         .spawn();
@@ -176,7 +176,7 @@ fn main() {
 
             if !next.is_null() {
                 Entity::new()
-                    .with_default(is_medium_crop())
+                    .with(is_medium_crop(), ())
                     .with(class(), next)
                     .with(on_tile(), tile)
                     .spawn();

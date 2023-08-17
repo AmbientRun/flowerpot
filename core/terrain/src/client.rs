@@ -9,7 +9,7 @@ use ambient_api::{
 };
 use flowerpot_common::CHUNK_SIZE;
 
-use embers::{
+use packages::{
     map::components::chunk,
     terrain::{assets, components::heightmap},
 };

@@ -10,7 +10,7 @@ use ambient_api::{
 
 mod shared;
 
-use embers::{
+use packages::{
     fauna::components::{is_fauna, name},
     ui::messages::*,
 };

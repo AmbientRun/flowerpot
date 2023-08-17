@@ -1,4 +1,4 @@
-[ember]
+[package]
 id = "actions"
 name = "actions"
 version = "0.0.1"

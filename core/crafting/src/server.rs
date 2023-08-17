@@ -5,7 +5,7 @@ use std::{
 
 use ambient_api::prelude::*;
 
-use embers::{
+use packages::{
     actions::messages::*,
     crafting::components::*,
     items::components::held_ref,

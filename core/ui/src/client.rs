@@ -12,7 +12,7 @@ use ambient_api::{
 
 mod shared;
 
-use embers::{
+use packages::{
     actions::messages::PerformCraftingAction,
     fauna::components::{is_mod_loaded as is_fauna_loaded, pitch, yaw},
     map::components::{is_mod_loaded as is_map_loaded, position},
@@ -110,7 +110,7 @@ fn Controls(hooks: &mut Hooks) -> Element {
 }
 
 fn update_controls(delta: InputDelta, input: Input) {
-    use embers::player::components::*;
+    use packages::player::components::*;
 
     let local_player_entity = entity::get_component(entity::resources(), local_player_ref())
         .expect("local_player_ref resource was deleted");

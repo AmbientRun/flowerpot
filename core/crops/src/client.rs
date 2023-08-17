@@ -9,12 +9,12 @@ use ambient_api::{
     prelude::*,
 };
 
-use embers::{
+use flowerpot_common::CHUNK_SIZE;
+use packages::{
     crops::{components::*, messages::*},
     map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk, position},
     terrain::components::altitude,
 };
-use flowerpot_common::CHUNK_SIZE;
 
 mod shared;
 
@@ -69,7 +69,7 @@ fn main() {
                         + 0.5;
 
                     let new_occupant = entity::get_all_components(class)
-                        .with_default(is_medium_crop())
+                        .with(is_medium_crop(), ())
                         .with(position(), occupant_position)
                         .with(in_chunk(), chunk)
                         .with(chunk_tile_index(), tile_idx)
@@ -106,7 +106,7 @@ fn main() {
             for (e, (position, altitude, _, prefab_url)) in entities {
                 let model = Entity::new()
                     .with(prefab_from_url(), prefab_url)
-                    .with_default(local_to_parent())
+                    .with(local_to_parent(), Mat4::IDENTITY)
                     .spawn();
 
                 // inherit old crop reference to model
@@ -121,7 +121,7 @@ fn main() {
                 let transform = make_transformable()
                     .with(translation(), position.extend(altitude))
                     .with(rotation(), Quat::from_rotation_z(angle))
-                    .with_default(local_to_world())
+                    .with(local_to_world(), Mat4::IDENTITY)
                     .spawn();
 
                 entity::add_child(transform, model);

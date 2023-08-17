@@ -1,6 +1,6 @@
 use ambient_api::prelude::*;
 
-use embers::actions::messages::PerformCraftingAction;
+use packages::actions::messages::PerformCraftingAction;
 
 mod shared;
 

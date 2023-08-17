@@ -2,7 +2,7 @@ use std::sync::atomic::AtomicBool;
 
 use ambient_api::{once_cell::sync::OnceCell, prelude::*};
 
-use embers::{
+use packages::{
     crops::components::{class, is_medium_crop, medium_crop_occupant, on_tile},
     game::assets::url,
     items::components::held_ref,
@@ -66,7 +66,7 @@ macro_rules! def_prototype {
 pub mod crops {
     use super::*;
 
-    use crate::embers::crops::components::{
+    use crate::packages::crops::components::{
         model_prefab_url as prefab, next_growth_age as next_age, next_growth_stage as next_stage, *,
     };
 
@@ -618,7 +618,7 @@ fn main() {
                     let tile = tiles[tile_idx];
 
                     let crop = Entity::new()
-                        .with_default(is_medium_crop())
+                        .with(is_medium_crop(), ())
                         .with(class(), *crop)
                         .with(on_tile(), tile)
                         .spawn();
@@ -636,7 +636,7 @@ fn main() {
         }
     });
 
-    use embers::crafting::components::*;
+    use packages::crafting::components::*;
     def_entity!(
         is_recipe: (),
         primary_ingredient: items::debug::YELLOW.get(),

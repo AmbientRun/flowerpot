@@ -7,7 +7,7 @@ use ambient_api::{core::player::components::user_id, ecs::SupportedValue, prelud
 
 mod shared;
 
-use embers::{
+use packages::{
     fauna::{components::*, messages::*},
     map::{
         components::{in_chunk, players_observing, position},

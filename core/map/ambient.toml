@@ -1,4 +1,4 @@
-[ember]
+[package]
 id = "map"
 name = "map"
 version = "0.0.1"

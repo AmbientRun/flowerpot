@@ -2,7 +2,7 @@ use ambient_api::{glam::DVec2, prelude::*};
 use flowerpot_common::CHUNK_SIZE;
 use noise::{Fbm, NoiseFn};
 
-use crate::embers::{
+use crate::packages::{
     map::components::{chunk, in_chunk, position},
     terrain::components::*,
 };

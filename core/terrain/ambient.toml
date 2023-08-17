@@ -1,4 +1,4 @@
-[ember]
+[package]
 id = "terrain"
 name = "terrain"
 version = "0.0.1"

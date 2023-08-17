@@ -1,7 +1,7 @@
 use ambient_api::prelude::*;
 use flowerpot_common::CHUNK_SIZE;
 
-use embers::map::{components::*, messages::*};
+use packages::map::{components::*, messages::*};
 
 mod shared;
 

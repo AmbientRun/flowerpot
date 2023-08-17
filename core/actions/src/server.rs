@@ -5,7 +5,7 @@ use std::{
 
 use ambient_api::prelude::*;
 
-use embers::{
+use packages::{
     actions::messages::*,
     items::components::held_ref,
     player::components::{left_hand_ref, right_hand_ref},

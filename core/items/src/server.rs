@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use ambient_api::{core::player::components::user_id, prelude::*};
 
-use embers::{
+use packages::{
     items::{components::*, messages::*},
     player::components::{left_hand_ref, owner_ref, right_hand_ref},
 };

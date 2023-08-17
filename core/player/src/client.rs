@@ -14,7 +14,7 @@ use ambient_api::{
     prelude::*,
 };
 
-use embers::{
+use packages::{
     fauna::components::{pitch, yaw},
     map::components::position,
     player::{components::*, messages::*},
@@ -40,10 +40,10 @@ fn main() {
             let head = Entity::new()
                 .with_merge(make_perspective_infinite_reverse_camera())
                 .with(aspect_ratio_from_window(), EntityId::resources())
-                .with_default(main_scene())
+                .with(main_scene(), ())
                 .with(user_id(), user.clone())
                 .with(translation(), Vec3::Z * HEAD_HEIGHT)
-                .with_default(local_to_parent())
+                .with(local_to_parent(), Mat4::IDENTITY)
                 .with(rotation(), Quat::from_rotation_x(FRAC_PI_2))
                 .spawn();
 
@@ -51,9 +51,9 @@ fn main() {
 
             let init_hand = |hand_ref, offset| {
                 let hand = Entity::new()
-                    .with_default(main_scene())
-                    .with_default(local_to_parent())
-                    .with_default(local_to_world())
+                    .with(main_scene(), ())
+                    .with(local_to_parent(), Mat4::IDENTITY)
+                    .with(local_to_world(), Mat4::IDENTITY)
                     .with(translation(), offset)
                     .with(rotation(), Quat::from_rotation_x(-FRAC_PI_2))
                     .with(scale(), Vec3::splat(0.3))
@@ -71,7 +71,7 @@ fn main() {
                 player_entity,
                 Entity::new()
                     .with_merge(make_transformable())
-                    .with_default(local_to_world())
+                    .with(local_to_world(), Mat4::IDENTITY)
                     .with(position(), Vec2::ZERO)
                     .with(speed(), 10.0) // TODO terrain-based speed
                     .with(head_ref(), head),

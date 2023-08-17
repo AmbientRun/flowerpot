@@ -3,7 +3,7 @@ use ambient_api::{
     prelude::*,
 };
 
-use embers::{
+use packages::{
     fauna::components::{class, is_class, is_fauna, model_prefab_url, pitch, yaw},
     map::{
         components::{chunk, in_chunk, position},
@@ -19,7 +19,7 @@ fn main() {
     shared::init_shared_player();
 
     let player_class = Entity::new()
-        .with_default(is_class())
+        .with(is_class(), ())
         .with(model_prefab_url(), url("player.glb"))
         .spawn();
 
@@ -33,7 +33,7 @@ fn main() {
             entity::add_components(
                 e,
                 Entity::new()
-                    .with_default(is_fauna())
+                    .with(is_fauna(), ())
                     .with(class(), player_class)
                     .with(speed(), 1.0)
                     .with(position(), vec2(0.0, 0.0))
@@ -119,7 +119,7 @@ fn main() {
         .requires(is_player())
         .each_frame(move |entities| {
             for (e, pos) in entities {
-                entity::add_component(e, embers::map::components::position(), pos);
+                entity::add_component(e, packages::map::components::position(), pos);
             }
         });
 }

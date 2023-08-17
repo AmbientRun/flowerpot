@@ -18,7 +18,7 @@ use ambient_api::{
 
 mod shared;
 
-use embers::{
+use packages::{
     fauna::{components::*, messages::*},
     map::components::position,
     terrain::components::altitude,
@@ -72,16 +72,16 @@ fn main() {
                 )
                 .with(font_style(), FontStyle::Regular)
                 .with(color(), vec4(1.0, 1.0, 1.0, 1.0))
-                .with_default(main_scene())
-                .with_default(local_to_world())
-                .with_default(mesh_to_local())
-                .with_default(mesh_to_world())
+                .with(main_scene(), ())
+                .with(local_to_world(), Mat4::IDENTITY)
+                .with(mesh_to_local(), Mat4::IDENTITY)
+                .with(mesh_to_world(), Mat4::IDENTITY)
                 .spawn();
 
             let container = make_transformable()
-                .with_default(main_scene())
-                .with_default(local_to_world())
-                .with_default(spherical_billboard())
+                .with(main_scene(), ())
+                .with(local_to_world(), Mat4::IDENTITY)
+                .with(spherical_billboard(), ())
                 .spawn();
 
             entity::add_child(container, display_name);
@@ -189,7 +189,7 @@ impl FaunaStore {
                     };
 
                     let e = base
-                        .with_default(is_fauna())
+                        .with(is_fauna(), ())
                         .with(remote_entity(), data.eid)
                         .spawn();
 

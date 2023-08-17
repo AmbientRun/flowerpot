@@ -6,7 +6,7 @@ use ambient_api::{
     prelude::*,
 };
 
-use embers::{
+use packages::{
     items::{components::*, messages::*},
     player::components::{left_hand_ref, local_player_ref, right_hand_ref},
 };
@@ -41,7 +41,7 @@ fn update_held_item(hand: EntityId, class: EntityId) {
         return;
     }
 
-    let mut item_instance = Entity::new().with_default(local_to_parent());
+    let mut item_instance = Entity::new().with(local_to_parent(), Mat4::IDENTITY);
 
     if let Some(new_color) = entity::get_component(class, color()) {
         item_instance.set(color(), new_color);
