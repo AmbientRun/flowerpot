@@ -1,4 +1,4 @@
-[ember]
+[package]
 id = "template"
 name = "template"
 version = "0.0.1"
