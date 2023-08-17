@@ -1,0 +1,43 @@
+[package]
+id = "nameplate"
+name = "nameplate"
+version = "0.0.1"
+
+[components.container]
+type = "EntityId"
+name = "Container"
+attributes = ["Debuggable"]
+description = "This entity's nameplate container entity."
+
+[components.name]
+type = "String"
+name = "Name"
+attributes = ["Debuggable", "Networked"]
+description = "The contents of this entity's nameplate."
+
+[components.show]
+type = "Bool"
+name = "Show"
+attributes = ["Debuggable", "Networked"]
+description = """
+Whether to enable the rendering of this entity's nameplate.
+Must be given to an entity and set to true for that entity's nameplate to render.
+"""
+
+[components.offset]
+type = "Vec3"
+name = "Height"
+attributes = ["Debuggable", "Networked"]
+description = """
+The offset of the nameplate from this entity in absolute world coordinates.
+Must be given to an entity for that entity's nameplate to render.
+"""
+
+[concepts.nameplate]
+name = "Nameplate"
+description = "Entity with a nameplate above it. Override the name component to set the contents."
+
+[concepts.nameplate.components]
+# name = "Name Goes Here"
+show = true
+offset = [0.0, 0.0, 2.5]

@@ -1,5 +1,5 @@
 [workspace]
-members = [ "core/*" ]
+members = [ "core/*", "utils/*" ]
 
 [workspace.dependencies]
 ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "424387a" }

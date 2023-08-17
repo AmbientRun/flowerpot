@@ -856,6 +856,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "nameplate"
+version = "0.0.1"
+dependencies = [
+ "ambient_api",
+]
+
+[[package]]
 name = "noise"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
