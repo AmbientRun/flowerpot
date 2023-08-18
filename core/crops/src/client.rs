@@ -101,9 +101,28 @@ fn main() {
         }
     });
 
-    spawn_query((position(), altitude(), is_medium_crop(), model_prefab_url())).bind(
-        move |entities| {
-            for (e, (position, altitude, _, prefab_url)) in entities {
+    spawn_query((position(), altitude()))
+        .requires(is_medium_crop())
+        .bind(move |entities| {
+            for (e, (position, altitude)) in entities {
+                // pseudo-randomly generate the angle so that when a crop on
+                // this tile grows it doesn't also rotate
+                let angle = position.dot(vec2(12.9898, 78.233)) * 43758.5453;
+
+                entity::add_components(
+                    e,
+                    make_transformable()
+                        .with(translation(), position.extend(altitude))
+                        .with(rotation(), Quat::from_rotation_z(angle))
+                        .with(local_to_world(), Mat4::IDENTITY),
+                );
+            }
+        });
+
+    spawn_query(model_prefab_url())
+        .requires(is_medium_crop())
+        .bind(move |entities| {
+            for (e, prefab_url) in entities {
                 let model = Entity::new()
                     .with(prefab_from_url(), prefab_url)
                     .with(local_to_parent(), Mat4::IDENTITY)
@@ -114,21 +133,9 @@ fn main() {
                     entity::add_component(model, despawn_when_loaded(), despawn);
                 }
 
-                // pseudo-randomly generate the angle so that when a crop on
-                // this tile grows it doesn't also rotate
-                let angle = position.dot(vec2(12.9898, 78.233)) * 43758.5453;
-
-                let transform = make_transformable()
-                    .with(translation(), position.extend(altitude))
-                    .with(rotation(), Quat::from_rotation_z(angle))
-                    .with(local_to_world(), Mat4::IDENTITY)
-                    .spawn();
-
-                entity::add_child(transform, model);
-                entity::add_child(e, transform);
+                entity::add_child(e, model);
             }
-        },
-    );
+        });
 
     despawn_query(medium_crop_occupant()).bind(move |entities| {
         for (_, occupant) in entities {
