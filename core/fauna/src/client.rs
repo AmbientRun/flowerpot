@@ -5,12 +5,7 @@ use std::{
 
 use ambient_api::{
     core::{
-        app::components::main_scene,
-        ecs::components::children,
         prefab::components::prefab_from_url,
-        primitives::{components::sphere_radius, concepts::make_sphere},
-        rendering::components::color,
-        text::types::FontStyle,
         transform::{components::*, concepts::make_transformable},
     },
     prelude::*,
@@ -21,6 +16,7 @@ mod shared;
 use packages::{
     fauna::{components::*, messages::*},
     map::components::position,
+    nameplate::concepts::make_nameplate,
     terrain::components::altitude,
 };
 
@@ -45,48 +41,13 @@ fn main() {
     });
 
     store.subscribe_update::<UpdateFaunaName>(move |e, data| {
-        entity::add_component(e, name(), data.name.clone());
-
-        use ambient_api::core::text::components::*;
-        let name = data.name;
-        const APPROXIMATE_CHAR_WIDTH: f32 = 36.0;
-        let width = name.chars().count() as f32 * APPROXIMATE_CHAR_WIDTH;
-        let transform = Mat4::from_scale(Vec3::ONE * 0.005)
-            * Mat4::from_rotation_x(180_f32.to_radians())
-            * Mat4::from_translation(Vec3::new(-width / 2.0, 0.0, 0.0));
-
-        if let Some(container) = entity::get_component(e, name_container()) {
-            for child in entity::get_component(container, children()).unwrap_or_default() {
-                entity::add_component(child, text(), name.clone());
-                entity::add_component(child, local_to_parent(), transform);
-            }
-        } else {
-            let display_name = Entity::new()
-                .with(local_to_parent(), transform)
-                .with(text(), name)
-                .with(font_size(), 72.0)
-                .with(
-                    font_family(),
-                    "https://github.com/madmalik/mononoki/raw/main/export/mononoki-Regular.ttf"
-                        .to_string(),
-                )
-                .with(font_style(), FontStyle::Regular)
-                .with(color(), vec4(1.0, 1.0, 1.0, 1.0))
-                .with(main_scene(), ())
-                .with(local_to_world(), Mat4::IDENTITY)
-                .with(mesh_to_local(), Mat4::IDENTITY)
-                .with(mesh_to_world(), Mat4::IDENTITY)
-                .spawn();
-
-            let container = make_transformable()
-                .with(main_scene(), ())
-                .with(local_to_world(), Mat4::IDENTITY)
-                .with(spherical_billboard(), ())
-                .spawn();
-
-            entity::add_child(container, display_name);
-            entity::add_component(e, name_container(), container);
-        }
+        entity::add_components(
+            e,
+            Entity::new()
+                .with_merge(make_nameplate())
+                .with(name(), data.name.clone())
+                .with(packages::nameplate::components::name(), data.name),
+        );
     });
 
     spawn_query((remote_entity(), position(), altitude(), model_prefab_url()))
@@ -125,18 +86,6 @@ fn main() {
                 entity::set_component(e, rotation(), new_rotation);
             }
         });
-
-    query((is_fauna(), position(), altitude(), name_container())).each_frame(move |entities| {
-        for (_e, (_, position, height, container)) in entities {
-            entity::add_component(container, translation(), position.extend(height + 2.5));
-        }
-    });
-
-    despawn_query((is_fauna(), name_container())).bind(move |entities| {
-        for (_e, (_, container)) in entities {
-            entity::despawn_recursive(container);
-        }
-    });
 
     eprintln!("fauna mod loaded");
     entity::add_component(entity::resources(), is_mod_loaded(), ());

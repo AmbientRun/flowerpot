@@ -5,6 +5,7 @@ version = "0.0.1"
 
 [dependencies]
 map = { path = "../map" }
+nameplate = { path = "../../utils/nameplate" }
 terrain = { path = "../terrain" }
 
 [components.is_class]
@@ -62,14 +63,6 @@ type = "String"
 name = "Name"
 attributes = ["Debuggable"]
 description = "This fauna's name. Updated with the UpdateFaunaName message."
-
-[components.name_container]
-type = "EntityId"
-name = "NameContainer"
-attributes = ["Debuggable"]
-description = """
-A client-side instance of this fauna's name container entity.
-"""
 
 [components.is_mod_loaded]
 type = "Empty"
