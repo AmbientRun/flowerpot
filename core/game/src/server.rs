@@ -2,14 +2,15 @@ use std::sync::atomic::AtomicBool;
 
 use ambient_api::{once_cell::sync::OnceCell, prelude::*};
 
+use flowerpot_common::CHUNK_SIZE;
 use packages::{
     crops::components::{class, is_medium_crop, medium_crop_occupant, on_tile},
     game::assets::url,
     items::components::held_ref,
     map::components::{chunk, chunk_tile_refs},
+    nameplate::components::name,
     player::components::{left_hand_ref, right_hand_ref},
 };
-use flowerpot_common::CHUNK_SIZE;
 
 mod shared;
 
@@ -183,37 +184,44 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Beans/Beans_0.fbx")
+            prefab: url("crops/medium/Beans/Beans_0.fbx"),
+            name: "Beans_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Beans/Beans_1.fbx")
+            prefab: url("crops/medium/Beans/Beans_1.fbx"),
+            name: "Beans_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Beans/Beans_2.fbx")
+            prefab: url("crops/medium/Beans/Beans_2.fbx"),
+            name: "Beans_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Beans/Beans_3.fbx")
+            prefab: url("crops/medium/Beans/Beans_3.fbx"),
+            name: "Beans_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Beans/Beans_4.fbx")
+            prefab: url("crops/medium/Beans/Beans_4.fbx"),
+            name: "Beans_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Beans/Beans_5.fbx")
+            prefab: url("crops/medium/Beans/Beans_5.fbx"),
+            name: "Beans_5"
         );
 
         def_prototype!(
             STAGE_6,
-            prefab: url("crops/medium/Beans/Beans_6.fbx")
+            prefab: url("crops/medium/Beans/Beans_6.fbx"),
+            name: "Beans_6"
         );
     }
 
@@ -222,32 +230,38 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Carrots/Carrot_0.fbx")
+            prefab: url("crops/medium/Carrots/Carrot_0.fbx"),
+            name: "Carrot_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Carrots/Carrot_1.fbx")
+            prefab: url("crops/medium/Carrots/Carrot_1.fbx"),
+            name: "Carrot_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Carrots/Carrot_2.fbx")
+            prefab: url("crops/medium/Carrots/Carrot_2.fbx"),
+            name: "Carrot_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Carrots/Carrot_3.fbx")
+            prefab: url("crops/medium/Carrots/Carrot_3.fbx"),
+            name: "Carrot_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Carrots/Carrot_4.fbx")
+            prefab: url("crops/medium/Carrots/Carrot_4.fbx"),
+            name: "Carrot_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Carrots/Carrot_5.fbx")
+            prefab: url("crops/medium/Carrots/Carrot_5.fbx"),
+            name: "Carrot_5"
         );
     }
 
@@ -256,47 +270,56 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Corn/Corn_0.fbx")
+            prefab: url("crops/medium/Corn/Corn_0.fbx"),
+            name: "Corn_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Corn/Corn_1.fbx")
+            prefab: url("crops/medium/Corn/Corn_1.fbx"),
+            name: "Corn_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Corn/Corn_2.fbx")
+            prefab: url("crops/medium/Corn/Corn_2.fbx"),
+            name: "Corn_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Corn/Corn_3.fbx")
+            prefab: url("crops/medium/Corn/Corn_3.fbx"),
+            name: "Corn_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Corn/Corn_4.fbx")
+            prefab: url("crops/medium/Corn/Corn_4.fbx"),
+            name: "Corn_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Corn/Corn_5.fbx")
+            prefab: url("crops/medium/Corn/Corn_5.fbx"),
+            name: "Corn_5"
         );
 
         def_prototype!(
             STAGE_6,
-            prefab: url("crops/medium/Corn/Corn_6.fbx")
+            prefab: url("crops/medium/Corn/Corn_6.fbx"),
+            name: "Corn_6"
         );
 
         def_prototype!(
             STAGE_7,
-            prefab: url("crops/medium/Corn/Corn_7.fbx")
+            prefab: url("crops/medium/Corn/Corn_7.fbx"),
+            name: "Corn_7"
         );
 
         def_prototype!(
             STAGE_8,
-            prefab: url("crops/medium/Corn/Corn_8.fbx")
+            prefab: url("crops/medium/Corn/Corn_8.fbx"),
+            name: "Corn_8"
         );
     }
 
@@ -305,42 +328,50 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Garlic/Garlic_0.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_0.fbx"),
+            name: "Garlic_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Garlic/Garlic_1.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_1.fbx"),
+            name: "Garlic_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Garlic/Garlic_2.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_2.fbx"),
+            name: "Garlic_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Garlic/Garlic_3.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_3.fbx"),
+            name: "Garlic_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Garlic/Garlic_4.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_4.fbx"),
+            name: "Garlic_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Garlic/Garlic_5.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_5.fbx"),
+            name: "Garlic_5"
         );
 
         def_prototype!(
             STAGE_6,
-            prefab: url("crops/medium/Garlic/Garlic_6.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_6.fbx"),
+            name: "Garlic_6"
         );
 
         def_prototype!(
             STAGE_7,
-            prefab: url("crops/medium/Garlic/Garlic_7.fbx")
+            prefab: url("crops/medium/Garlic/Garlic_7.fbx"),
+            name: "Garlic_7"
         );
     }
 
@@ -349,47 +380,56 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Peppers/Peppers_0.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_0.fbx"),
+            name: "Peppers_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Peppers/Peppers_1.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_1.fbx"),
+            name: "Peppers_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Peppers/Peppers_2.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_2.fbx"),
+            name: "Peppers_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Peppers/Peppers_3.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_3.fbx"),
+            name: "Peppers_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Peppers/Peppers_4.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_4.fbx"),
+            name: "Peppers_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Peppers/Peppers_5.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_5.fbx"),
+            name: "Peppers_5"
         );
 
         def_prototype!(
             STAGE_6,
-            prefab: url("crops/medium/Peppers/Peppers_6.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_6.fbx"),
+            name: "Peppers_6"
         );
 
         def_prototype!(
             STAGE_7,
-            prefab: url("crops/medium/Peppers/Peppers_7.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_7.fbx"),
+            name: "Peppers_7"
         );
 
         def_prototype!(
             STAGE_8,
-            prefab: url("crops/medium/Peppers/Peppers_8.fbx")
+            prefab: url("crops/medium/Peppers/Peppers_8.fbx"),
+            name: "Peppers_8"
         );
     }
 
@@ -398,32 +438,38 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Potatos/Potatos_0.fbx")
+            prefab: url("crops/medium/Potatos/Potatos_0.fbx"),
+            name: "Potatos_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Potatos/Potatos_1.fbx")
+            prefab: url("crops/medium/Potatos/Potatos_1.fbx"),
+            name: "Potatos_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Potatos/Potatos_2.fbx")
+            prefab: url("crops/medium/Potatos/Potatos_2.fbx"),
+            name: "Potatos_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Potatos/Potatos_3.fbx")
+            prefab: url("crops/medium/Potatos/Potatos_3.fbx"),
+            name: "Potatos_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Potatos/Potatos_4.fbx")
+            prefab: url("crops/medium/Potatos/Potatos_4.fbx"),
+            name: "Potatos_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Potatos/Potatos_5.fbx")
+            prefab: url("crops/medium/Potatos/Potatos_5.fbx"),
+            name: "Potatos_5"
         );
     }
 
@@ -432,32 +478,38 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Sugarcane/Sugarcane_0.fbx")
+            prefab: url("crops/medium/Sugarcane/Sugarcane_0.fbx"),
+            name: "Sugarcane_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Sugarcane/Sugarcane_1.fbx")
+            prefab: url("crops/medium/Sugarcane/Sugarcane_1.fbx"),
+            name: "Sugarcane_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Sugarcane/Sugarcane_2.fbx")
+            prefab: url("crops/medium/Sugarcane/Sugarcane_2.fbx"),
+            name: "Sugarcane_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Sugarcane/Sugarcane_3.fbx")
+            prefab: url("crops/medium/Sugarcane/Sugarcane_3.fbx"),
+            name: "Sugarcane_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Sugarcane/Sugarcane_4.fbx")
+            prefab: url("crops/medium/Sugarcane/Sugarcane_4.fbx"),
+            name: "Sugarcane_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Sugarcane/Sugarcane_5.fbx")
+            prefab: url("crops/medium/Sugarcane/Sugarcane_5.fbx"),
+            name: "Sugarcane_5"
         );
     }
 
@@ -466,47 +518,56 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Tomatos/Tomatos_0.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_0.fbx"),
+            name: "Tomatos_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Tomatos/Tomatos_1.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_1.fbx"),
+            name: "Tomatos_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Tomatos/Tomatos_2.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_2.fbx"),
+            name: "Tomatos_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Tomatos/Tomatos_3.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_3.fbx"),
+            name: "Tomatos_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Tomatos/Tomatos_4.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_4.fbx"),
+            name: "Tomatos_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Tomatos/Tomatos_5.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_5.fbx"),
+            name: "Tomatos_5"
         );
 
         def_prototype!(
             STAGE_6,
-            prefab: url("crops/medium/Tomatos/Tomatos_6.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_6.fbx"),
+            name: "Tomatos_6"
         );
 
         def_prototype!(
             STAGE_7,
-            prefab: url("crops/medium/Tomatos/Tomatos_7.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_7.fbx"),
+            name: "Tomatos_7"
         );
 
         def_prototype!(
             STAGE_8,
-            prefab: url("crops/medium/Tomatos/Tomatos_8.fbx")
+            prefab: url("crops/medium/Tomatos/Tomatos_8.fbx"),
+            name: "Tomatos_8"
         );
     }
 
@@ -515,42 +576,50 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Wheat/Wheat_0.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_0.fbx"),
+            name: "Wheat_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Wheat/Wheat_1.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_1.fbx"),
+            name: "Wheat_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Wheat/Wheat_2.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_2.fbx"),
+            name: "Wheat_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Wheat/Wheat_3.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_3.fbx"),
+            name: "Wheat_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Wheat/Wheat_4.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_4.fbx"),
+            name: "Wheat_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Wheat/Wheat_5.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_5.fbx"),
+            name: "Wheat_5"
         );
 
         def_prototype!(
             STAGE_6,
-            prefab: url("crops/medium/Wheat/Wheat_6.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_6.fbx"),
+            name: "Wheat_6"
         );
 
         def_prototype!(
             STAGE_7,
-            prefab: url("crops/medium/Wheat/Wheat_7.fbx")
+            prefab: url("crops/medium/Wheat/Wheat_7.fbx"),
+            name: "Wheat_7"
         );
     }
 }

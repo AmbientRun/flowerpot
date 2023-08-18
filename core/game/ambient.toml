@@ -8,4 +8,5 @@ crafting = { path = "../crafting" }
 crops = { path = "../crops" }
 items = { path = "../items" }
 map = { path = "../map" }
+nameplate = { path = "../../utils/nameplate" }
 player = { path = "../player" }
