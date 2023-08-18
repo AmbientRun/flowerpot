@@ -438,38 +438,38 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
-            prefab: url("crops/medium/Potatos/Potatos_0.fbx"),
-            name: "Potatos_0"
+            prefab: url("crops/medium/Potatos/Potato_0.fbx"),
+            name: "Potato_0"
         );
 
         def_prototype!(
             STAGE_1,
-            prefab: url("crops/medium/Potatos/Potatos_1.fbx"),
-            name: "Potatos_1"
+            prefab: url("crops/medium/Potatos/Potato_1.fbx"),
+            name: "Potato_1"
         );
 
         def_prototype!(
             STAGE_2,
-            prefab: url("crops/medium/Potatos/Potatos_2.fbx"),
-            name: "Potatos_2"
+            prefab: url("crops/medium/Potatos/Potato_2.fbx"),
+            name: "Potato_2"
         );
 
         def_prototype!(
             STAGE_3,
-            prefab: url("crops/medium/Potatos/Potatos_3.fbx"),
-            name: "Potatos_3"
+            prefab: url("crops/medium/Potatos/Potato_3.fbx"),
+            name: "Potato_3"
         );
 
         def_prototype!(
             STAGE_4,
-            prefab: url("crops/medium/Potatos/Potatos_4.fbx"),
-            name: "Potatos_4"
+            prefab: url("crops/medium/Potatos/Potato_4.fbx"),
+            name: "Potato_4"
         );
 
         def_prototype!(
             STAGE_5,
-            prefab: url("crops/medium/Potatos/Potatos_5.fbx"),
-            name: "Potatos_5"
+            prefab: url("crops/medium/Potatos/Potato_5.fbx"),
+            name: "Potato_5"
         );
     }
 
