@@ -7,6 +7,7 @@ version = "0.0.1"
 [dependencies]
 ambient_api.workspace = true
 flowerpot-common.workspace = true
+itertools = "0.11.0"
 noise.workspace = true
 rapier3d.workspace = true
 

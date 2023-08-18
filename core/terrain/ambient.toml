@@ -32,6 +32,41 @@ name = "Altitude"
 attributes = ["Debuggable"]
 description = "The height of this entity on the map above sea level. Computed using map::position."
 
+[components.mesh_positions]
+type = { type = "Vec", element_type = "Vec3" }
+name = "MeshPositions"
+attributes = ["Debuggable"]
+
+[components.mesh_normals]
+type = { type = "Vec", element_type = "Vec3" }
+name = "MeshNormals"
+attributes = ["Debuggable"]
+
+[components.mesh_tangents]
+type = { type = "Vec", element_type = "Vec3" }
+name = "MeshTangents"
+attributes = ["Debuggable"]
+
+[components.mesh_texcoords]
+type = { type = "Vec", element_type = "Vec2" }
+name = "MeshTexcoords"
+attributes = ["Debuggable"]
+
+[components.mesh_indices]
+type = { type = "Vec", element_type = "U32" }
+name = "MeshIndices"
+attributes = ["Debuggable"]
+
+[components.highlight_tile]
+type = "Empty"
+name = "HighlightTile"
+attributes = ["Debuggable"]
+description = """
+When added to a component with the in_chunk and chunk_tile_index components,
+the terrain package will add procedural components to this entity that will
+highlight that tile.
+"""
+
 [messages.RaycastRequest]
 description = """
 Send this message to the terrain package to perform a raycast.
