@@ -8,6 +8,7 @@ version = "0.0.1"
 ambient_api.workspace = true
 flowerpot-common.workspace = true
 noise.workspace = true
+rapier3d.workspace = true
 
 [[bin]]
 name = "flowerpot_terrain_client"

@@ -31,3 +31,27 @@ type = "F32"
 name = "Altitude"
 attributes = ["Debuggable"]
 description = "The height of this entity on the map above sea level. Computed using map::position."
+
+[messages.RaycastRequest]
+description = """
+Send this message to the terrain package to perform a raycast.
+The package will respond with RaycastResponse.
+"""
+
+[messages.RaycastRequest.fields]
+origin = "Vec3"
+delta = "Vec3"
+limit = "F32"
+
+[messages.RaycastResponse]
+description = """
+Response to RaycastRequest.
+If the ray didn't hit anything, the distance field is set to a negative number.
+"""
+
+[messages.RaycastResponse.fields]
+collision_pos = "Vec3"
+chunk_entity = "EntityId"
+chunk_pos = "Ivec2"
+tile_idx = "U8"
+distance = "F32"
