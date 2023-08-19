@@ -6,6 +6,8 @@ use ambient_api::{
         camera::components::aspect_ratio_from_window,
         camera::concepts::make_perspective_infinite_reverse_camera,
         player::components::{is_player, local_user_id, user_id},
+        primitives::{components::sphere_radius, concepts::make_sphere},
+        rendering::components::color,
         transform::{
             components::{local_to_parent, local_to_world, rotation, scale, translation},
             concepts::make_transformable,
@@ -16,9 +18,12 @@ use ambient_api::{
 
 use packages::{
     fauna::components::{pitch, yaw},
-    map::components::position,
+    map::components::{chunk_tile_index, in_chunk, position},
     player::{components::*, messages::*},
-    terrain::components::altitude,
+    terrain::{
+        components::{altitude, highlight_tile},
+        messages::{RaycastRequest, RaycastResponse},
+    },
 };
 
 use shared::init_shared_player;
@@ -122,4 +127,46 @@ fn main() {
                 UpdatePlayerDirection::new(direction).send_server_reliable();
             }
         });
+
+    query((yaw(), pitch(), position(), altitude()))
+        .requires(is_player())
+        .each_frame(move |players| {
+            for (_e, (yaw, pitch, position, altitude)) in players {
+                let origin = position.extend(altitude + 1.5); // TODO player height component
+                let delta = Quat::from_rotation_z(yaw) * Quat::from_rotation_x(pitch) * -Vec3::Y;
+                let limit = 10.0; // TODO player reach
+
+                RaycastRequest::new(origin, delta, limit).send_local_broadcast(false);
+            }
+        });
+
+    let mut last_tile: Option<(EntityId, EntityId, u8)> = None;
+    RaycastResponse::subscribe(move |_, data| {
+        if let Some((last_highlight, last_chunk, last_tile_idx)) = last_tile {
+            if last_chunk != data.chunk_entity || last_tile_idx != data.tile_idx {
+                entity::despawn_recursive(last_highlight);
+                last_tile = None;
+            } else {
+                // last tile is the currently-highlighted one, so skip
+                // highlighting a new one
+                return;
+            }
+        }
+
+        if data.distance < 0.0 {
+            return;
+        }
+
+        let highlight = Entity::new()
+            .with(in_chunk(), data.chunk_entity)
+            .with(chunk_tile_index(), data.tile_idx)
+            .with(highlight_tile(), ())
+            .with(
+                ambient_api::core::app::components::name(),
+                "Highlighted Tile".into(),
+            )
+            .spawn();
+
+        last_tile = Some((highlight, data.chunk_entity, data.tile_idx));
+    });
 }
