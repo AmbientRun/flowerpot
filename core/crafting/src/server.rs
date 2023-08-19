@@ -55,7 +55,7 @@ fn main() {
         }
     });
 
-    OnCraftingAction::subscribe({
+    OnAction::subscribe({
         let store = store.clone();
         move |_, data| {
             if let Some(crafting_yield) = store.lock().unwrap().get(&data.id) {
