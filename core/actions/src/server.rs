@@ -14,12 +14,17 @@ use packages::{
 mod shared;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-pub struct CraftingActionContext {
+pub enum ActionTarget {
+    Crafting,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub struct ActionContext {
     pub primary_held: EntityId,
     pub secondary_held: EntityId,
 }
 
-impl CraftingActionContext {
+impl ActionContext {
     pub fn new(left_held: EntityId, right_held: EntityId) -> (Self, bool) {
         if left_held < right_held {
             (
@@ -65,60 +70,82 @@ impl CraftingActionContext {
 }
 
 #[derive(Debug)]
-pub struct Action {
+pub struct ActionCallback {
     pub module: EntityId,
     pub id: String,
 }
 
-/// Wrapper type around a shared registry.
 pub type Registry<T> = Arc<Mutex<T>>;
+pub type ActionStore = HashMap<ActionContext, ActionCallback>;
+pub type TargetStore = Registry<HashMap<ActionTarget, ActionStore>>;
 
-pub type CraftingActionRegistry = Registry<HashMap<CraftingActionContext, Action>>;
-
+#[derive(Clone, Default)]
 pub struct ActionRegistry {
-    pub crafting: HashMap<CraftingActionContext, Action>,
+    pub targets: TargetStore,
+}
+
+impl ActionRegistry {
+    pub fn register_action(
+        &self,
+        target: ActionTarget,
+        context: ActionContext,
+        cb: ActionCallback,
+    ) {
+        let mut targets = self.targets.lock().unwrap();
+        let store = targets.entry(target).or_default();
+
+        if store.contains_key(&context) {
+            eprintln!("action on {:?} already registered: {:?}", target, context);
+        }
+
+        eprintln!(
+            "registering {:?} action for {:?}: {:?}",
+            target, context, cb
+        );
+
+        store.insert(context, cb);
+    }
+
+    pub fn perform_action(&self, target: ActionTarget, player: EntityId) {
+        let targets = self.targets.lock().unwrap();
+        let Some(store) = targets.get(&target) else { return };
+
+        ActionContext::for_player_contexts(player, move |context, right_is_primary| {
+            if let Some(action) = store.get(&context) {
+                // TODO multiple kinds of callbacks
+                OnCraftingAction::new(action.id.clone(), player, right_is_primary)
+                    .send_local(action.module);
+                false
+            } else {
+                true
+            }
+        });
+    }
 }
 
 #[main]
 fn main() {
-    let crafting = CraftingActionRegistry::default();
+    let registry = ActionRegistry::default();
 
     RegisterCraftingAction::subscribe({
-        let crafting = crafting.clone();
+        let registry = registry.clone();
         move |source, data| {
-            let mut registry = crafting.lock().unwrap();
-
             let (context, _right_is_primary) =
-                CraftingActionContext::new(data.primary_held, data.secondary_held);
-
-            if registry.contains_key(&context) {
-                eprintln!("crafting action already registered: {:?}", context);
-                return;
-            }
+                ActionContext::new(data.primary_held, data.secondary_held);
 
             let Some(module) = source.local() else { return };
             let id = data.id;
-            let action = Action { module, id };
+            let cb = ActionCallback { module, id };
 
-            eprintln!("registering crafting action {:?}: {:?}", context, action);
-            registry.insert(context, action);
+            registry.register_action(ActionTarget::Crafting, context, cb);
         }
     });
 
     PerformCraftingAction::subscribe({
-        let crafting = crafting.clone();
+        let registry = registry.clone();
         move |source, _data| {
             let Some(player) = source.client_entity_id() else { return };
-            let registry = crafting.lock().unwrap();
-            CraftingActionContext::for_player_contexts(player, move |context, right_is_primary| {
-                if let Some(action) = registry.get(&context) {
-                    OnCraftingAction::new(action.id.clone(), player, right_is_primary)
-                        .send_local(action.module);
-                    false
-                } else {
-                    true
-                }
-            });
+            registry.perform_action(ActionTarget::Crafting, player);
         }
     });
 
