@@ -13,7 +13,7 @@ use ambient_api::{
 mod shared;
 
 use packages::{
-    actions::messages::PerformCraftingAction,
+    actions::messages::{PerformCraftingAction, PerformSwap},
     fauna::components::{is_mod_loaded as is_fauna_loaded, pitch, yaw},
     map::components::{is_mod_loaded as is_map_loaded, position},
     ui::{components::*, messages::*},
@@ -150,7 +150,11 @@ fn update_controls(delta: InputDelta, input: Input) {
     );
 
     if delta.keys.contains(&KeyCode::Q) {
-        PerformCraftingAction::new().send_local_broadcast(true);
+        PerformCraftingAction::new().send_local_broadcast(false);
+    }
+
+    if delta.keys.contains(&KeyCode::F) {
+        PerformSwap::new().send_local_broadcast(false);
     }
 }
 
