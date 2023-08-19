@@ -8,6 +8,7 @@ use ambient_api::prelude::*;
 use packages::{
     actions::messages::*,
     items::components::held_ref,
+    map::components::{chunk, chunk_tile_refs},
     player::components::{left_hand_ref, right_hand_ref},
 };
 
@@ -15,6 +16,7 @@ mod shared;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum ActionTarget {
+    MediumCrop(EntityId),
     Crafting,
 }
 
@@ -112,8 +114,7 @@ impl ActionRegistry {
 
         ActionContext::for_player_contexts(player, move |context, right_is_primary| {
             if let Some(action) = store.get(&context) {
-                // TODO multiple kinds of callbacks
-                OnCraftingAction::new(action.id.clone(), player, right_is_primary)
+                OnAction::new(action.id.clone(), player, right_is_primary)
                     .send_local(action.module);
                 false
             } else {
@@ -141,11 +142,60 @@ fn main() {
         }
     });
 
+    RegisterMediumCropAction::subscribe({
+        let registry = registry.clone();
+        move |source, data| {
+            let (context, _right_is_primary) =
+                ActionContext::new(data.primary_held, data.secondary_held);
+
+            let Some(module) = source.local() else { return };
+            let id = data.id;
+            let cb = ActionCallback { module, id };
+
+            registry.register_action(ActionTarget::MediumCrop(data.class), context, cb);
+        }
+    });
+
     PerformCraftingAction::subscribe({
         let registry = registry.clone();
         move |source, _data| {
             let Some(player) = source.client_entity_id() else { return };
             registry.perform_action(ActionTarget::Crafting, player);
+        }
+    });
+
+    let chunks = flowerpot_common::init_map(chunk());
+    PerformTileAction::subscribe({
+        let registry = registry.clone();
+        move |source, data| {
+            let Some(player) = source.client_entity_id() else { return };
+
+            if !data.on_occupant {
+                // TODO tile actions are unimplemented
+                return;
+            }
+
+            let chunks = chunks.read().unwrap();
+
+            let Some(chunk) = chunks.get(&data.chunk_pos) else {
+                eprintln!("tile action on chunk {} is OOB", data.chunk_pos);
+                return;
+            };
+
+            let Some(tiles) = entity::get_component(*chunk, chunk_tile_refs()) else {
+                return;
+            };
+
+            let Some(tile) = tiles.get(data.tile_idx as usize) else {
+                eprintln!("tile index {} is OOB", data.tile_idx);
+                return;
+            };
+
+            use crate::packages::crops::components::*;
+            let Some(occupant) = entity::get_component(*tile, medium_crop_occupant()) else { return };
+            let Some(class) = entity::get_component(occupant, class()) else { return };
+
+            registry.perform_action(ActionTarget::MediumCrop(class), player);
         }
     });
 

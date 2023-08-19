@@ -4,6 +4,7 @@ name = "actions"
 version = "0.0.1"
 
 [dependencies]
+crops = { path = "../crops" }
 items = { path = "../items" }
 player = { path = "../player" }
 
@@ -16,11 +17,21 @@ id = "String"
 primary_held  = "EntityId"
 secondary_held  = "EntityId"
 
-[messages.OnCraftingAction]
-name = "OnCraftingAction"
+[messages.RegisterMediumCropAction]
+name = "RegisterMediumCropAction"
+description = "Registers a medium crop action with the action store."
+
+[messages.RegisterMediumCropAction.fields]
+id = "String"
+class = "EntityId"
+primary_held = "EntityId"
+secondary_held = "EntityId"
+
+[messages.OnAction]
+name = "OnAction"
 description = "Sent to the registering module when the registered action is performed."
 
-[messages.OnCraftingAction.fields]
+[messages.OnAction.fields]
 id = "String"
 player = "EntityId"
 right_is_primary = "Bool"
@@ -29,6 +40,15 @@ right_is_primary = "Bool"
 name = "PerformCraftingAction"
 description = "Client-to-server message to perform a crafting action."
 fields = {}
+
+[messages.PerformTileAction]
+name = "PerformTileAction"
+description = "Client-to-server message to perform an action of a tile or an occupant of a tile."
+
+[messages.PerformTileAction.fields]
+chunk_pos = "Ivec2"
+tile_idx = "U8"
+on_occupant = "Bool"
 
 [messages.PerformSwap]
 name = "PerformSwap"

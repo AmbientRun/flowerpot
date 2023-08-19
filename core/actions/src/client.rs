@@ -10,6 +10,10 @@ fn main() {
         data.send_server_reliable();
     });
 
+    PerformTileAction::subscribe(move |_, data| {
+        data.send_server_reliable();
+    });
+
     PerformSwap::subscribe(move |_, data| {
         data.send_server_reliable();
     });
