@@ -121,4 +121,16 @@ fn main() {
             });
         }
     });
+
+    PerformSwap::subscribe(move |source, _data| {
+        let Some(player) = source.client_entity_id() else { return };
+        let Some(left) = entity::get_component(player, left_hand_ref()) else { return };
+        let Some(right) = entity::get_component(player, right_hand_ref()) else { return };
+
+        let left_held = entity::get_component(left, held_ref()).unwrap_or_default();
+        let right_held = entity::get_component(right, held_ref()).unwrap_or_default();
+
+        entity::add_component(left, held_ref(), right_held);
+        entity::add_component(right, held_ref(), left_held);
+    });
 }

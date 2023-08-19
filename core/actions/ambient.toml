@@ -29,3 +29,8 @@ right_is_primary = "Bool"
 name = "PerformCraftingAction"
 description = "Client-to-server message to perform a crafting action."
 fields = {}
+
+[messages.PerformSwap]
+name = "PerformSwap"
+description = "Client-to-server message to swap a player's held items."
+fields = {}
