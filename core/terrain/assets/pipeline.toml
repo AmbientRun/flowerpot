@@ -15,4 +15,21 @@ min_filter = "nearest"
 mipmap_filter = "nearest"
 
 [[pipelines]]
+type = "Materials"
+
+[pipelines.importer]
+type = "Single"
+name = "tile_highlight"
+base_color = "tile_highlight.png"
+transparent = true
+
+[pipelines.importer.sampler]
+address_mode_u = "repeat"
+address_mode_v = "repeat"
+address_mode_w = "repeat"
+mag_filter = "nearest"
+min_filter = "nearest"
+mipmap_filter = "nearest"
+
+[[pipelines]]
 type = "Models"

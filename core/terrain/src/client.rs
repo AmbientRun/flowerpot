@@ -200,7 +200,6 @@ fn main() {
                             collision_pos.xy() - current_chunk.as_vec2() * CHUNK_SIZE as f32;
                         let tile_pos = tile_pos.floor().as_ivec2();
                         let tile_idx = tile_pos.y * CHUNK_SIZE as i32 + tile_pos.x;
-                        eprintln!("{tile_idx}");
 
                         RaycastResponse {
                             collision_pos,
@@ -295,9 +294,9 @@ fn main() {
                     .with(procedural_mesh(), mesh)
                     .with(
                         pbr_material_from_url(),
-                        assets::url("pipeline.toml/0/mat.json"),
+                        assets::url("pipeline.toml/1/mat.json"),
                     )
-                    .with(color(), vec4(0.0, 0.0, 1.0, 1.0)),
+                    .with(color(), Vec4::ONE),
             );
         }
     });
