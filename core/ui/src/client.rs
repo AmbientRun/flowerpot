@@ -19,6 +19,11 @@ use packages::{
     ui::{components::*, messages::*},
 };
 
+use crate::packages::{
+    actions::messages::PerformTileAction,
+    map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk},
+};
+
 #[main]
 fn main() {
     run_async(async_main());
@@ -155,6 +160,20 @@ fn update_controls(delta: InputDelta, input: Input) {
 
     if delta.keys.contains(&KeyCode::F) {
         PerformSwap::new().send_local_broadcast(false);
+    }
+
+    if delta.mouse_buttons.contains(&MouseButton::Left) {
+        if let Some(selected) = entity::get_component(player::get_local(), tile_selection_ref()) {
+            let chunk_ref = entity::get_component(selected, in_chunk()).unwrap();
+            let chunk_pos = entity::get_component(chunk_ref, chunk()).unwrap();
+
+            PerformTileAction {
+                chunk_pos,
+                tile_idx: entity::get_component(selected, chunk_tile_index()).unwrap(),
+                on_occupant: true, // TODO tile actions
+            }
+            .send_local_broadcast(false);
+        }
     }
 }
 
