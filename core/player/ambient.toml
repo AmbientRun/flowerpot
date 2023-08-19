@@ -63,6 +63,12 @@ name = "LocalPlayerRef"
 attributes = ["Debuggable", "MaybeResource"]
 description = "A resource referencing the local player's entity *once the player has joined the game*."
 
+[components.tile_selection_ref]
+type = "EntityId"
+name = "TileSelectionRef"
+attributes = ["Debuggable"]
+description = "A reference to this player's tile selection."
+
 [messages.UpdatePlayerAngle]
 name = "UpdatePlayerAngle"
 description = "Client-to-server message to update the client's player's angle."

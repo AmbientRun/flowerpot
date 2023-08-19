@@ -140,11 +140,17 @@ fn main() {
             }
         });
 
-    let mut last_tile: Option<(EntityId, EntityId, u8)> = None;
+    let mut last_tile: Option<(EntityId, u8)> = None;
     RaycastResponse::subscribe(move |_, data| {
-        if let Some((last_highlight, last_chunk, last_tile_idx)) = last_tile {
+        if let Some((last_chunk, last_tile_idx)) = last_tile {
             if last_chunk != data.chunk_entity || last_tile_idx != data.tile_idx {
-                entity::despawn_recursive(last_highlight);
+                if let Some(last_highlight) =
+                    entity::get_component(player::get_local(), tile_selection_ref())
+                {
+                    entity::despawn_recursive(last_highlight);
+                }
+
+                entity::remove_component(player::get_local(), tile_selection_ref());
                 last_tile = None;
             } else {
                 // last tile is the currently-highlighted one, so skip
@@ -167,6 +173,7 @@ fn main() {
             )
             .spawn();
 
-        last_tile = Some((highlight, data.chunk_entity, data.tile_idx));
+        last_tile = Some((data.chunk_entity, data.tile_idx));
+        entity::add_component(player::get_local(), tile_selection_ref(), highlight);
     });
 }
