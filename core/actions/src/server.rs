@@ -17,17 +17,8 @@ mod shared;
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum ActionTarget {
     MediumCrop(EntityId),
+    Tile,
     Crafting,
-}
-
-impl ActionTarget {
-    pub fn get_entity(&self) -> EntityId {
-        use ActionTarget::*;
-        match self {
-            MediumCrop(target) => *target,
-            _ => EntityId::null(),
-        }
-    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
@@ -57,31 +48,40 @@ impl ActionContext {
         }
     }
 
-    pub fn for_player_contexts(player: EntityId, mut cb: impl FnMut(Self, bool) -> bool) {
-        let Some(left_hand) = entity::get_component(player, left_hand_ref()) else { return };
-        let Some(right_hand) = entity::get_component(player, right_hand_ref()) else { return };
+    pub fn for_player_contexts<T>(
+        player: EntityId,
+        mut cb: impl FnMut(Self, bool) -> Option<T>,
+    ) -> Option<T> {
+        let left_hand = entity::get_component(player, left_hand_ref())?;
+        let right_hand = entity::get_component(player, right_hand_ref())?;
 
         let left_held = entity::get_component(left_hand, held_ref()).unwrap_or_default();
         let right_held = entity::get_component(right_hand, held_ref()).unwrap_or_default();
 
         let (both, right_is_primary) = Self::new(left_held, right_held);
-        if !cb(both, right_is_primary) {
-            return;
+        if let Some(result) = cb(both, right_is_primary) {
+            return Some(result);
         }
 
         let (right, _) = Self::new(right_held, EntityId::null());
-        if right != both && !cb(right, true) {
-            return;
+        if right != both {
+            if let Some(result) = cb(right, true) {
+                return Some(result);
+            }
         }
 
         let (left, _) = Self::new(left_held, EntityId::null());
-        if left != both && !cb(left, false) {
-            return;
+        if left != both {
+            if let Some(result) = cb(left, false) {
+                return Some(result);
+            }
         }
+
+        None
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ActionCallback {
     pub module: EntityId,
     pub id: String,
@@ -118,25 +118,17 @@ impl ActionRegistry {
         store.insert(context, cb);
     }
 
-    pub fn perform_action(&self, target: ActionTarget, player: EntityId) {
+    pub fn perform_action(
+        &self,
+        target: ActionTarget,
+        player: EntityId,
+    ) -> Option<(ActionCallback, bool)> {
         let targets = self.targets.lock().unwrap();
-        let Some(store) = targets.get(&target) else { return };
+        let store = targets.get(&target)?;
 
         ActionContext::for_player_contexts(player, move |context, right_is_primary| {
-            if let Some(action) = store.get(&context) {
-                OnAction::new(
-                    action.id.clone(),
-                    player,
-                    right_is_primary,
-                    target.get_entity(),
-                )
-                .send_local(action.module);
-
-                false
-            } else {
-                true
-            }
-        });
+            store.get(&context).map(|cb| (cb.clone(), right_is_primary))
+        })
     }
 }
 
@@ -172,10 +164,27 @@ fn main() {
         }
     });
 
+    RegisterTileAction::subscribe({
+        let registry = registry.clone();
+        move |source, data| {
+            let (context, _right_is_primary) =
+                ActionContext::new(data.primary_held, data.secondary_held);
+
+            let Some(module) = source.local() else { return };
+            let id = data.id;
+            let cb = ActionCallback { module, id };
+
+            registry.register_action(ActionTarget::Tile, context, cb);
+        }
+    });
+
     PerformCraftingAction::subscribe({
         let registry = registry.clone();
         move |source, _data| {
-            let Some(player) = source.client_entity_id() else { return };
+            let Some(player) = source.client_entity_id() else {
+                return;
+            };
+
             registry.perform_action(ActionTarget::Crafting, player);
         }
     });
@@ -184,12 +193,9 @@ fn main() {
     PerformTileAction::subscribe({
         let registry = registry.clone();
         move |source, data| {
-            let Some(player) = source.client_entity_id() else { return };
-
-            if !data.on_occupant {
-                // TODO tile actions are unimplemented
+            let Some(player) = source.client_entity_id() else {
                 return;
-            }
+            };
 
             let chunks = chunks.read().unwrap();
 
@@ -207,18 +213,45 @@ fn main() {
                 return;
             };
 
-            use crate::packages::crops::components::*;
-            let Some(occupant) = entity::get_component(*tile, medium_crop_occupant()) else { return };
-            let Some(class) = entity::get_component(occupant, class()) else { return };
+            if data.on_occupant {
+                use crate::packages::crops::components::*;
+                let Some(occupant) = entity::get_component(*tile, medium_crop_occupant()) else {
+                    return;
+                };
+                let Some(class) = entity::get_component(occupant, class()) else {
+                    return;
+                };
 
-            registry.perform_action(ActionTarget::MediumCrop(class), player);
+                let Some((cb, right_is_primary)) =
+                    registry.perform_action(ActionTarget::MediumCrop(class), player)
+                else {
+                    return;
+                };
+
+                OnAction::new(cb.id, player, right_is_primary, occupant).send_local(cb.module);
+            } else {
+                let Some((cb, right_is_primary)) =
+                    registry.perform_action(ActionTarget::Tile, player)
+                else {
+                    return;
+                };
+
+                OnAction::new(cb.id, player, right_is_primary, *tile)
+                    .send_local(cb.module);
+            }
         }
     });
 
     PerformSwap::subscribe(move |source, _data| {
-        let Some(player) = source.client_entity_id() else { return };
-        let Some(left) = entity::get_component(player, left_hand_ref()) else { return };
-        let Some(right) = entity::get_component(player, right_hand_ref()) else { return };
+        let Some(player) = source.client_entity_id() else {
+            return;
+        };
+        let Some(left) = entity::get_component(player, left_hand_ref()) else {
+            return;
+        };
+        let Some(right) = entity::get_component(player, right_hand_ref()) else {
+            return;
+        };
 
         let left_held = entity::get_component(left, held_ref()).unwrap_or_default();
         let right_held = entity::get_component(right, held_ref()).unwrap_or_default();

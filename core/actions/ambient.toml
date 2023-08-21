@@ -27,6 +27,15 @@ class = "EntityId"
 primary_held = "EntityId"
 secondary_held = "EntityId"
 
+[messages.RegisterTileAction]
+name = "RegisterTileAction"
+description = "Registers a tile action with the action store."
+
+[messages.RegisterTileAction.fields]
+id = "String"
+primary_held = "EntityId"
+secondary_held = "EntityId"
+
 [messages.OnAction]
 name = "OnAction"
 description = "Sent to the registering module when the registered action is performed."
