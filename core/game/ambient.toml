@@ -10,3 +10,12 @@ items = { path = "../items" }
 map = { path = "../map" }
 nameplate = { path = "../../utils/nameplate" }
 player = { path = "../player" }
+
+[components.pick_up_item_class]
+type = "EntityId"
+
+[components.pick_up_next_stage]
+type = "EntityId"
+
+[components.place_medium_crop]
+type = "EntityId"

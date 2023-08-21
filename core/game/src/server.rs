@@ -4,8 +4,10 @@ use ambient_api::{once_cell::sync::OnceCell, prelude::*};
 
 use flowerpot_common::CHUNK_SIZE;
 use packages::{
-    crops::components::{class, is_medium_crop, medium_crop_occupant, on_tile},
-    game::assets::url,
+    crops::components::{
+        class, is_medium_crop, is_medium_crop_class, medium_crop_occupant, on_tile,
+    },
+    game::{assets::url, components::*},
     items::components::held_ref,
     map::components::{chunk, chunk_tile_refs},
     nameplate::components::name,
@@ -184,42 +186,49 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Beans/Beans_0.fbx"),
             name: "Beans_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Beans/Beans_1.fbx"),
             name: "Beans_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Beans/Beans_2.fbx"),
             name: "Beans_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Beans/Beans_3.fbx"),
             name: "Beans_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Beans/Beans_4.fbx"),
             name: "Beans_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Beans/Beans_5.fbx"),
             name: "Beans_5"
         );
 
         def_prototype!(
             STAGE_6,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Beans/Beans_6.fbx"),
             name: "Beans_6"
         );
@@ -230,36 +239,42 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Carrots/Carrot_0.fbx"),
             name: "Carrot_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Carrots/Carrot_1.fbx"),
             name: "Carrot_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Carrots/Carrot_2.fbx"),
             name: "Carrot_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Carrots/Carrot_3.fbx"),
             name: "Carrot_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Carrots/Carrot_4.fbx"),
             name: "Carrot_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Carrots/Carrot_5.fbx"),
             name: "Carrot_5"
         );
@@ -270,54 +285,65 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_0.fbx"),
             name: "Corn_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_1.fbx"),
             name: "Corn_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_2.fbx"),
             name: "Corn_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_3.fbx"),
             name: "Corn_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_4.fbx"),
             name: "Corn_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_5.fbx"),
             name: "Corn_5"
         );
 
         def_prototype!(
             STAGE_6,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_6.fbx"),
-            name: "Corn_6"
+            name: "Corn_6",
+            pick_up_item_class: items::debug::YELLOW.get(),
+            pick_up_next_stage: STAGE_7.get(),
         );
 
         def_prototype!(
             STAGE_7,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_7.fbx"),
             name: "Corn_7"
         );
 
         def_prototype!(
             STAGE_8,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Corn/Corn_8.fbx"),
             name: "Corn_8"
         );
@@ -328,48 +354,56 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_0.fbx"),
             name: "Garlic_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_1.fbx"),
             name: "Garlic_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_2.fbx"),
             name: "Garlic_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_3.fbx"),
             name: "Garlic_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_4.fbx"),
             name: "Garlic_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_5.fbx"),
             name: "Garlic_5"
         );
 
         def_prototype!(
             STAGE_6,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_6.fbx"),
             name: "Garlic_6"
         );
 
         def_prototype!(
             STAGE_7,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Garlic/Garlic_7.fbx"),
             name: "Garlic_7"
         );
@@ -380,54 +414,63 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_0.fbx"),
             name: "Peppers_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_1.fbx"),
             name: "Peppers_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_2.fbx"),
             name: "Peppers_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_3.fbx"),
             name: "Peppers_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_4.fbx"),
             name: "Peppers_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_5.fbx"),
             name: "Peppers_5"
         );
 
         def_prototype!(
             STAGE_6,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_6.fbx"),
             name: "Peppers_6"
         );
 
         def_prototype!(
             STAGE_7,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_7.fbx"),
             name: "Peppers_7"
         );
 
         def_prototype!(
             STAGE_8,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Peppers/Peppers_8.fbx"),
             name: "Peppers_8"
         );
@@ -438,36 +481,42 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Potatos/Potato_0.fbx"),
             name: "Potato_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Potatos/Potato_1.fbx"),
             name: "Potato_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Potatos/Potato_2.fbx"),
             name: "Potato_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Potatos/Potato_3.fbx"),
             name: "Potato_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Potatos/Potato_4.fbx"),
             name: "Potato_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Potatos/Potato_5.fbx"),
             name: "Potato_5"
         );
@@ -478,36 +527,42 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Sugarcane/Sugarcane_0.fbx"),
             name: "Sugarcane_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Sugarcane/Sugarcane_1.fbx"),
             name: "Sugarcane_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Sugarcane/Sugarcane_2.fbx"),
             name: "Sugarcane_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Sugarcane/Sugarcane_3.fbx"),
             name: "Sugarcane_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Sugarcane/Sugarcane_4.fbx"),
             name: "Sugarcane_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Sugarcane/Sugarcane_5.fbx"),
             name: "Sugarcane_5"
         );
@@ -518,54 +573,63 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_0.fbx"),
             name: "Tomatos_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_1.fbx"),
             name: "Tomatos_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_2.fbx"),
             name: "Tomatos_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_3.fbx"),
             name: "Tomatos_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_4.fbx"),
             name: "Tomatos_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_5.fbx"),
             name: "Tomatos_5"
         );
 
         def_prototype!(
             STAGE_6,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_6.fbx"),
             name: "Tomatos_6"
         );
 
         def_prototype!(
             STAGE_7,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_7.fbx"),
             name: "Tomatos_7"
         );
 
         def_prototype!(
             STAGE_8,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Tomatos/Tomatos_8.fbx"),
             name: "Tomatos_8"
         );
@@ -576,48 +640,56 @@ pub mod crops {
 
         def_prototype!(
             STAGE_0,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_0.fbx"),
             name: "Wheat_0"
         );
 
         def_prototype!(
             STAGE_1,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_1.fbx"),
             name: "Wheat_1"
         );
 
         def_prototype!(
             STAGE_2,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_2.fbx"),
             name: "Wheat_2"
         );
 
         def_prototype!(
             STAGE_3,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_3.fbx"),
             name: "Wheat_3"
         );
 
         def_prototype!(
             STAGE_4,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_4.fbx"),
             name: "Wheat_4"
         );
 
         def_prototype!(
             STAGE_5,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_5.fbx"),
             name: "Wheat_5"
         );
 
         def_prototype!(
             STAGE_6,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_6.fbx"),
             name: "Wheat_6"
         );
 
         def_prototype!(
             STAGE_7,
+            is_medium_crop_class: (),
             prefab: url("crops/medium/Wheat/Wheat_7.fbx"),
             name: "Wheat_7"
         );
@@ -640,6 +712,7 @@ pub mod items {
         def_prototype!(
             YELLOW,
             color: vec4(1.0, 1.0, 0.0, 1.0),
+            place_medium_crop: crops::corn::STAGE_6.get(),
         );
 
         def_prototype!(
@@ -698,11 +771,95 @@ fn main() {
         }
     });
 
-    spawn_query((left_hand_ref(), right_hand_ref())).bind(move |entities| {
-        for (_player, (left, right)) in entities {
-            entity::add_component(left, held_ref(), items::debug::YELLOW.get());
-            entity::add_component(right, held_ref(), items::debug::BLUE.get());
+    use crate::packages::actions::messages::*;
+    spawn_query(())
+        .requires((is_medium_crop_class(), pick_up_item_class()))
+        .bind(move |entities| {
+            for (e, _) in entities {
+                RegisterMediumCropAction::new(
+                    "pick_up".to_string(),
+                    e,
+                    EntityId::null(),
+                    EntityId::null(),
+                )
+                .send_local_broadcast(false);
+            }
+        });
+
+    spawn_query(())
+        .requires(place_medium_crop())
+        .bind(move |entities| {
+            for (e, _) in entities {
+                RegisterTileAction::new("place_medium".to_string(), e, EntityId::null())
+                    .send_local_broadcast(false);
+            }
+        });
+
+    OnAction::subscribe(move |source, data| {
+        if source.local().is_none() {
+            return;
         }
+
+        if data.id != "pick_up" {
+            return;
+        }
+
+        let Some(item) = entity::get_component(data.target, pick_up_item_class()) else {
+            return;
+        };
+
+        let hand = if data.right_is_primary {
+            right_hand_ref()
+        } else {
+            left_hand_ref()
+        };
+
+        let hand = entity::get_component(data.player, hand).unwrap();
+        entity::add_component(hand, held_ref(), item);
+
+        let crop = data.target;
+        let Some(tile) = entity::get_component(crop, on_tile()) else {
+            return;
+        };
+
+        entity::despawn_recursive(crop);
+        entity::add_component(tile, medium_crop_occupant(), EntityId::null());
+    });
+
+    OnAction::subscribe(move |source, data| {
+        if source.local().is_none() {
+            return;
+        }
+
+        if data.id != "place_medium" {
+            return;
+        }
+
+        let hand = if data.right_is_primary {
+            right_hand_ref()
+        } else {
+            left_hand_ref()
+        };
+
+        let hand = entity::get_component(data.player, hand).unwrap();
+
+        let Some(item) = entity::get_component(hand, held_ref()) else {
+            return;
+        };
+
+        let Some(place) = entity::get_component(item, place_medium_crop()) else {
+            return;
+        };
+
+        let tile = data.target;
+        let crop = Entity::new()
+            .with(is_medium_crop(), ())
+            .with(class(), place)
+            .with(on_tile(), tile)
+            .spawn();
+
+        entity::add_component(tile, medium_crop_occupant(), crop);
+        entity::add_component(hand, held_ref(), EntityId::null());
     });
 
     use packages::crafting::components::*;
