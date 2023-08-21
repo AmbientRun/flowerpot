@@ -6,14 +6,13 @@
 
 big topics:
 - [ ] migrate tasks from journal here (IMPORTANT)
-- [ ] tile outline rendering
-- [ ] swap hand items
-- [ ] map items
-- [ ] place/drop map items
-- [ ] player targeting
 - [ ] player reach
-- [ ] player items/crafting UX
-- [ ] heightmap raycasting
+- [ ] player medium crop targeting
+- [ ] player small crop targeting
+- [ ] map items
+- [ ] drop map items
+- [ ] player map item targeting
+- [ ] pick up map items
 
 - [ ] tech
   - [ ] give more appropriate/distinctive ember IDs to all embers
@@ -27,11 +26,10 @@ big topics:
   - [ ] ui: add "i'm not picky" name button to randomly select nickname
 - [ ] crops
   - [ ] crops: define a `is_small_crop_class` component
-  - [ ] crops: define `SpawnSmallCrops` (can update class) and `DespawnSmallCrops` messages (similar to fauna)
-  - [ ] crops: spawn test irises on chunks
+  - [ ] crops: define a `prefab_model_url` component
+  - [ ] crops: sync small crop prefabs
+  - [ ] crops: define and spawn test irises on chunks
   - [ ] crops: reuse fauna chunk occupancy code to track small crops
-  - [ ] crops: send small crop update messages on player chunk un/loading
-  - [ ] crops: send small crop update messages to observers when they de/spawn
   - [ ] crops: spawn and update small crops client-side
 - [ ] items and actions
   - [ ] crafting: better semantics for secondary items?
@@ -89,6 +87,7 @@ big topics that still need to be planned here:
   - [ ] outline this README
   - [ ] add instructions for making a mod from the template
   - [ ] license the codebase appropriately
+  - [ ] add more configuration to nameplate package
 
 ## Post-Launch
 
@@ -99,5 +98,6 @@ big topics:
 
 - [ ] meta
   - [ ] setup CI to test code quality of PRs
+  - [ ] give correct categories to embers
   - [ ] add clippy to CI
   - [ ] make panicking (i.e. use of unwrap() or expect()) a clippy error
