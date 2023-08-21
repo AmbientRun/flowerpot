@@ -21,6 +21,7 @@ use packages::{
 
 use crate::packages::{
     actions::messages::PerformTileAction,
+    crops::components::medium_crop_occupant,
     map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk},
 };
 
@@ -166,11 +167,18 @@ fn update_controls(delta: InputDelta, input: Input) {
         if let Some(selected) = entity::get_component(player::get_local(), tile_selection_ref()) {
             let chunk_ref = entity::get_component(selected, in_chunk()).unwrap();
             let chunk_pos = entity::get_component(chunk_ref, chunk()).unwrap();
+            let tile_idx = entity::get_component(selected, chunk_tile_index()).unwrap();
+            let tiles = entity::get_component(chunk_ref, chunk_tile_refs()).unwrap();
+            let tile = tiles[tile_idx as usize];
+
+            let on_occupant = entity::get_component(tile, medium_crop_occupant())
+                .unwrap_or_default()
+                != EntityId::null();
 
             PerformTileAction {
                 chunk_pos,
-                tile_idx: entity::get_component(selected, chunk_tile_index()).unwrap(),
-                on_occupant: true, // TODO tile actions
+                tile_idx,
+                on_occupant,
             }
             .send_local_broadcast(false);
         }
