@@ -5,6 +5,7 @@ use std::{
 
 use ambient_api::prelude::*;
 
+use flowerpot_common::ActorExt;
 use packages::{
     actions::messages::*,
     items::components::held_ref,
@@ -89,22 +90,20 @@ pub struct ActionCallback {
 
 pub type Registry<T> = Arc<Mutex<T>>;
 pub type ActionStore = HashMap<ActionContext, ActionCallback>;
-pub type TargetStore = Registry<HashMap<ActionTarget, ActionStore>>;
 
 #[derive(Clone, Default)]
 pub struct ActionRegistry {
-    pub targets: TargetStore,
+    pub targets: HashMap<ActionTarget, ActionStore>,
 }
 
 impl ActionRegistry {
     pub fn register_action(
-        &self,
+        &mut self,
         target: ActionTarget,
         context: ActionContext,
         cb: ActionCallback,
     ) {
-        let mut targets = self.targets.lock().unwrap();
-        let store = targets.entry(target).or_default();
+        let store = self.targets.entry(target).or_default();
 
         if store.contains_key(&context) {
             eprintln!("action on {:?} already registered: {:?}", target, context);
@@ -123,8 +122,7 @@ impl ActionRegistry {
         target: ActionTarget,
         player: EntityId,
     ) -> Option<(ActionCallback, bool)> {
-        let targets = self.targets.lock().unwrap();
-        let store = targets.get(&target)?;
+        let store = self.targets.get(&target)?;
 
         ActionContext::for_player_contexts(player, move |context, right_is_primary| {
             store.get(&context).map(|cb| (cb.clone(), right_is_primary))
@@ -134,111 +132,83 @@ impl ActionRegistry {
 
 #[main]
 fn main() {
-    let registry = ActionRegistry::default();
+    let registry: Arc<Mutex<ActionRegistry>> = Default::default();
 
-    RegisterCraftingAction::subscribe({
-        let registry = registry.clone();
-        move |source, data| {
-            let (context, _right_is_primary) =
-                ActionContext::new(data.primary_held, data.secondary_held);
+    registry.on_local_message(move |registry, module, data: RegisterCraftingAction| {
+        let (context, _right_is_primary) =
+            ActionContext::new(data.primary_held, data.secondary_held);
 
-            let Some(module) = source.local() else { return };
-            let id = data.id;
-            let cb = ActionCallback { module, id };
+        let id = data.id;
+        let cb = ActionCallback { module, id };
 
-            registry.register_action(ActionTarget::Crafting, context, cb);
-        }
+        registry.register_action(ActionTarget::Crafting, context, cb);
     });
 
-    RegisterMediumCropAction::subscribe({
-        let registry = registry.clone();
-        move |source, data| {
-            let (context, _right_is_primary) =
-                ActionContext::new(data.primary_held, data.secondary_held);
+    registry.on_local_message(move |registry, module, data: RegisterMediumCropAction| {
+        let (context, _right_is_primary) =
+            ActionContext::new(data.primary_held, data.secondary_held);
 
-            let Some(module) = source.local() else { return };
-            let id = data.id;
-            let cb = ActionCallback { module, id };
+        let id = data.id;
+        let cb = ActionCallback { module, id };
 
-            registry.register_action(ActionTarget::MediumCrop(data.class), context, cb);
-        }
+        registry.register_action(ActionTarget::MediumCrop(data.class), context, cb);
     });
 
-    RegisterTileAction::subscribe({
-        let registry = registry.clone();
-        move |source, data| {
-            let (context, _right_is_primary) =
-                ActionContext::new(data.primary_held, data.secondary_held);
+    registry.on_local_message(move |registry, module, data: RegisterTileAction| {
+        let (context, _right_is_primary) =
+            ActionContext::new(data.primary_held, data.secondary_held);
 
-            let Some(module) = source.local() else { return };
-            let id = data.id;
-            let cb = ActionCallback { module, id };
+        let id = data.id;
+        let cb = ActionCallback { module, id };
 
-            registry.register_action(ActionTarget::Tile, context, cb);
-        }
+        registry.register_action(ActionTarget::Tile, context, cb);
     });
 
-    PerformCraftingAction::subscribe({
-        let registry = registry.clone();
-        move |source, _data| {
-            let Some(player) = source.client_entity_id() else {
-                return;
-            };
-
-            registry.perform_action(ActionTarget::Crafting, player);
-        }
+    registry.on_client_message(move |registry, player, _data: PerformCraftingAction| {
+        registry.perform_action(ActionTarget::Crafting, player);
     });
 
     let chunks = flowerpot_common::init_map(chunk());
-    PerformTileAction::subscribe({
-        let registry = registry.clone();
-        move |source, data| {
-            let Some(player) = source.client_entity_id() else {
+    registry.on_client_message(move |registry, player, data: PerformTileAction| {
+        let chunks = chunks.lock().unwrap();
+
+        let Some(chunk) = chunks.get(&data.chunk_pos) else {
+            eprintln!("tile action on chunk {} is OOB", data.chunk_pos);
+            return;
+        };
+
+        let Some(tiles) = entity::get_component(*chunk, chunk_tile_refs()) else {
+            return;
+        };
+
+        let Some(tile) = tiles.get(data.tile_idx as usize) else {
+            eprintln!("tile index {} is OOB", data.tile_idx);
+            return;
+        };
+
+        if data.on_occupant {
+            use crate::packages::crops::components::*;
+            let Some(occupant) = entity::get_component(*tile, medium_crop_occupant()) else {
+                return;
+            };
+            let Some(class) = entity::get_component(occupant, class()) else {
                 return;
             };
 
-            let chunks = chunks.read().unwrap();
-
-            let Some(chunk) = chunks.get(&data.chunk_pos) else {
-                eprintln!("tile action on chunk {} is OOB", data.chunk_pos);
+            let Some((cb, right_is_primary)) =
+                registry.perform_action(ActionTarget::MediumCrop(class), player)
+            else {
                 return;
             };
 
-            let Some(tiles) = entity::get_component(*chunk, chunk_tile_refs()) else {
+            OnAction::new(cb.id, player, right_is_primary, occupant).send_local(cb.module);
+        } else {
+            let Some((cb, right_is_primary)) = registry.perform_action(ActionTarget::Tile, player)
+            else {
                 return;
             };
 
-            let Some(tile) = tiles.get(data.tile_idx as usize) else {
-                eprintln!("tile index {} is OOB", data.tile_idx);
-                return;
-            };
-
-            if data.on_occupant {
-                use crate::packages::crops::components::*;
-                let Some(occupant) = entity::get_component(*tile, medium_crop_occupant()) else {
-                    return;
-                };
-                let Some(class) = entity::get_component(occupant, class()) else {
-                    return;
-                };
-
-                let Some((cb, right_is_primary)) =
-                    registry.perform_action(ActionTarget::MediumCrop(class), player)
-                else {
-                    return;
-                };
-
-                OnAction::new(cb.id, player, right_is_primary, occupant).send_local(cb.module);
-            } else {
-                let Some((cb, right_is_primary)) =
-                    registry.perform_action(ActionTarget::Tile, player)
-                else {
-                    return;
-                };
-
-                OnAction::new(cb.id, player, right_is_primary, *tile)
-                    .send_local(cb.module);
-            }
+            OnAction::new(cb.id, player, right_is_primary, *tile).send_local(cb.module);
         }
     });
 

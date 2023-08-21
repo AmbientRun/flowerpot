@@ -30,7 +30,7 @@ fn main() {
                 let mut tries = std::iter::repeat(()).take(20);
                 let chunk = loop {
                     if let Some(_) = tries.next() {
-                        if let Some(chunk) = chunks.read().unwrap().get(&data.chunk).copied() {
+                        if let Some(chunk) = chunks.lock().unwrap().get(&data.chunk).copied() {
                             break Some(chunk);
                         }
                     } else {

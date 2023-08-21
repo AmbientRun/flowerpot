@@ -3,6 +3,7 @@ use ambient_api::{
     prelude::*,
 };
 
+use flowerpot_common::SystemExt;
 use packages::{
     fauna::components::{class, is_class, is_fauna, model_prefab_url, pitch, yaw},
     map::{
@@ -52,65 +53,67 @@ fn main() {
         }
     });
 
-    despawn_query((is_player(), user_id(), loaded_chunks())).bind({
-        let chunks = chunks.clone();
-        move |entities| {
-            let chunks = chunks.read().unwrap();
-            for (player, (_, uid, loaded)) in entities {
-                for position in loaded {
-                    let Some(chunk) = chunks.get(&position) else { continue };
-                    UnloadPlayerChunk::new(*chunk, position, player, uid.clone())
+    chunks.on_event(
+        despawn_query((user_id(), loaded_chunks())).requires(is_player()),
+        move |chunks, player, (uid, loaded)| {
+            for position in loaded {
+                let Some(chunk) = chunks.get(&position) else {
+                    continue;
+                };
+                UnloadPlayerChunk::new(*chunk, position, player, uid.clone())
+                    .send_local_broadcast(true);
+            }
+        },
+    );
+
+    chunks.on_change(
+        change_query((user_id(), loaded_chunks(), in_chunk())).track_change(in_chunk()),
+        move |chunks, e, (uid, old_chunks, current_chunk)| {
+            let current_pos = entity::get_component(current_chunk, chunk()).unwrap();
+            let mut new_chunks = Vec::new();
+            for y in -4..4 {
+                for x in -4..4 {
+                    new_chunks.push(ivec2(x, y) + current_pos);
+                }
+            }
+
+            // TODO this is hilariously slow. please use sorted diffs
+
+            for new_chunk in new_chunks.iter() {
+                if !old_chunks.contains(new_chunk) {
+                    let Some(chunk) = chunks.get(new_chunk) else {
+                        continue;
+                    };
+                    LoadPlayerChunk::new(*chunk, *new_chunk, e, uid.clone())
                         .send_local_broadcast(true);
                 }
             }
-        }
-    });
 
-    change_query((user_id(), loaded_chunks(), in_chunk()))
-        .track_change(in_chunk())
-        .bind({
-            let chunks = chunks.clone();
-            move |entities| {
-                let chunks = chunks.read().unwrap();
-                for (e, (uid, old_chunks, current_chunk)) in entities {
-                    let current_pos = entity::get_component(current_chunk, chunk()).unwrap();
-                    let mut new_chunks = Vec::new();
-                    for y in -4..4 {
-                        for x in -4..4 {
-                            new_chunks.push(ivec2(x, y) + current_pos);
-                        }
-                    }
-
-                    // TODO this is hilariously slow. please use sorted diffs
-
-                    for new_chunk in new_chunks.iter() {
-                        if !old_chunks.contains(new_chunk) {
-                            let Some(chunk) = chunks.get(new_chunk) else { continue };
-                            LoadPlayerChunk::new(*chunk, *new_chunk, e, uid.clone())
-                                .send_local_broadcast(true);
-                        }
-                    }
-
-                    for old_chunk in old_chunks.iter() {
-                        if !new_chunks.contains(old_chunk) {
-                            let Some(chunk) = chunks.get(old_chunk) else { continue };
-                            UnloadPlayerChunk::new(*chunk, *old_chunk, e, uid.clone())
-                                .send_local_broadcast(true);
-                        }
-                    }
-
-                    entity::set_component(e, loaded_chunks(), new_chunks);
+            for old_chunk in old_chunks.iter() {
+                if !new_chunks.contains(old_chunk) {
+                    let Some(chunk) = chunks.get(old_chunk) else {
+                        continue;
+                    };
+                    UnloadPlayerChunk::new(*chunk, *old_chunk, e, uid.clone())
+                        .send_local_broadcast(true);
                 }
             }
-        });
+
+            entity::set_component(e, loaded_chunks(), new_chunks);
+        },
+    );
 
     UpdatePlayerDirection::subscribe(move |source, data| {
-        let Some(e) = source.client_entity_id() else { return };
+        let Some(e) = source.client_entity_id() else {
+            return;
+        };
         entity::add_component(e, direction(), data.direction.clamp_length_max(1.0));
     });
 
     UpdatePlayerAngle::subscribe(move |source, data| {
-        let Some(e) = source.client_entity_id() else { return };
+        let Some(e) = source.client_entity_id() else {
+            return;
+        };
         entity::add_component(e, pitch(), data.pitch);
         entity::add_component(e, yaw(), data.yaw);
     });

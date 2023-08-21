@@ -7,6 +7,7 @@ use ambient_api::{core::player::components::user_id, ecs::SupportedValue, prelud
 
 mod shared;
 
+use flowerpot_common::{ActorExt, SystemExt};
 use packages::{
     fauna::{components::*, messages::*},
     map::{
@@ -51,7 +52,9 @@ fn bind_fauna_update<T: Clone + SupportedValue + 'static>(
                     for player in
                         entity::get_component(chunk, players_observing()).unwrap_or_default()
                     {
-                        let Some(uid) = entity::get_component(player, user_id()) else { continue };
+                        let Some(uid) = entity::get_component(player, user_id()) else {
+                            continue;
+                        };
                         cb(e, uid, data.clone());
                     }
                 }
@@ -83,59 +86,35 @@ impl ChunkOccupants {
 
         let store = Arc::new(Mutex::new(store));
 
-        spawn_query(in_chunk()).requires(is_fauna()).bind({
-            let store = store.clone();
-            move |entities| {
-                let mut store = store.lock().unwrap();
-                for (e, chunk) in entities {
-                    store.update_occupant(e, chunk);
+        store.on_event(
+            spawn_query(in_chunk()).requires(is_fauna()),
+            Self::update_occupant,
+        );
+
+        store.on_change(
+            change_query(in_chunk())
+                .track_change(in_chunk())
+                .requires(is_fauna()),
+            Self::update_occupant,
+        );
+
+        store.on_event(
+            despawn_query(()).requires((is_fauna(), in_chunk())),
+            move |store, e, _| store.remove_occupant(e),
+        );
+
+        store.on_local_message(move |store, _, data: OnPlayerLoadChunk| {
+            if let Some(occupants) = store.chunks_to_occupants.get(&data.chunk_entity) {
+                for occupant in occupants.iter() {
+                    Self::spawn_to_observer(*occupant, data.player_entity);
                 }
             }
         });
 
-        change_query(in_chunk())
-            .track_change(in_chunk())
-            .requires(is_fauna())
-            .bind({
-                let store = store.clone();
-                move |entities| {
-                    let mut store = store.lock().unwrap();
-                    for (e, new_chunk) in entities {
-                        store.update_occupant(e, new_chunk);
-                    }
-                }
-            });
-
-        despawn_query(()).requires((is_fauna(), in_chunk())).bind({
-            let store = store.clone();
-            move |entities| {
-                let mut store = store.lock().unwrap();
-                for (e, _) in entities {
-                    store.remove_occupant(e);
-                }
-            }
-        });
-
-        OnPlayerLoadChunk::subscribe({
-            let store = store.clone();
-            move |_, data| {
-                let store = store.lock().unwrap();
-                if let Some(occupants) = store.chunks_to_occupants.get(&data.chunk_entity) {
-                    for occupant in occupants.iter() {
-                        Self::spawn_to_observer(*occupant, data.player_entity);
-                    }
-                }
-            }
-        });
-
-        OnPlayerUnloadChunk::subscribe({
-            let store = store.clone();
-            move |_, data| {
-                let store = store.lock().unwrap();
-                if let Some(occupants) = store.chunks_to_occupants.get(&data.chunk_entity) {
-                    for occupant in occupants.iter() {
-                        Self::despawn_from_observer(*occupant, data.player_entity);
-                    }
+        store.on_local_message(move |store, _, data: OnPlayerUnloadChunk| {
+            if let Some(occupants) = store.chunks_to_occupants.get(&data.chunk_entity) {
+                for occupant in occupants.iter() {
+                    Self::despawn_from_observer(*occupant, data.player_entity);
                 }
             }
         });
@@ -196,12 +175,16 @@ impl ChunkOccupants {
     }
 
     fn despawn_from_observer(e: EntityId, player_entity: EntityId) {
-        let Some(player_uid) = entity::get_component(player_entity, user_id()) else { return };
+        let Some(player_uid) = entity::get_component(player_entity, user_id()) else {
+            return;
+        };
         DespawnFauna::new(e).send_client_targeted_reliable(player_uid);
     }
 
     fn spawn_to_observer(e: EntityId, player_entity: EntityId) {
-        let Some(player_uid) = entity::get_component(player_entity, user_id()) else { return };
+        let Some(player_uid) = entity::get_component(player_entity, user_id()) else {
+            return;
+        };
         let class = entity::get_component(e, class()).unwrap_or_default();
         SpawnFauna::new(e, class).send_client_targeted_reliable(player_uid.clone());
         OnSpawnFauna::new(e, player_entity, player_uid.clone()).send_local_broadcast(true);

@@ -1,5 +1,5 @@
 use ambient_api::prelude::*;
-use flowerpot_common::CHUNK_SIZE;
+use flowerpot_common::{ActorExt, CHUNK_SIZE};
 
 use packages::map::{components::*, messages::*};
 
@@ -9,7 +9,7 @@ mod shared;
 pub fn main() {
     let chunks = shared::init_shared_map();
 
-    LoadChunk::subscribe(move |_, data| {
+    chunks.on_message(move |_chunks, _, data: LoadChunk| {
         println!("Loading chunk: {}", data.pos);
 
         let mut tiles = Vec::with_capacity(CHUNK_SIZE * CHUNK_SIZE);
@@ -25,19 +25,18 @@ pub fn main() {
             .spawn();
     });
 
-    UnloadChunk::subscribe({
-        let chunks = chunks.clone();
-        move |_, data| {
-            println!("Unloading chunk: {}", data.pos);
+    chunks.on_message(move |chunks, _, data: UnloadChunk| {
+        println!("Unloading chunk: {}", data.pos);
 
-            let Some(chunk) = chunks.write().unwrap().remove(&data.pos) else { return };
+        let Some(chunk) = chunks.remove(&data.pos) else {
+            return;
+        };
 
-            for tile in entity::get_component(chunk, chunk_tile_refs()).unwrap_or_default() {
-                entity::despawn_recursive(tile);
-            }
-
-            entity::despawn_recursive(chunk);
+        for tile in entity::get_component(chunk, chunk_tile_refs()).unwrap_or_default() {
+            entity::despawn_recursive(tile);
         }
+
+        entity::despawn_recursive(chunk);
     });
 
     entity::add_component(entity::resources(), is_mod_loaded(), ());
