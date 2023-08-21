@@ -35,6 +35,7 @@ description = "Sent to the registering module when the registered action is perf
 id = "String"
 player = "EntityId"
 right_is_primary = "Bool"
+target = "EntityId"
 
 [messages.PerformCraftingAction]
 name = "PerformCraftingAction"

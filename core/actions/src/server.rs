@@ -20,6 +20,16 @@ pub enum ActionTarget {
     Crafting,
 }
 
+impl ActionTarget {
+    pub fn get_entity(&self) -> EntityId {
+        use ActionTarget::*;
+        match self {
+            MediumCrop(target) => *target,
+            _ => EntityId::null(),
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct ActionContext {
     pub primary_held: EntityId,
@@ -114,8 +124,14 @@ impl ActionRegistry {
 
         ActionContext::for_player_contexts(player, move |context, right_is_primary| {
             if let Some(action) = store.get(&context) {
-                OnAction::new(action.id.clone(), player, right_is_primary)
-                    .send_local(action.module);
+                OnAction::new(
+                    action.id.clone(),
+                    player,
+                    right_is_primary,
+                    target.get_entity(),
+                )
+                .send_local(action.module);
+
                 false
             } else {
                 true
