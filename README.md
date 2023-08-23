@@ -1,5 +1,53 @@
 # Flowerpot
 
+Hello and welcome to Flowerpot's source code repository on GitHub!
+
+Flowerpot is a farming game framework for the multiplayer game engine
+[Ambient](https://ambient.run). Using Flowerpot and Ambient, game developers
+have a strong foundation for building multiplayer farming games that involve
+large numbers of simultaneous players and vast, procedurally-generated worlds.
+
+Flowerpot is not only a game framework but a standard interface for Ambient
+farming games. A goal of Flowerpot is to support extensive modding. Games that
+are built on top of Flowerpot will be able to freely interoperate, enabling
+players to mix and match their favorite Flowerpot games together based on what
+kind of experience they're looking for.
+
+Flowerpot is also built as a general example for all Ambient game developers
+who need a large, functioning game built in Ambient that they may reference for
+their own creations. Care is taken to make Flowerpot's code as modular and
+simple as possible to maximize its reusability. Additionally, Flowerpot
+maintains a small collection of general-purpose Ambient packages that can be
+used in other non-farming Ambient games.
+
+## Features
+
+- [x] An efficient, tile-based, open world
+- [x] Chunk-based networking to enable large numbers of players to freely roam
+- [x] Perlin noise-based heightmap generation
+- [x] First-person movement and controls
+- [x] Left and right player hands that can hold items
+- [ ] Dropping and picking of items on the map
+- [x] Planting seeds onto tiles to place crops
+- [x] Harvesting crops to obtain items
+- [x] A simple crafting system based on combining two items together
+- [x] Extensible content model using the prototype pattern
+- [ ] Animated player avatars
+- [x] Player-selected display names and nameplates on player avatars
+- [x] Live game text chat
+- [x] Content moderation for display names and game chat using [rustrict](https://crates.io/rustrict)
+- [ ] Day/night cycle
+- [ ] Sound effects
+
+## Bundled Content
+
+Flowerpot also bundles free, permissively-licensed game assets for helping to
+jumpstart the development of your farming game:
+
+TODO: update after launch
+- [ ] **10 medium crops** with 3D models for all growth stages
+- [ ] **item models** associated with all crops
+
 # To-Do
 
 ## MVP
