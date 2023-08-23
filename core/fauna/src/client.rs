@@ -20,13 +20,11 @@ use packages::{
     terrain::components::altitude,
 };
 
+use crate::packages::region_networking::components::remote_entity;
+
 #[main]
 fn main() {
-    let store = FaunaStore::new(true);
-
-    store.subscribe_update::<DespawnFauna>(move |e, _| {
-        entity::despawn_recursive(e);
-    });
+    let store = ThingStore::new();
 
     store.subscribe_update::<UpdateFaunaPosition>(move |e, data| {
         entity::add_component(e, position(), data.position);
@@ -91,71 +89,44 @@ fn main() {
     entity::add_component(entity::resources(), is_mod_loaded(), ());
 }
 
-pub trait FaunaUpdate: ModuleMessage {
+pub trait ThingUpdate: ModuleMessage {
     fn get_remote_entity(&self) -> EntityId;
 }
 
-macro_rules! impl_update_for_eid {
+macro_rules! impl_update_for_thing {
     ($message:ident) => {
-        impl FaunaUpdate for $message {
+        impl ThingUpdate for $message {
             fn get_remote_entity(&self) -> EntityId {
-                self.eid
+                self.thing
             }
         }
     };
 }
 
-impl_update_for_eid!(DespawnFauna);
-impl_update_for_eid!(UpdateFaunaPosition);
-impl_update_for_eid!(UpdateFaunaPitch);
-impl_update_for_eid!(UpdateFaunaYaw);
-impl_update_for_eid!(UpdateFaunaName);
+impl_update_for_thing!(UpdateFaunaPosition);
+impl_update_for_thing!(UpdateFaunaPitch);
+impl_update_for_thing!(UpdateFaunaYaw);
+impl_update_for_thing!(UpdateFaunaName);
 
 #[derive(Clone)]
-pub struct FaunaStore {
+pub struct ThingStore {
     inner: Arc<Mutex<HashMap<EntityId, EntityId>>>,
 }
 
-impl FaunaStore {
-    pub fn new(owns_remote_entitites: bool) -> Self {
+impl ThingStore {
+    pub fn new() -> Self {
         let inner = Default::default();
         let store = Self { inner };
 
-        if owns_remote_entitites {
-            SpawnFauna::subscribe({
-                let store = store.clone();
-                move |_, data| {
-                    let mut store = store.inner.lock().unwrap();
-
-                    if store.contains_key(&data.eid) {
-                        return;
-                    }
-
-                    let base = if data.class.is_null() {
-                        Entity::new()
-                    } else {
-                        entity::get_all_components(data.class)
-                    };
-
-                    let e = base
-                        .with(is_fauna(), ())
-                        .with(remote_entity(), data.eid)
-                        .spawn();
-
-                    store.insert(data.eid, e);
+        spawn_query((is_fauna(), remote_entity())).bind({
+            let store = store.clone();
+            move |entities| {
+                let mut store = store.inner.lock().unwrap();
+                for (e, (_, remote)) in entities {
+                    store.insert(remote, e);
                 }
-            });
-        } else {
-            spawn_query((is_fauna(), remote_entity())).bind({
-                let store = store.clone();
-                move |entities| {
-                    let mut store = store.inner.lock().unwrap();
-                    for (e, (_, remote)) in entities {
-                        store.insert(remote, e);
-                    }
-                }
-            });
-        }
+            }
+        });
 
         despawn_query((is_fauna(), remote_entity())).bind({
             let store = store.clone();
@@ -174,11 +145,13 @@ impl FaunaStore {
         self.inner.lock().unwrap().get(&remote).copied()
     }
 
-    pub fn subscribe_update<T: FaunaUpdate>(&self, mut cb: impl FnMut(EntityId, T) + 'static) {
+    pub fn subscribe_update<T: ThingUpdate>(&self, mut cb: impl FnMut(EntityId, T) + 'static) {
         let store = self.to_owned();
         T::subscribe(move |_, data| {
             let remote = data.get_remote_entity();
-            let Some(local) = store.remote_to_local(remote) else { return };
+            let Some(local) = store.remote_to_local(remote) else {
+                return;
+            };
 
             // sanity check in case of race condition with DespawnFauna
             if entity::exists(local) {

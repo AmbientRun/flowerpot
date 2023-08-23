@@ -44,20 +44,6 @@ name = "Yaw"
 attributes = ["Debuggable"]
 description = "A fauna's yaw."
 
-[components.remote_entity]
-type = "EntityId"
-name = "RemoteEntity"
-attributes = ["Debuggable"]
-description = """
-The remote entity ID of this fauna.
-
-When the SpawnFauna message is received on the client, the client spawns a
-corresponding local ID. However, the new ID may not (and probably will not)
-match the entity ID given in the SpawnFauna message. This component is attached
-to locally-spawned fauna in order to translate between local fauna entities and
-their server-side entity IDs.
-"""
-
 [components.name]
 type = "String"
 name = "Name"
@@ -73,37 +59,22 @@ A resource that is added when the fauna mod has completed loading.
 Used to signal to other mods that the client is ready to receive fauna updates.
 """
 
-[messages.OnSpawnFauna]
-name = "OnSpawnFauna"
-description = "Server-side event that is broadcast when a fauna is spawned on the given client."
-fields = { fauna = "EntityId", player_entity = "EntityId", player_uid = "String" }
-
-[messages.SpawnFauna]
-name = "SpawnFauna"
-description = "Server-to-client message spawning a fauna on a client."
-fields = { eid = "EntityId", class = "EntityId" }
-
-[messages.DespawnFauna]
-name = "DespawnFauna"
-description = "Server-to-client message despawning a fauna on a client."
-fields = { eid = "EntityId" }
-
 [messages.UpdateFaunaPosition]
 name = "UpdateFaunaPosition"
 description = "Updates a fauna's position on the receiving client."
-fields = { eid = "EntityId", position = "Vec2" }
+fields = { thing = "EntityId", position = "Vec2" }
 
 [messages.UpdateFaunaPitch]
 name = "UpdateFaunaPitch"
 description = "Updates a fauna's pitch on the receiving client."
-fields = { eid = "EntityId", pitch = "F32" }
+fields = { thing = "EntityId", pitch = "F32" }
 
 [messages.UpdateFaunaYaw]
 name = "UpdateFaunaYaw"
 description = "Updates a fauna's yaw on the receiving client."
-fields = { eid = "EntityId", yaw = "F32" }
+fields = { thing = "EntityId", yaw = "F32" }
 
 [messages.UpdateFaunaName]
 name = "UpdateFaunaName"
 description = "Updates a fauna's name on the receiving client."
-fields = { eid = "EntityId", name = "String" }
+fields = { thing = "EntityId", name = "String" }

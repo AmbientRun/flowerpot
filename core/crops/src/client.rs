@@ -41,7 +41,9 @@ fn main() {
                 };
 
                 let Some(chunk) = chunk else { return };
-                let Some(tiles) = entity::get_component(chunk, chunk_tile_refs()) else { return };
+                let Some(tiles) = entity::get_component(chunk, chunk_tile_refs()) else {
+                    return;
+                };
 
                 for (tile_idx, class) in data
                     .crop_tiles

@@ -3,6 +3,9 @@ id = "map"
 name = "map"
 version = "0.0.1"
 
+[dependencies]
+region_networking = { path = "../../utils/region_networking" }
+
 [components.is_mod_loaded]
 type = "Empty"
 name = "IsModLoaded"
@@ -32,20 +35,6 @@ Y 0 1 2
 | 6 7 8
 V
 ```
-"""
-
-[components.players_observing]
-name = "PlayersObserving"
-type = { type = "Vec", element_type = "EntityId" }
-attributes = ["Debuggable"]
-description = """
-The list of all players that have loaded this chunk and are observing updates
-to it. This list must always be kept sorted so that lists on other chunks may
-be rapidly diffed.
-
-This component is automatically updated by the map mod in response to
-OnPlayerLoadChunk and OnPlayerUnloadChunk messages, so do not modify this
-component directly.
 """
 
 [components.position]
@@ -110,49 +99,3 @@ fields = { pos = "Ivec2" }
 name = "UnloadChunk"
 description = "Server-to-client emssage to command a client to unload a chunk."
 fields = { pos = "Ivec2" }
-
-[messages.LoadPlayerChunk]
-name = "LoadPlayerChunk"
-description = """
-Server-local message commanding the map mod to load a chunk on a player.
-The map mod follows this up by broadcasting OnPlayerLoadChunk.
-"""
-
-[messages.LoadPlayerChunk.fields]
-chunk_entity = "EntityId"
-chunk_pos = "Ivec2"
-player_entity = "EntityId"
-player_uid = "String"
-
-[messages.UnloadPlayerChunk]
-name = "UnloadPlayerChunk"
-description = """
-Server-local message commanding the map mod to unload a chunk on a player.
-The map mod follows this up by broadcasting OnPlayerUnloadChunk.
-"""
-
-[messages.UnloadPlayerChunk.fields]
-chunk_entity = "EntityId"
-chunk_pos = "Ivec2"
-player_entity = "EntityId"
-player_uid = "String"
-
-[messages.OnPlayerLoadChunk]
-name = "OnPlayerLoadChunk"
-description = "Server-local message emitted after a chunk has been loaded on a player."
-
-[messages.OnPlayerLoadChunk.fields]
-chunk_entity = "EntityId"
-chunk_pos = "Ivec2"
-player_entity = "EntityId"
-player_uid = "String"
-
-[messages.OnPlayerUnloadChunk]
-name = "OnPlayerUnloadChunk"
-description = "Server-local message emitted after a chunk has been unloaded on a player."
-
-[messages.OnPlayerUnloadChunk.fields]
-chunk_entity = "EntityId"
-chunk_pos = "Ivec2"
-player_entity = "EntityId"
-player_uid = "String"

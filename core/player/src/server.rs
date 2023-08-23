@@ -6,11 +6,9 @@ use ambient_api::{
 use flowerpot_common::SystemExt;
 use packages::{
     fauna::components::{class, is_class, is_fauna, model_prefab_url, pitch, yaw},
-    map::{
-        components::{chunk, in_chunk, position},
-        messages::{LoadPlayerChunk, UnloadPlayerChunk},
-    },
+    map::components::{chunk, in_chunk, position},
     player::{assets::url, components::*, messages::*},
+    region_networking::messages::{LoadPlayerRegion, UnloadPlayerRegion},
 };
 
 mod shared;
@@ -60,8 +58,8 @@ fn main() {
                 let Some(chunk) = chunks.get(&position) else {
                     continue;
                 };
-                UnloadPlayerChunk::new(*chunk, position, player, uid.clone())
-                    .send_local_broadcast(true);
+
+                UnloadPlayerRegion::new(*chunk, player, uid.clone()).send_local_broadcast(true);
             }
         },
     );
@@ -84,8 +82,8 @@ fn main() {
                     let Some(chunk) = chunks.get(new_chunk) else {
                         continue;
                     };
-                    LoadPlayerChunk::new(*chunk, *new_chunk, e, uid.clone())
-                        .send_local_broadcast(true);
+
+                    LoadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(true);
                 }
             }
 
@@ -94,8 +92,8 @@ fn main() {
                     let Some(chunk) = chunks.get(old_chunk) else {
                         continue;
                     };
-                    UnloadPlayerChunk::new(*chunk, *old_chunk, e, uid.clone())
-                        .send_local_broadcast(true);
+
+                    UnloadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(true);
                 }
             }
 

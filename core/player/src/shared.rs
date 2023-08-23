@@ -13,7 +13,7 @@ pub fn init_shared_player() {
     // TODO sprinting + stamina?
     spawn_query((is_player(), position())).bind(move |entities| {
         for (e, _) in entities {
-            entity::set_component(e, speed(), 3.0);
+            entity::set_component(e, speed(), 30.0);
         }
     });
 

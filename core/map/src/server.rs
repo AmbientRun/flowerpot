@@ -3,7 +3,13 @@ use std::collections::HashMap;
 use ambient_api::prelude::*;
 use flowerpot_common::CHUNK_SIZE;
 
-use packages::map::{components::*, messages::*};
+use packages::{
+    map::{components::*, messages::*},
+    region_networking::{
+        components::players_observing,
+        messages::{LoadPlayerRegion, UnloadPlayerRegion},
+    },
+};
 
 mod shared;
 
@@ -65,66 +71,28 @@ pub fn main() {
     stitch_neighbors(chunks);
     stitch_neighbors(tiles);
 
-    LoadPlayerChunk::subscribe(move |_, data| {
-        entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
-            let mut added = false;
-            for (idx, p) in observing.iter().enumerate() {
-                if *p > data.player_entity {
-                    observing.insert(idx, data.player_entity);
-                    added = true;
-                    break;
-                } else if *p == data.player_entity {
-                    return;
-                }
+    change_query(in_chunk())
+        .track_change(in_chunk())
+        .bind(move |entities| {
+            for (e, chunk) in entities {
+                entity::add_component(
+                    e,
+                    crate::packages::region_networking::components::in_region(),
+                    chunk,
+                );
             }
-
-            if !added {
-                observing.push(data.player_entity);
-            }
-
-            LoadChunk::new(data.chunk_pos).send_client_targeted_reliable(data.player_uid.clone());
-
-            OnPlayerLoadChunk::new(
-                data.chunk_entity,
-                data.chunk_pos,
-                data.player_entity,
-                data.player_uid,
-            )
-            .send_local_broadcast(true);
         });
+
+    LoadPlayerRegion::subscribe(move |_, data| {
+        if let Some(chunk_xy) = entity::get_component(data.region, chunk()) {
+            LoadChunk::new(chunk_xy).send_client_targeted_reliable(data.player_uid);
+        }
     });
 
-    change_query((chunk(), players_observing()))
-        .track_change(players_observing())
-        .bind(move |entities| {
-            for (_e, (chunk_pos, observing)) in entities {
-                let is_sorted = observing.windows(2).all(|w| w[0] < w[1]);
-                if !is_sorted {
-                    eprintln!(
-                        "list of observers to chunk {} isn't sorted: {:?}",
-                        chunk_pos, observing
-                    );
-                }
-            }
-        });
-
-    UnloadPlayerChunk::subscribe(move |_, data| {
-        entity::mutate_component(data.chunk_entity, players_observing(), |observing| {
-            let old_len = observing.len();
-            observing.retain(|p| *p != data.player_entity);
-            if observing.len() < old_len {
-                UnloadChunk::new(data.chunk_pos)
-                    .send_client_targeted_reliable(data.player_uid.clone());
-
-                OnPlayerUnloadChunk::new(
-                    data.chunk_entity,
-                    data.chunk_pos,
-                    data.player_entity,
-                    data.player_uid,
-                )
-                .send_local_broadcast(true);
-            }
-        });
+    UnloadPlayerRegion::subscribe(move |_, data| {
+        if let Some(chunk_xy) = entity::get_component(data.region, chunk()) {
+            UnloadChunk::new(chunk_xy).send_client_targeted_reliable(data.player_uid);
+        }
     });
 
     entity::add_component(entity::resources(), is_mod_loaded(), ());

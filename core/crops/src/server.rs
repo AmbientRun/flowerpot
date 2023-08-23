@@ -4,15 +4,22 @@ use ambient_api::{core::player::components::user_id, prelude::*};
 
 use packages::{
     crops::{components::*, messages::*},
-    map::{components::*, messages::OnPlayerLoadChunk},
+    map::components::*,
+    region_networking::{components::players_observing, messages::LoadPlayerRegion},
 };
 
 mod shared;
 
 #[main]
 fn main() {
-    OnPlayerLoadChunk::subscribe(move |_, data| {
-        let Some(chunk_tiles) = entity::get_component(data.chunk_entity, chunk_tile_refs()) else { return};
+    LoadPlayerRegion::subscribe(move |_, data| {
+        let Some(chunk_xy) = entity::get_component(data.region, chunk()) else {
+            return;
+        };
+
+        let Some(chunk_tiles) = entity::get_component(data.region, chunk_tile_refs()) else {
+            return;
+        };
 
         let mut tiles = Vec::with_capacity(chunk_tiles.len());
         let mut classes = Vec::with_capacity(chunk_tiles.len());
@@ -24,9 +31,9 @@ fn main() {
             };
 
             let Some(class) = entity::get_component(occupant, class()) else {
-                    eprintln!("crop {} has no class", occupant);
-                    continue;
-                };
+                eprintln!("crop {} has no class", occupant);
+                continue;
+            };
 
             dirty = true;
             tiles.push(tile_idx.try_into().unwrap());
@@ -37,7 +44,7 @@ fn main() {
             return;
         }
 
-        UpdateMediumCrops::new(data.chunk_pos, classes, tiles)
+        UpdateMediumCrops::new(chunk_xy, classes, tiles)
             .send_client_targeted_reliable(data.player_uid.clone());
     });
 
@@ -49,11 +56,13 @@ fn main() {
             let mut updates = BatchedUpdates::new();
 
             for (_e, (chunk_ref, tile_idx, occupant)) in entities {
-                let class = if occupant.is_null() { EntityId::null()} else {
-                let Some(class) = entity::get_component(occupant, class()) else {
-                    eprintln!("crop {} has no class", occupant);
-                    continue;
-                };
+                let class = if occupant.is_null() {
+                    EntityId::null()
+                } else {
+                    let Some(class) = entity::get_component(occupant, class()) else {
+                        eprintln!("crop {} has no class", occupant);
+                        continue;
+                    };
 
                     class
                 };
@@ -68,13 +77,20 @@ fn main() {
             }
 
             for (chunk_ref, update) in updates {
-                let Some(chunk_pos) = entity::get_component(chunk_ref, chunk()) else { continue };
-                let Some(observers) = entity::get_component(chunk_ref, players_observing()) else { continue };
+                let Some(chunk_pos) = entity::get_component(chunk_ref, chunk()) else {
+                    continue;
+                };
+                let Some(observers) = entity::get_component(chunk_ref, players_observing()) else {
+                    continue;
+                };
                 let (tiles, classes): (Vec<_>, Vec<_>) = update.into_iter().unzip();
 
                 for observer in observers {
-                    let Some(uid) = entity::get_component(observer, user_id()) else { continue };
-                    UpdateMediumCrops::new(chunk_pos, classes.clone(), tiles.clone()).send_client_targeted_reliable(uid);
+                    let Some(uid) = entity::get_component(observer, user_id()) else {
+                        continue;
+                    };
+                    UpdateMediumCrops::new(chunk_pos, classes.clone(), tiles.clone())
+                        .send_client_targeted_reliable(uid);
                 }
             }
         });
@@ -119,44 +135,52 @@ fn main() {
         }
     });
 
-    change_query((is_medium_crop(), on_tile(), age(), seeding_interval(), seed()))
-        .track_change(age())
-        .bind(move |entities| {
-            for (_e, (_, tile, age, interval, seed)) in entities {
-                if age == 0 || age % interval != 0 {
+    change_query((
+        is_medium_crop(),
+        on_tile(),
+        age(),
+        seeding_interval(),
+        seed(),
+    ))
+    .track_change(age())
+    .bind(move |entities| {
+        for (_e, (_, tile, age, interval, seed)) in entities {
+            if age == 0 || age % interval != 0 {
+                continue;
+            }
+
+            let mut neighbors = [
+                north_neighbor(),
+                east_neighbor(),
+                south_neighbor(),
+                west_neighbor(),
+            ];
+
+            let mut rng = thread_rng();
+            neighbors.shuffle(&mut rng);
+
+            for neighbor in neighbors {
+                let Some(neighbor) = entity::get_component(tile, neighbor) else {
+                    continue;
+                };
+
+                if !entity::get_component(neighbor, medium_crop_occupant())
+                    .unwrap_or_default()
+                    .is_null()
+                {
                     continue;
                 }
 
-                let mut neighbors = [
-                    north_neighbor(),
-                    east_neighbor(),
-                    south_neighbor(),
-                    west_neighbor(),
-                ];
+                Entity::new()
+                    .with(is_medium_crop(), ())
+                    .with(class(), seed)
+                    .with(on_tile(), neighbor)
+                    .spawn();
 
-                let mut rng = thread_rng();
-                neighbors.shuffle(&mut rng);
-
-                for neighbor in neighbors {
-                    let Some(neighbor) = entity::get_component(tile, neighbor) else {  continue };
-
-                    if !entity::get_component(neighbor, medium_crop_occupant())
-                        .unwrap_or_default()
-                        .is_null()
-                    {
-                        continue;
-                    }
-
-                    Entity::new()
-                        .with(is_medium_crop(), ())
-                        .with(class(), seed)
-                        .with(on_tile(), neighbor)
-                        .spawn();
-
-                    break;
-                }
+                break;
             }
-        });
+        }
+    });
 
     change_query((
         is_medium_crop(),
