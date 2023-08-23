@@ -1382,6 +1382,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "region-networking"
+version = "0.0.1"
+dependencies = [
+ "ambient_api",
+ "flowerpot-common",
+]
+
+[[package]]
 name = "robust"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

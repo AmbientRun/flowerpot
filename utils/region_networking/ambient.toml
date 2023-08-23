@@ -1,0 +1,67 @@
+[package]
+id = "region_networking"
+name = "Region Networking"
+version = "0.0.1"
+
+[components.in_region]
+name = "InRegion"
+attributes = ["Debuggable"]
+type = "EntityId"
+description = """
+A reference to the region that this thing is in.
+Adding and updating this component automatically triggers region un/loading
+logic between this thing and the players observing the regions.
+"""
+
+[components.remote_entity]
+type = "EntityId"
+name = "RemoteEntity"
+attributes = ["Debuggable"]
+description = """
+The server entity ID of this client-side thing.
+
+When the SpawnThing message is received on the client, the client spawns a
+corresponding local ID. However, the new ID may not (and probably will not)
+match the entity ID given in the SpawnThing message. This component is attached
+to locally-spawned things in order to translate between local thing entities
+and their server-side entity IDs.
+"""
+
+[components.players_observing]
+name = "PlayersObserving"
+type = { type = "Vec", element_type = "EntityId" }
+attributes = ["Debuggable"]
+description = """
+The list of all players that have loaded this region and are observing updates
+to it. This list must always be kept sorted so that lists on other regions may
+be rapidly diffed.
+
+This component is automatically updated by this package in response to
+LoadPlayerRegion and UnloadPlayerRegion messages, so do not modify this
+component directly.
+"""
+
+[messages.LoadPlayerRegion]
+name = "LoadPlayerRegion"
+description = "Server-local message commanding this package to load a region on a player."
+fields = { region = "EntityId", player_entity = "EntityId", player_uid = "String" }
+
+[messages.UnloadPlayerRegion]
+name = "UnloadPlayerRegion"
+description = "Server-local message commanding this package to unload a region on a player."
+fields = { region = "EntityId", player_entity = "EntityId", player_uid = "String" }
+
+[messages.OnSpawnThing]
+name = "OnSpawnThing"
+description = "Server-side event that is broadcast when a thing is spawned on the given client."
+fields = { thing = "EntityId", player_entity = "EntityId", player_uid = "String" }
+
+[messages.SpawnThing]
+name = "SpawnThing"
+description = "Server-to-client message spawning a thing on a client."
+fields = { thing = "EntityId" }
+
+[messages.DespawnThing]
+name = "DespawnThing"
+description = "Server-to-client message despawning a thing on a client."
+fields = { thing = "EntityId" }
