@@ -13,7 +13,7 @@ use ambient_api::{
     prelude::*,
 };
 
-use packages::nameplate::{components::*, concepts::*};
+use packages::this::{components::*, concepts::*};
 
 #[main]
 fn main() {

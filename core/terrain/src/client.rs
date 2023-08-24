@@ -21,10 +21,10 @@ use rapier3d::{
 
 use packages::{
     map::components::{chunk, chunk_tile_index, in_chunk},
-    terrain::{assets, components::*, messages::*},
+    this::{assets, components::*, messages::*},
 };
 
-use crate::packages::terrain::messages::RaycastResponse;
+use crate::packages::this::messages::RaycastResponse;
 
 mod shared;
 

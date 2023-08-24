@@ -2,7 +2,7 @@
 members = [ "core/*", "utils/*" ]
 
 [workspace.dependencies]
-ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "424387a" }
+ambient_api = { git = "https://github.com/AmbientRun/Ambient.git", rev = "b3dce07" }
 flowerpot-common = { path = "." }
 lazy_static = "1.4"
 noise = "0.8"

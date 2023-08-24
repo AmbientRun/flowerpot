@@ -6,7 +6,9 @@ content = { type = "Asset", schema = true, code = true }
 
 [dependencies]
 actions = { path = "../actions" }
+crops = { path = "../crops" }
 fauna = { path = "../fauna" }
+map = { path = "../map" }
 player = { path = "../player" }
 
 [components.joined]

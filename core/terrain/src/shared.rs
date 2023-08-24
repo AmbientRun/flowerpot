@@ -4,7 +4,7 @@ use noise::{Fbm, NoiseFn};
 
 use crate::packages::{
     map::components::{chunk, in_chunk, position},
-    terrain::components::*,
+    this::components::*,
 };
 
 pub const RESOLUTION: f64 = 1.0 / 256.0;

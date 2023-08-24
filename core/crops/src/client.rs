@@ -11,7 +11,7 @@ use ambient_api::{
 
 use flowerpot_common::CHUNK_SIZE;
 use packages::{
-    crops::{components::*, messages::*},
+    this::{components::*, messages::*},
     map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk, position},
     terrain::components::altitude,
 };

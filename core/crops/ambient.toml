@@ -6,6 +6,7 @@ content = { type = "Asset", schema = true, code = true }
 
 [dependencies]
 map = { path = "../map" }
+region_networking = { path = "../../utils/region_networking" }
 terrain = { path = "../terrain" }
 
 [components.is_medium_crop_class]

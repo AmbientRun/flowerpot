@@ -7,8 +7,8 @@ use flowerpot_common::SystemExt;
 use packages::{
     fauna::components::{class, is_class, is_fauna, model_prefab_url, pitch, yaw},
     map::components::{chunk, in_chunk, position},
-    player::{assets::url, components::*, messages::*},
     region_networking::messages::{LoadPlayerRegion, UnloadPlayerRegion},
+    this::{assets::url, components::*, messages::*},
 };
 
 mod shared;

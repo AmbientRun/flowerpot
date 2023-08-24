@@ -1,6 +1,6 @@
 use ambient_api::prelude::*;
 
-use packages::actions::messages::*;
+use packages::this::messages::*;
 
 mod shared;
 

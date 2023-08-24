@@ -1,7 +1,7 @@
 use ambient_api::prelude::*;
 use flowerpot_common::{init_map, PositionMap, SystemExt, CHUNK_SIZE};
 
-use crate::packages::map::components::*;
+use crate::packages::this::components::*;
 
 pub fn init_shared_map() -> PositionMap {
     let chunks = init_map(chunk());

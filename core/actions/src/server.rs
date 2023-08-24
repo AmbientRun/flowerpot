@@ -7,10 +7,10 @@ use ambient_api::prelude::*;
 
 use flowerpot_common::ActorExt;
 use packages::{
-    actions::messages::*,
     items::components::held_ref,
     map::components::{chunk, chunk_tile_refs},
     player::components::{left_hand_ref, right_hand_ref},
+    this::messages::*,
 };
 
 mod shared;

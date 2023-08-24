@@ -7,7 +7,7 @@ use ambient_api::{
 };
 
 use packages::{
-    items::{components::*, messages::*},
+    this::{components::*, messages::*},
     player::components::{left_hand_ref, local_player_ref, right_hand_ref},
 };
 
@@ -47,7 +47,7 @@ fn update_held_item(hand: EntityId, class: EntityId) {
         item_instance.set(color(), new_color);
     }
 
-    // if let Some(prefab) = entity::get_component(class, items::prefab_path()) {
+    // if let Some(prefab) = entity::get_component(class, this::prefab_path()) {
     //     item_instance.set(prefab_from_url(), asset::url(prefab).unwrap());
     // } else {
     item_instance.set(cube(), ());

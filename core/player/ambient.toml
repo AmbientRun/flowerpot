@@ -7,6 +7,8 @@ content = { type = "Asset", schema = true, code = true, models = true }
 [dependencies]
 fauna = { path = "../fauna" }
 map = { path = "../map" }
+region_networking = { path = "../../utils/region_networking" }
+terrain = { path = "../terrain" }
 
 [components.loaded_chunks]
 type = { type = "Vec", element_type = "Ivec2" }

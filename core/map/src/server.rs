@@ -4,7 +4,7 @@ use ambient_api::prelude::*;
 use flowerpot_common::CHUNK_SIZE;
 
 use packages::{
-    map::{components::*, messages::*},
+    this::{components::*, messages::*},
     region_networking::{
         components::players_observing,
         messages::{LoadPlayerRegion, UnloadPlayerRegion},

@@ -7,9 +7,9 @@ use ambient_api::prelude::*;
 
 use packages::{
     actions::messages::*,
-    crafting::components::*,
     items::components::held_ref,
     player::components::{left_hand_ref, right_hand_ref},
+    this::components::*,
 };
 
 mod shared;
@@ -65,8 +65,12 @@ fn main() {
                     (left_hand_ref(), right_hand_ref())
                 };
 
-                let Some(primary) = entity::get_component(data.player, primary) else { return };
-                let Some(secondary) = entity::get_component(data.player, secondary) else { return };
+                let Some(primary) = entity::get_component(data.player, primary) else {
+                    return;
+                };
+                let Some(secondary) = entity::get_component(data.player, secondary) else {
+                    return;
+                };
 
                 entity::add_component(primary, held_ref(), crafting_yield.primary);
 

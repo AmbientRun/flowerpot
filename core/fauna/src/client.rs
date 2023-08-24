@@ -14,13 +14,12 @@ use ambient_api::{
 mod shared;
 
 use packages::{
-    fauna::{components::*, messages::*},
     map::components::position,
     nameplate::concepts::make_nameplate,
+    region_networking::components::remote_entity,
     terrain::components::altitude,
+    this::{components::*, messages::*},
 };
-
-use crate::packages::region_networking::components::remote_entity;
 
 #[main]
 fn main() {

@@ -1,6 +1,6 @@
 use ambient_api::{core::player::components::is_player, prelude::*};
 
-use crate::packages::{fauna::components::yaw, map::components::position, player::components::*};
+use crate::packages::{fauna::components::yaw, map::components::position, this::components::*};
 
 /// Moves the player with the given position by the given delta.
 pub fn move_player(position: Vec2, delta: Vec2) -> Vec2 {

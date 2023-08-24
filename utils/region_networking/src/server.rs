@@ -6,7 +6,7 @@ use std::{
 use ambient_api::{core::player::components::user_id, prelude::*};
 use flowerpot_common::{ActorExt, SystemExt};
 
-use packages::region_networking::{components::*, messages::*};
+use packages::this::{components::*, messages::*};
 
 #[derive(Default)]
 pub struct RegionOccupants {

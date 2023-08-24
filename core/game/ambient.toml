@@ -13,6 +13,7 @@ materials = true
 audio = true
 
 [dependencies]
+actions = { path = "../actions" }
 crafting = { path = "../crafting" }
 crops = { path = "../crops" }
 items = { path = "../items" }

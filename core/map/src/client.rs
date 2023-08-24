@@ -1,7 +1,7 @@
 use ambient_api::prelude::*;
 use flowerpot_common::{ActorExt, CHUNK_SIZE};
 
-use packages::map::{components::*, messages::*};
+use packages::this::{components::*, messages::*};
 
 mod shared;
 

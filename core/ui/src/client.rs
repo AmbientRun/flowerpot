@@ -13,16 +13,14 @@ use ambient_api::{
 mod shared;
 
 use packages::{
-    actions::messages::{PerformCraftingAction, PerformSwap},
-    fauna::components::{is_mod_loaded as is_fauna_loaded, pitch, yaw},
-    map::components::{is_mod_loaded as is_map_loaded, position},
-    ui::{components::*, messages::*},
-};
-
-use crate::packages::{
-    actions::messages::PerformTileAction,
+    actions::messages::{PerformCraftingAction, PerformSwap, PerformTileAction},
     crops::components::medium_crop_occupant,
-    map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk},
+    fauna::components::{is_mod_loaded as is_fauna_loaded, pitch, yaw},
+    map::components::{
+        chunk, chunk_tile_index, chunk_tile_refs, in_chunk, is_mod_loaded as is_map_loaded,
+        position,
+    },
+    this::{components::*, messages::*},
 };
 
 #[main]

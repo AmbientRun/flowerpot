@@ -7,6 +7,7 @@ content = { type = "Asset", schema = true, code = true }
 [dependencies]
 crops = { path = "../crops" }
 items = { path = "../items" }
+map = { path = "../map" }
 player = { path = "../player" }
 
 [messages.RegisterCraftingAction]

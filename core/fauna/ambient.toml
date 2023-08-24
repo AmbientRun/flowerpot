@@ -7,6 +7,7 @@ content = { type = "Asset", schema = true, code = true }
 [dependencies]
 map = { path = "../map" }
 nameplate = { path = "../../utils/nameplate" }
+region_networking = { path = "../../utils/region_networking" }
 terrain = { path = "../terrain" }
 
 [components.is_class]

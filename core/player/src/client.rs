@@ -19,11 +19,11 @@ use ambient_api::{
 use packages::{
     fauna::components::{pitch, yaw},
     map::components::{chunk_tile_index, in_chunk, position},
-    player::{components::*, messages::*},
     terrain::{
         components::{altitude, highlight_tile},
         messages::{RaycastRequest, RaycastResponse},
     },
+    this::{components::*, messages::*},
 };
 
 use shared::init_shared_player;

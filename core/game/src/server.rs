@@ -7,11 +7,11 @@ use packages::{
     crops::components::{
         class, is_medium_crop, is_medium_crop_class, medium_crop_occupant, on_tile,
     },
-    game::{assets::url, components::*},
     items::components::held_ref,
     map::components::{chunk, chunk_tile_refs},
     nameplate::components::name,
     player::components::{left_hand_ref, right_hand_ref},
+    this::{assets::url, components::*},
 };
 
 mod shared;

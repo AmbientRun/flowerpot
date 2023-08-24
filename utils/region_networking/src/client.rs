@@ -6,7 +6,7 @@ use std::{
 use ambient_api::prelude::*;
 use flowerpot_common::{ActorExt, SystemExt};
 
-use packages::region_networking::{components::*, messages::*};
+use packages::this::{components::*, messages::*};
 
 #[main]
 fn main() {

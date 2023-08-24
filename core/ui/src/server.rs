@@ -12,7 +12,7 @@ mod shared;
 
 use packages::{
     fauna::components::{is_fauna, name},
-    ui::messages::*,
+    this::messages::*,
 };
 
 use rustrict::Censor;
