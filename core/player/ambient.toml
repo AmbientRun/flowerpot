@@ -2,6 +2,7 @@
 id = "player"
 name = "player"
 version = "0.0.1"
+content = { type = "Asset", schema = true, code = true, models = true }
 
 [dependencies]
 fauna = { path = "../fauna" }

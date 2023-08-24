@@ -2,6 +2,7 @@
 id = "flowerpot"
 name = "Flowerpot"
 version = "0.0.1"
+content = { type = "Playable" }
 
 [dependencies]
 actions = { path = "core/actions" }

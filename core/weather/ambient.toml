@@ -2,4 +2,4 @@
 id = "weather"
 name = "weather"
 version = "0.0.1"
-
+content = { type = "Asset", schema = true, code = true }

@@ -2,6 +2,7 @@
 id = "map"
 name = "map"
 version = "0.0.1"
+content = { type = "Asset", schema = true, code = true }
 
 [dependencies]
 region_networking = { path = "../../utils/region_networking" }

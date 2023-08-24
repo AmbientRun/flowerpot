@@ -3,6 +3,15 @@ id = "game"
 name = "game"
 version = "0.0.1"
 
+[package.content]
+type = "Asset"
+schema = true
+code = true
+models = true
+textures = true
+materials = true
+audio = true
+
 [dependencies]
 crafting = { path = "../crafting" }
 crops = { path = "../crops" }

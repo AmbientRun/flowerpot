@@ -2,6 +2,7 @@
 id = "terrain"
 name = "terrain"
 version = "0.0.1"
+content = { type = "Asset", schema = true, code = true }
 
 [dependencies]
 map = { path = "../map" }
