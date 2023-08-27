@@ -1,22 +1,41 @@
-use ambient_api::{
-    core::{
-        app::components::main_scene,
-        rendering::components::{light_diffuse, sky, sun},
-        transform::{components::rotation, concepts::make_transformable},
-    },
-    prelude::*,
-};
+use ambient_api::prelude::*;
+
+use packages::this::components::*;
 
 mod shared;
 
 #[main]
 fn main() {
-    make_transformable()
-        .with(sun(), 1.0)
-        .with(rotation(), Quat::from_rotation_y(-45_f32.to_radians()))
-        .with(light_diffuse(), Vec3::ONE * 5.0)
-        .with(main_scene(), ())
-        .spawn();
+    entity::add_component(
+        entity::synchronized_resources(),
+        real_time_to_game_time(),
+        80000.0,
+    );
+    entity::add_component(entity::synchronized_resources(), time_of_day(), 12.0);
 
-    make_transformable().with(sky(), ()).spawn();
+    return;
+    run_async(async move {
+        loop {
+            let tick = 5.0f64;
+            sleep(tick as f32).await;
+
+            let to_game_time = entity::get_component(entity::resources(), real_time_to_game_time())
+                .expect("real_time_to_game_time resource was removed");
+
+            let hours = tick / 60.0 / 60.0;
+            let elapsed = hours * to_game_time;
+
+            let time = entity::mutate_component_with_default(
+                entity::resources(),
+                time_of_day(),
+                12.0,
+                |time| {
+                    *time += elapsed;
+                    while *time > 24.0 {
+                        *time -= 24.0;
+                    }
+                },
+            );
+        }
+    });
 }

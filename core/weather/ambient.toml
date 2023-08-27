@@ -3,3 +3,13 @@ id = "weather"
 name = "weather"
 version = "0.0.1"
 content = { type = "Asset", schema = true, code = true }
+
+[components.time_of_day]
+type = "F64"
+attributes = ["Debuggable", "Networked", "MaybeResource"]
+description = "The time of day in hours. Range: [0, 24)"
+
+[components.real_time_to_game_time]
+type = "F64"
+attributes = ["Debuggable", "Networked", "MaybeResource"]
+description = "The proportion ratio of real-life time to game time."
