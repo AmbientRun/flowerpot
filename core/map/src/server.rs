@@ -3,13 +3,7 @@ use std::collections::HashMap;
 use ambient_api::prelude::*;
 use flowerpot_common::CHUNK_SIZE;
 
-use packages::{
-    this::{components::*, messages::*},
-    region_networking::{
-        components::players_observing,
-        messages::{LoadPlayerRegion, UnloadPlayerRegion},
-    },
-};
+use packages::{region_networking::components::players_observing, this::components::*};
 
 mod shared;
 
@@ -82,18 +76,6 @@ pub fn main() {
                 );
             }
         });
-
-    LoadPlayerRegion::subscribe(move |_, data| {
-        if let Some(chunk_xy) = entity::get_component(data.region, chunk()) {
-            LoadChunk::new(chunk_xy).send_client_targeted_reliable(data.player_uid);
-        }
-    });
-
-    UnloadPlayerRegion::subscribe(move |_, data| {
-        if let Some(chunk_xy) = entity::get_component(data.region, chunk()) {
-            UnloadChunk::new(chunk_xy).send_client_targeted_reliable(data.player_uid);
-        }
-    });
 
     entity::add_component(entity::resources(), is_mod_loaded(), ());
 }

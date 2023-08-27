@@ -91,12 +91,3 @@ description = """
 The entity neighboring this entity to the west (-X).
 For chunks, this is another chunk. For tiles, this is another tile.
 """
-
-[messages.LoadChunk]
-description = "Server-to-client message to command a client to load a chunk."
-fields = { pos = "Ivec2" }
-
-[messages.UnloadChunk]
-name = "UnloadChunk"
-description = "Server-to-client emssage to command a client to unload a chunk."
-fields = { pos = "Ivec2" }

@@ -81,3 +81,12 @@ fields = { pitch = "F32", yaw = "F32" }
 name = "UpdatePlayerDirection"
 description = "Client-to-server message to update the client's player's direction."
 fields = { direction = "Vec2" }
+
+[messages.LoadChunk]
+description = "Server-to-client message to command a client to load a chunk."
+fields = { pos = "Ivec2" }
+
+[messages.UnloadChunk]
+name = "UnloadChunk"
+description = "Server-to-client emssage to command a client to unload a chunk."
+fields = { pos = "Ivec2" }

@@ -84,6 +84,7 @@ fn main() {
                     };
 
                     LoadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(true);
+                    LoadChunk::new(*new_chunk).send_client_targeted_reliable(uid.clone());
                 }
             }
 
@@ -94,6 +95,7 @@ fn main() {
                     };
 
                     UnloadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(true);
+                    UnloadChunk::new(*old_chunk).send_client_targeted_reliable(uid.clone());
                 }
             }
 
