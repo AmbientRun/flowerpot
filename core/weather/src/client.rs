@@ -4,7 +4,7 @@ use ambient_api::{
     core::messages::Frame,
     core::{
         app::components::main_scene,
-        rendering::components::{light_diffuse, sky, sun},
+        rendering::components::{light_ambient, light_diffuse, sky, sun},
         transform::{components::rotation, concepts::make_transformable},
     },
     prelude::*,
@@ -45,8 +45,41 @@ fn main() {
             },
         );
 
-        let theta = (time / 24.0) * TAU;
+        let theta = (time + 6.0) / 24.0 * TAU;
         let new_rotation = Quat::from_rotation_y(theta as f32);
-        entity::set_component(sun_entity, rotation(), new_rotation);
+
+        let mix_day = cycle_mix(time as f32, 7.0, 17.0, 1.5);
+        let mix_night = 1.0 - cycle_mix(time as f32, 7.0, 17.0, 2.0);
+
+        let diffuse_night = Vec3::ZERO;
+        let diffuse_day = Vec3::ONE * 5.0;
+        let ambient_night = vec3(0.1, 0.2, 0.3) * 0.5;
+        let ambient_day = Vec3::ONE * 0.2;
+
+        let diffuse = mix_day * diffuse_day + mix_night * diffuse_night;
+        let ambient = mix_day * ambient_day + mix_night * ambient_night;
+
+        entity::add_components(
+            sun_entity,
+            Entity::new()
+                .with(rotation(), new_rotation)
+                .with(light_diffuse(), diffuse)
+                .with(light_ambient(), ambient),
+        );
     });
+}
+
+fn cycle_mix(time: f32, sunrise_end: f32, sunset_begin: f32, twilight_length: f32) -> f32 {
+    let sunrise_begin = sunrise_end - twilight_length;
+    let sunset_end = sunset_begin + twilight_length;
+
+    if time > sunrise_begin && time < sunrise_end {
+        (time - sunrise_begin) / twilight_length
+    } else if time > sunset_begin && time < sunset_end {
+        (time - sunset_end) / -twilight_length
+    } else if time > sunrise_end && time < sunset_begin {
+        1.0
+    } else {
+        0.0
+    }
 }
