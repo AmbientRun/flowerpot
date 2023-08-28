@@ -190,3 +190,71 @@ where
         });
     }
 }
+
+pub trait RemoteUpdate: ModuleMessage {
+    fn get_remote_entity(&self) -> EntityId;
+}
+
+#[derive(Clone)]
+pub struct RemoteEntityStore {
+    inner: Arc<Mutex<HashMap<EntityId, EntityId>>>,
+}
+
+impl RemoteEntityStore {
+    pub fn new(remote_entity: Component<EntityId>) -> Self {
+        let inner = Default::default();
+        let store = Self { inner };
+
+        spawn_query(remote_entity).bind({
+            let store = store.clone();
+            move |entities| {
+                let mut store = store.inner.lock().unwrap();
+                for (e, remote) in entities {
+                    store.insert(remote, e);
+                }
+            }
+        });
+
+        despawn_query(remote_entity).bind({
+            let store = store.clone();
+            move |entities| {
+                let mut store = store.inner.lock().unwrap();
+                for (_, remote) in entities {
+                    store.remove(&remote);
+                }
+            }
+        });
+
+        store
+    }
+
+    pub fn remote_to_local(&self, remote: EntityId) -> Option<EntityId> {
+        self.inner.lock().unwrap().get(&remote).copied()
+    }
+
+    pub fn subscribe_update<T: RemoteUpdate>(&self, mut cb: impl FnMut(EntityId, T) + 'static) {
+        let store = self.to_owned();
+        T::subscribe(move |_, data| {
+            let remote = data.get_remote_entity();
+            let Some(local) = store.remote_to_local(remote) else {
+                return;
+            };
+
+            // sanity check in case of race condition with DespawnFauna
+            if entity::exists(local) {
+                cb(local, data);
+            }
+        });
+    }
+}
+
+#[macro_export]
+macro_rules! impl_remote_update {
+    ($message:ident) => {
+        impl ::flowerpot_common::RemoteUpdate for $message {
+            fn get_remote_entity(&self) -> EntityId {
+                self.thing
+            }
+        }
+    };
+}
