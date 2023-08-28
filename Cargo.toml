@@ -8,3 +8,28 @@ lazy_static = "1.4"
 noise = "0.8"
 rapier3d = "0.17"
 rustrict = "0.7"
+
+[package]
+name = "flowerpot"
+edition = "2021"
+publish = false
+version = "0.0.1"
+
+[dependencies]
+ambient_api.workspace = true
+flowerpot-common.workspace = true
+lazy_static.workspace = true
+
+[[bin]]
+name = "flowerpot_client"
+path = "src/client.rs"
+required-features = ["client"]
+
+[[bin]]
+name = "flowerpot_server"
+path = "src/server.rs"
+required-features = ["server"]
+
+[features]
+client = ["ambient_api/client"]
+server = ["ambient_api/server"]

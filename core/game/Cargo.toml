@@ -7,7 +7,6 @@ version = "0.0.1"
 [dependencies]
 ambient_api.workspace = true
 flowerpot-common.workspace = true
-lazy_static.workspace = true
 
 [[bin]]
 name = "flowerpot_game_client"

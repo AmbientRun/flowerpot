@@ -599,6 +599,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8fcfdc7a0362c9f4444381a9e697c79d435fe65b52a37466fc2c1184cee9edc6"
 
 [[package]]
+name = "flowerpot"
+version = "0.0.1"
+dependencies = [
+ "ambient_api",
+ "flowerpot-common",
+ "lazy_static",
+]
+
+[[package]]
 name = "flowerpot-actions"
 version = "0.0.1"
 dependencies = [
@@ -642,7 +651,6 @@ version = "0.0.1"
 dependencies = [
  "ambient_api",
  "flowerpot-common",
- "lazy_static",
 ]
 
 [[package]]

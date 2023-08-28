@@ -12,6 +12,7 @@ fauna = { path = "core/fauna" }
 game = { path = "core/game" }
 items = { path = "core/items" }
 map = { path = "core/map" }
+nameplate = { path = "utils/nameplate" }
 player = { path = "core/player" }
 terrain = { path = "core/terrain" }
 ui = { path = "core/ui" }
