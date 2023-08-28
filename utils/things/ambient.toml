@@ -1,0 +1,31 @@
+[package]
+id = "things"
+name = "things"
+version = "0.0.1"
+content = { type = "Asset", schema = true, code = true }
+
+[dependencies]
+region_networking = { path = "../region_networking" }
+
+[components.is_thing]
+type = "Empty"
+attributes = ["Debuggable"]
+
+[components.class_ref]
+type = "EntityId"
+attributes = ["Debuggable"]
+
+[components.is_class]
+type = "Empty"
+attributes = ["Debuggable", "Networked"]
+
+[components.model_prefab_url]
+type = "String"
+name = "ModelPrefabUrl"
+attributes = ["Debuggable", "Networked"]
+description = "The asset URL to a model prefab to use for instances of this thing class."
+
+[messages.UpdateThingClass]
+name = "UpdateThingClass"
+description = "Sets the class for a thing."
+fields = { thing = "EntityId", class = "EntityId" }

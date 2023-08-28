@@ -1905,6 +1905,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "things"
+version = "0.0.1"
+dependencies = [
+ "ambient_api",
+ "flowerpot-common",
+]
+
+[[package]]
 name = "thiserror"
 version = "1.0.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
