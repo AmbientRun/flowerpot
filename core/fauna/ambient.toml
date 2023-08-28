@@ -14,7 +14,7 @@ things = { path = "../../utils/things" }
 [components.is_fauna]
 type = "Empty"
 name = "Fauna"
-attributes = ["Debuggable"]
+attributes = ["Debuggable", "Networked"]
 description = "A tag given to all fauna entities."
 
 [components.class]
