@@ -201,11 +201,15 @@ fn main() {
                         let tile_pos = tile_pos.floor().as_ivec2();
                         let tile_idx = tile_pos.y * CHUNK_SIZE as i32 + tile_pos.x;
 
+                        let Ok(tile_idx) = tile_idx.try_into() else {
+                            break;
+                        };
+
                         RaycastResponse {
                             collision_pos,
                             chunk_entity: *chunk_entity,
                             chunk_pos: current_chunk,
-                            tile_idx: tile_idx.try_into().unwrap(),
+                            tile_idx,
                             distance,
                         }
                         .send_local(reply);
@@ -242,7 +246,9 @@ fn main() {
                     }
                 }
 
-                let Some((next_chunk, distance)) = nearest_edge else { break };
+                let Some((next_chunk, distance)) = nearest_edge else {
+                    break;
+                };
                 current_chunk += next_chunk;
                 local_origin +=
                     data.delta.xy() * distance - next_chunk.as_vec2() * CHUNK_SIZE as f32;
@@ -261,43 +267,51 @@ fn main() {
     });
 
     spawn_query((in_chunk(), chunk_tile_index()))
-    .requires(highlight_tile())
-    .bind(move |entities| {
-        for (e, (chunk_entity, tile)) in entities {
-            // TODO batch concept component fetches?
-            let Some(positions) = entity::get_component(chunk_entity, mesh_positions()) else { continue };
-            let Some(normals) = entity::get_component(chunk_entity, mesh_normals()) else { continue };
-            let Some(tangents) = entity::get_component(chunk_entity, mesh_tangents()) else { continue };
-            let Some(texcoords) = entity::get_component(chunk_entity, mesh_texcoords()) else { continue };
+        .requires(highlight_tile())
+        .bind(move |entities| {
+            for (e, (chunk_entity, tile)) in entities {
+                // TODO batch concept component fetches?
+                let Some(positions) = entity::get_component(chunk_entity, mesh_positions()) else {
+                    continue;
+                };
+                let Some(normals) = entity::get_component(chunk_entity, mesh_normals()) else {
+                    continue;
+                };
+                let Some(tangents) = entity::get_component(chunk_entity, mesh_tangents()) else {
+                    continue;
+                };
+                let Some(texcoords) = entity::get_component(chunk_entity, mesh_texcoords()) else {
+                    continue;
+                };
 
-            let vertices: Vec<_> = izip!(positions, normals, tangents, texcoords)
-                // https://stackoverflow.com/questions/32690678/is-it-more-efficient-to-slice-an-array-or-use-iteratorskip
-                // alternative is taking slices, which isn't as clean.
-                .skip(tile as usize * 6)
-                .take(6)
-                .map(|(position, normal, tangent, texcoord0)| Vertex {
-                    position: position + Vec3::Z * 0.01, // avoid z-fighting
-                    normal,
-                    tangent,
-                    texcoord0,
-                })
-                .collect();
+                let vertices: Vec<_> = izip!(positions, normals, tangents, texcoords)
+                    // https://stackoverflow.com/questions/32690678/is-it-more-efficient-to-slice-an-array-or-use-iteratorskip
+                    // alternative is taking slices, which isn't as clean.
+                    .skip(tile as usize * 6)
+                    .take(6)
+                    .map(|(position, normal, tangent, texcoord0)| Vertex {
+                        position: position + Vec3::Z * 0.01, // avoid z-fighting
+                        normal,
+                        tangent,
+                        texcoord0,
+                    })
+                    .collect();
 
-            let mesh = mesh::create(&mesh::Descriptor {
-                vertices: vertices.as_ref(),
-                indices: &[0, 1, 2, 3, 4, 5],
-            });
+                let mesh = mesh::create(&mesh::Descriptor {
+                    vertices: vertices.as_ref(),
+                    indices: &[0, 1, 2, 3, 4, 5],
+                });
 
-            entity::add_components(
-                e,
-                make_transformable()
-                    .with(procedural_mesh(), mesh)
-                    .with(
-                        pbr_material_from_url(),
-                        assets::url("pipeline.toml/1/mat.json"),
-                    )
-                    .with(color(), Vec4::ONE),
-            );
-        }
-    });
+                entity::add_components(
+                    e,
+                    make_transformable()
+                        .with(procedural_mesh(), mesh)
+                        .with(
+                            pbr_material_from_url(),
+                            assets::url("pipeline.toml/1/mat.json"),
+                        )
+                        .with(color(), Vec4::ONE),
+                );
+            }
+        });
 }
