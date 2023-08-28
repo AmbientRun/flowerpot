@@ -9,6 +9,7 @@ crops = { path = "../crops" }
 items = { path = "../items" }
 map = { path = "../map" }
 player = { path = "../player" }
+things = { path = "../../utils/things" }
 
 [messages.RegisterCraftingAction]
 name = "RegisterCraftingAction"

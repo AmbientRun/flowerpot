@@ -2,18 +2,17 @@ use ambient_api::prelude::*;
 
 use packages::{
     actions::messages::*,
-    crops::components::{
-        class, is_medium_crop, is_medium_crop_class, medium_crop_occupant, on_tile,
-    },
+    crops::components::{is_medium_crop, medium_crop_occupant, on_tile},
     items::components::held_ref,
     player::components::{left_hand_ref, right_hand_ref},
+    things::components::{class_ref, is_class},
     this::components::{pick_up_item_class, place_medium_crop},
 };
 
 #[main]
 pub fn main() {
     spawn_query(())
-        .requires((is_medium_crop_class(), pick_up_item_class()))
+        .requires((is_class(), is_medium_crop(), pick_up_item_class()))
         .bind(move |entities| {
             for (e, _) in entities {
                 RegisterMediumCropAction::new(
@@ -94,7 +93,7 @@ pub fn main() {
         let tile = data.target;
         let crop = Entity::new()
             .with(is_medium_crop(), ())
-            .with(class(), place)
+            .with(class_ref(), place)
             .with(on_tile(), tile)
             .spawn();
 

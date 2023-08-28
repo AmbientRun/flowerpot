@@ -15,5 +15,6 @@ map = { path = "core/map" }
 nameplate = { path = "utils/nameplate" }
 player = { path = "core/player" }
 terrain = { path = "core/terrain" }
+things = { path = "utils/things" }
 ui = { path = "core/ui" }
 weather = { path = "core/weather" }

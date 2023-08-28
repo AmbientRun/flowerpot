@@ -20,6 +20,7 @@ items = { path = "../items" }
 map = { path = "../map" }
 nameplate = { path = "../../utils/nameplate" }
 player = { path = "../player" }
+things = { path = "../../utils/things" }
 
 [components.pick_up_item_class]
 type = "EntityId"

@@ -1,8 +1,8 @@
 use ambient_api::{
     core::{
-        prefab::components::{prefab_from_url, spawned},
+        prefab::components::spawned,
         transform::{
-            components::{local_to_parent, local_to_world, rotation, translation},
+            components::{local_to_world, rotation, translation},
             concepts::make_transformable,
         },
     },
@@ -11,9 +11,10 @@ use ambient_api::{
 
 use flowerpot_common::CHUNK_SIZE;
 use packages::{
-    this::{components::*, messages::*},
     map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk, position},
     terrain::components::altitude,
+    things::components::class_ref,
+    this::{components::*, messages::*},
 };
 
 mod shared;
@@ -70,8 +71,8 @@ fn main() {
                         )
                         + 0.5;
 
-                    let new_occupant = entity::get_all_components(class)
-                        .with(is_medium_crop(), ())
+                    let new_occupant = Entity::new()
+                        .with(class_ref(), class)
                         .with(position(), occupant_position)
                         .with(in_chunk(), chunk)
                         .with(chunk_tile_index(), tile_idx)
@@ -118,24 +119,6 @@ fn main() {
                         .with(rotation(), Quat::from_rotation_z(angle))
                         .with(local_to_world(), Mat4::IDENTITY),
                 );
-            }
-        });
-
-    spawn_query(model_prefab_url())
-        .requires(is_medium_crop())
-        .bind(move |entities| {
-            for (e, prefab_url) in entities {
-                let model = Entity::new()
-                    .with(prefab_from_url(), prefab_url)
-                    .with(local_to_parent(), Mat4::IDENTITY)
-                    .spawn();
-
-                // inherit old crop reference to model
-                if let Some(despawn) = entity::get_component(e, despawn_when_loaded()) {
-                    entity::add_component(model, despawn_when_loaded(), despawn);
-                }
-
-                entity::add_child(e, model);
             }
         });
 

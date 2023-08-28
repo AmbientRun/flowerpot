@@ -3,9 +3,10 @@ use std::collections::HashMap;
 use ambient_api::{core::player::components::user_id, prelude::*};
 
 use packages::{
-    this::{components::*, messages::*},
     map::components::*,
     region_networking::{components::players_observing, messages::LoadPlayerRegion},
+    things::components::class_ref,
+    this::{components::*, messages::*},
 };
 
 mod shared;
@@ -30,7 +31,7 @@ fn main() {
                 _ => continue,
             };
 
-            let Some(class) = entity::get_component(occupant, class()) else {
+            let Some(class) = entity::get_component(occupant, class_ref()) else {
                 eprintln!("crop {} has no class", occupant);
                 continue;
             };
@@ -59,7 +60,7 @@ fn main() {
                 let class = if occupant.is_null() {
                     EntityId::null()
                 } else {
-                    let Some(class) = entity::get_component(occupant, class()) else {
+                    let Some(class) = entity::get_component(occupant, class_ref()) else {
                         eprintln!("crop {} has no class", occupant);
                         continue;
                     };
@@ -95,7 +96,7 @@ fn main() {
             }
         });
 
-    spawn_query((is_medium_crop(), class(), on_tile())).bind(move |entities| {
+    spawn_query((is_medium_crop(), class_ref(), on_tile())).bind(move |entities| {
         for (e, (_medium, crop_class, tile)) in entities {
             if let Some(old_occupant) = entity::get_component(tile, medium_crop_occupant()) {
                 if !old_occupant.is_null() && old_occupant != e {
@@ -105,9 +106,9 @@ fn main() {
 
             entity::add_components(
                 e,
-                entity::get_all_components(crop_class)
+                Entity::new()
                     .with(age(), 0)
-                    .with(class(), crop_class)
+                    .with(class_ref(), crop_class)
                     .with(on_tile(), tile),
             );
 
@@ -115,7 +116,7 @@ fn main() {
         }
     });
 
-    despawn_query((is_medium_crop(), class(), on_tile())).bind(move |entities| {
+    despawn_query((is_medium_crop(), class_ref(), on_tile())).bind(move |entities| {
         for (e, (_medium, _class, tile)) in entities {
             if entity::get_component(tile, medium_crop_occupant()) == Some(e) {
                 entity::set_component(tile, medium_crop_occupant(), EntityId::null());
@@ -173,7 +174,7 @@ fn main() {
 
                 Entity::new()
                     .with(is_medium_crop(), ())
-                    .with(class(), seed)
+                    .with(class_ref(), seed)
                     .with(on_tile(), neighbor)
                     .spawn();
 
@@ -201,7 +202,7 @@ fn main() {
             if !next.is_null() {
                 Entity::new()
                     .with(is_medium_crop(), ())
-                    .with(class(), next)
+                    .with(class_ref(), next)
                     .with(on_tile(), tile)
                     .spawn();
             }

@@ -10,6 +10,7 @@ use packages::{
     items::components::held_ref,
     map::components::{chunk, chunk_tile_refs},
     player::components::{left_hand_ref, right_hand_ref},
+    things::components::class_ref,
     this::messages::*,
 };
 
@@ -191,18 +192,11 @@ fn main() {
             let Some(occupant) = entity::get_component(*tile, medium_crop_occupant()) else {
                 return;
             };
-            let Some(class) = entity::get_component(occupant, class()) else {
+
+            let Some(class) = entity::get_component(occupant, class_ref()) else {
                 return;
             };
 
-            let Some((cb, right_is_primary)) =
-                registry.perform_action(ActionTarget::MediumCrop(class), player)
-            else {
-                return;
-            };
-
-            OnAction::new(cb.id, player, right_is_primary, occupant).send_local(cb.module);
-        } else {
             let Some((cb, right_is_primary)) = registry.perform_action(ActionTarget::Tile, player)
             else {
                 return;
