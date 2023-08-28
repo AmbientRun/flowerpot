@@ -36,8 +36,11 @@ used in other non-farming Ambient games.
 - [x] Player-selected display names and nameplates on player avatars
 - [x] Live game text chat
 - [x] Content moderation for display names and game chat using [rustrict](https://crates.io/rustrict)
-- [ ] Day/night cycle
+- [x] Day/night cycle
 - [ ] Sound effects
+- [ ] Small crops
+- [x] Medium crops
+- [ ] Large crops
 
 ## Bundled Content
 
