@@ -5,9 +5,10 @@ use ambient_api::{
 
 use flowerpot_common::SystemExt;
 use packages::{
-    fauna::components::{class, is_class, is_fauna, model_prefab_url, pitch, yaw},
+    fauna::components::{is_fauna, pitch, yaw},
     map::components::{chunk, in_chunk, position},
     region_networking::messages::{LoadPlayerRegion, UnloadPlayerRegion},
+    things::components::{class_ref, is_class, model_prefab_url},
     this::{assets::url, components::*, messages::*},
 };
 
@@ -19,6 +20,8 @@ fn main() {
 
     let player_class = Entity::new()
         .with(is_class(), ())
+        .with(is_fauna(), ())
+        .with(speed(), 1.0)
         .with(model_prefab_url(), url("player.glb"))
         .spawn();
 
@@ -32,20 +35,12 @@ fn main() {
             entity::add_components(
                 e,
                 Entity::new()
-                    .with(is_fauna(), ())
-                    .with(class(), player_class)
-                    .with(speed(), 1.0)
+                    .with(class_ref(), player_class)
                     .with(position(), vec2(0.0, 0.0))
                     .with(direction(), vec2(0.0, 0.0))
                     .with(yaw(), 0.0)
                     .with(left_hand_ref(), left_hand)
-                    .with(right_hand_ref(), right_hand),
-            );
-
-            entity::add_components(
-                e,
-                Entity::new()
-                    .with(position(), vec2(0.0, 0.0))
+                    .with(right_hand_ref(), right_hand)
                     .with(loaded_chunks(), vec![]),
             );
         }

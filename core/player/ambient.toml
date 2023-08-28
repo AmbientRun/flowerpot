@@ -9,6 +9,7 @@ fauna = { path = "../fauna" }
 map = { path = "../map" }
 region_networking = { path = "../../utils/region_networking" }
 terrain = { path = "../terrain" }
+things = { path = "../../utils/things" }
 
 [components.loaded_chunks]
 type = { type = "Vec", element_type = "Ivec2" }
@@ -19,7 +20,7 @@ description = "The list of chunk positions that this player currently has loaded
 [components.speed]
 type = "F32"
 name = "Speed"
-attributes = ["Debuggable"]
+attributes = ["Debuggable", "Networked"]
 description = "The speed of a player."
 
 [components.direction]
