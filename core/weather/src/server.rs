@@ -9,9 +9,11 @@ fn main() {
     entity::add_component(
         entity::synchronized_resources(),
         real_time_to_game_time(),
-        1000.0,
+        // 1000.0,
+        0.0,
     );
-    entity::add_component(entity::synchronized_resources(), time_of_day(), 12.0);
+
+    entity::add_component(entity::synchronized_resources(), time_of_day(), 9.0);
 
     run_async(async move {
         loop {
@@ -20,7 +22,7 @@ fn main() {
 
             let to_game_time =
                 entity::get_component(entity::synchronized_resources(), real_time_to_game_time())
-                    .expect("real_time_to_game_time resource was removed");
+                    .unwrap_or(0.0);
 
             let hours = tick / 60.0 / 60.0;
             let elapsed = hours * to_game_time;
