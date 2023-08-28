@@ -3,9 +3,9 @@ use ambient_api::{core::player::components::user_id, ecs::SupportedValue, prelud
 mod shared;
 
 use packages::{
-    this::{components::*, messages::*},
     map::components::{in_chunk, position},
     region_networking::{components::players_observing, messages::OnSpawnThing},
+    this::{components::*, messages::*},
 };
 
 #[main]

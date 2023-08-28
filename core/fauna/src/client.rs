@@ -1,18 +1,11 @@
-use std::{
-    collections::HashMap,
-    sync::{Arc, Mutex},
-};
-
 use ambient_api::{
-    core::{
-        prefab::components::prefab_from_url,
-        transform::{components::*, concepts::make_transformable},
-    },
+    core::transform::{components::*, concepts::make_transformable},
     prelude::*,
 };
 
 mod shared;
 
+use flowerpot_common::{impl_remote_update, RemoteEntityStore};
 use packages::{
     map::components::position,
     nameplate::concepts::make_nameplate,
@@ -23,7 +16,7 @@ use packages::{
 
 #[main]
 fn main() {
-    let store = ThingStore::new();
+    let store = RemoteEntityStore::new(remote_entity());
 
     store.subscribe_update::<UpdateFaunaPosition>(move |e, data| {
         entity::add_component(e, position(), data.position);
@@ -47,20 +40,13 @@ fn main() {
         );
     });
 
-    spawn_query((remote_entity(), position(), altitude(), model_prefab_url()))
+    spawn_query((position(), altitude()))
         .requires(is_fauna())
         .bind(move |entities| {
-            for (e, (remote, position, height, prefab_url)) in entities {
-                if remote == player::get_local() {
-                    // don't spawn a prefab for the local player
-                    continue;
-                }
-
+            for (e, (position, altitude)) in entities {
                 entity::add_components(
                     e,
-                    make_transformable()
-                        .with(translation(), position.extend(height))
-                        .with(prefab_from_url(), prefab_url),
+                    make_transformable().with(translation(), position.extend(altitude)),
                 );
             }
         });
@@ -69,8 +55,8 @@ fn main() {
         .track_change(position())
         .requires(is_fauna())
         .bind(move |entities| {
-            for (e, (position, height)) in entities {
-                entity::add_component(e, translation(), position.extend(height));
+            for (e, (position, altitude)) in entities {
+                entity::add_component(e, translation(), position.extend(altitude));
             }
         });
 
@@ -88,74 +74,7 @@ fn main() {
     entity::add_component(entity::resources(), is_mod_loaded(), ());
 }
 
-pub trait ThingUpdate: ModuleMessage {
-    fn get_remote_entity(&self) -> EntityId;
-}
-
-macro_rules! impl_update_for_thing {
-    ($message:ident) => {
-        impl ThingUpdate for $message {
-            fn get_remote_entity(&self) -> EntityId {
-                self.thing
-            }
-        }
-    };
-}
-
-impl_update_for_thing!(UpdateFaunaPosition);
-impl_update_for_thing!(UpdateFaunaPitch);
-impl_update_for_thing!(UpdateFaunaYaw);
-impl_update_for_thing!(UpdateFaunaName);
-
-#[derive(Clone)]
-pub struct ThingStore {
-    inner: Arc<Mutex<HashMap<EntityId, EntityId>>>,
-}
-
-impl ThingStore {
-    pub fn new() -> Self {
-        let inner = Default::default();
-        let store = Self { inner };
-
-        spawn_query((is_fauna(), remote_entity())).bind({
-            let store = store.clone();
-            move |entities| {
-                let mut store = store.inner.lock().unwrap();
-                for (e, (_, remote)) in entities {
-                    store.insert(remote, e);
-                }
-            }
-        });
-
-        despawn_query((is_fauna(), remote_entity())).bind({
-            let store = store.clone();
-            move |entities| {
-                let mut store = store.inner.lock().unwrap();
-                for (_, (_, remote)) in entities {
-                    store.remove(&remote);
-                }
-            }
-        });
-
-        store
-    }
-
-    pub fn remote_to_local(&self, remote: EntityId) -> Option<EntityId> {
-        self.inner.lock().unwrap().get(&remote).copied()
-    }
-
-    pub fn subscribe_update<T: ThingUpdate>(&self, mut cb: impl FnMut(EntityId, T) + 'static) {
-        let store = self.to_owned();
-        T::subscribe(move |_, data| {
-            let remote = data.get_remote_entity();
-            let Some(local) = store.remote_to_local(remote) else {
-                return;
-            };
-
-            // sanity check in case of race condition with DespawnFauna
-            if entity::exists(local) {
-                cb(local, data);
-            }
-        });
-    }
-}
+impl_remote_update!(UpdateFaunaPosition);
+impl_remote_update!(UpdateFaunaPitch);
+impl_remote_update!(UpdateFaunaYaw);
+impl_remote_update!(UpdateFaunaName);
