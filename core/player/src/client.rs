@@ -180,8 +180,6 @@ fn main() {
 
     let chunks = flowerpot_common::init_map(chunk());
     chunks.on_message(move |_chunks, _, data: LoadChunk| {
-        println!("Loading chunk: {}", data.pos);
-
         let mut tiles = Vec::with_capacity(CHUNK_SIZE * CHUNK_SIZE);
         for _y in 0..CHUNK_SIZE {
             for _x in 0..CHUNK_SIZE {
@@ -196,8 +194,6 @@ fn main() {
     });
 
     chunks.on_message(move |chunks, _, data: UnloadChunk| {
-        println!("Unloading chunk: {}", data.pos);
-
         let Some(chunk) = chunks.remove(&data.pos) else {
             return;
         };
