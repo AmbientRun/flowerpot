@@ -1,0 +1,12 @@
+[package]
+name = "flowerpot-common"
+edition = "2021"
+publish = false
+version = "0.0.1"
+
+[dependencies]
+ambient_api.workspace = true
+
+[features]
+client = ["ambient_api/client"]
+server = ["ambient_api/server"]
