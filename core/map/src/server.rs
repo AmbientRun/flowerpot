@@ -3,7 +3,10 @@ use std::collections::HashMap;
 use ambient_api::prelude::*;
 use flowerpot_common::CHUNK_SIZE;
 
-use packages::{region_networking::components::players_observing, this::components::*};
+use packages::{
+    region_networking::components::{in_region, players_observing},
+    this::components::*,
+};
 
 mod shared;
 
@@ -65,15 +68,17 @@ pub fn main() {
     stitch_neighbors(chunks);
     stitch_neighbors(tiles);
 
+    spawn_query(in_chunk()).bind(move |entities| {
+        for (e, chunk) in entities {
+            entity::add_component(e, in_region(), chunk);
+        }
+    });
+
     change_query(in_chunk())
         .track_change(in_chunk())
         .bind(move |entities| {
             for (e, chunk) in entities {
-                entity::add_component(
-                    e,
-                    crate::packages::region_networking::components::in_region(),
-                    chunk,
-                );
+                entity::add_component(e, in_region(), chunk);
             }
         });
 
