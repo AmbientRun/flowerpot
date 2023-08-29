@@ -19,7 +19,6 @@ fn main() {
 
     UpdateThingClass::subscribe(move |_, data| {
         if let Some(e) = store.remote_to_local(data.thing) {
-            eprintln!("{:#?}", data);
             entity::add_component(e, class_ref(), data.class);
         }
     });
