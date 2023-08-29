@@ -83,12 +83,12 @@ pub fn diff_sorted<'a, V>(
 
 /// Extension trait to easily build actors.
 pub trait ActorExt<T, Message> {
-    fn on_message(&self, cb: impl Fn(&mut T, Source, Message) + 'static);
+    fn on_message(&self, cb: impl FnMut(&mut T, Source, Message) + 'static);
 
-    fn on_local_message(&self, cb: impl Fn(&mut T, EntityId, Message) + 'static);
+    fn on_local_message(&self, cb: impl FnMut(&mut T, EntityId, Message) + 'static);
 
     #[cfg(feature = "server")]
-    fn on_client_message(&self, cb: impl Fn(&mut T, EntityId, Message) + 'static);
+    fn on_client_message(&self, cb: impl FnMut(&mut T, EntityId, Message) + 'static);
 }
 
 impl<T, Message> ActorExt<T, Message> for Arc<Mutex<T>>
@@ -96,7 +96,7 @@ where
     T: Send + Sync + 'static,
     Message: ModuleMessage,
 {
-    fn on_message(&self, cb: impl Fn(&mut T, Source, Message) + 'static) {
+    fn on_message(&self, mut cb: impl FnMut(&mut T, Source, Message) + 'static) {
         let actor = self.to_owned();
         Message::subscribe(move |source, data| {
             let mut actor = actor.lock().unwrap();
@@ -104,7 +104,7 @@ where
         });
     }
 
-    fn on_local_message(&self, cb: impl Fn(&mut T, EntityId, Message) + 'static) {
+    fn on_local_message(&self, mut cb: impl FnMut(&mut T, EntityId, Message) + 'static) {
         self.on_message(move |store, source, data| {
             if let Some(local) = source.local() {
                 cb(store, local, data);
@@ -113,7 +113,7 @@ where
     }
 
     #[cfg(feature = "server")]
-    fn on_client_message(&self, cb: impl Fn(&mut T, EntityId, Message) + 'static) {
+    fn on_client_message(&self, mut cb: impl FnMut(&mut T, EntityId, Message) + 'static) {
         self.on_message(move |store, source, data| {
             if let Some(local) = source.client_entity_id() {
                 cb(store, local, data);
@@ -127,19 +127,19 @@ pub trait SystemExt<T, Components: ComponentsTuple + Copy + Clone + 'static> {
     fn each_frame(
         &self,
         query: GeneralQuery<Components>,
-        cb: impl Fn(&mut T, EntityId, Components::Data) + 'static,
+        cb: impl FnMut(&mut T, EntityId, Components::Data) + 'static,
     );
 
     fn on_event(
         &self,
         query: EventQuery<Components>,
-        cb: impl Fn(&mut T, EntityId, Components::Data) + 'static,
+        cb: impl FnMut(&mut T, EntityId, Components::Data) + 'static,
     );
 
     fn on_change(
         &self,
         query: ChangeQuery<Components>,
-        cb: impl Fn(&mut T, EntityId, Components::Data) + 'static,
+        cb: impl FnMut(&mut T, EntityId, Components::Data) + 'static,
     );
 }
 
@@ -151,7 +151,7 @@ where
     fn each_frame(
         &self,
         query: GeneralQuery<Components>,
-        cb: impl Fn(&mut T, EntityId, Components::Data) + 'static,
+        mut cb: impl FnMut(&mut T, EntityId, Components::Data) + 'static,
     ) {
         let system = self.to_owned();
         query.each_frame(move |entities| {
@@ -165,7 +165,7 @@ where
     fn on_event(
         &self,
         query: EventQuery<Components>,
-        cb: impl Fn(&mut T, EntityId, Components::Data) + 'static,
+        mut cb: impl FnMut(&mut T, EntityId, Components::Data) + 'static,
     ) {
         let system = self.to_owned();
         query.bind(move |entities| {
@@ -179,7 +179,7 @@ where
     fn on_change(
         &self,
         query: ChangeQuery<Components>,
-        cb: impl Fn(&mut T, EntityId, Components::Data) + 'static,
+        mut cb: impl FnMut(&mut T, EntityId, Components::Data) + 'static,
     ) {
         let system = self.to_owned();
         query.bind(move |entities| {
