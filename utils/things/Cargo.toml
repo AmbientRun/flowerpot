@@ -7,6 +7,7 @@ version = "0.0.1"
 [dependencies]
 ambient_api.workspace = true
 flowerpot-common.workspace = true
+flume = "0.11.0"
 
 [[bin]]
 name = "things_client"
