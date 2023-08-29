@@ -179,29 +179,43 @@ fn main() {
     });
 
     let chunks = flowerpot_common::init_map(chunk());
-    chunks.on_message(move |_chunks, _, data: LoadChunk| {
-        let mut tiles = Vec::with_capacity(CHUNK_SIZE * CHUNK_SIZE);
-        for _y in 0..CHUNK_SIZE {
-            for _x in 0..CHUNK_SIZE {
-                tiles.push(Entity::new().spawn());
+    let mut sequence = 0;
+    chunks.on_message(move |chunks, _, data: UpdateLoadedChunks| {
+        if data.sequence < sequence {
+            eprintln!("received out-of-sequence chunk update: {}", data.sequence);
+        }
+
+        sequence = data.sequence;
+
+        let old_chunks =
+            entity::get_component(player::get_local(), loaded_chunks()).unwrap_or_default();
+
+        // TODO use sorted diffs
+
+        for new in data.chunks.iter() {
+            if !old_chunks.contains(new) {
+                let mut tiles = Vec::with_capacity(CHUNK_SIZE * CHUNK_SIZE);
+                for _y in 0..CHUNK_SIZE {
+                    for _x in 0..CHUNK_SIZE {
+                        tiles.push(Entity::new().spawn());
+                    }
+                }
+
+                Entity::new()
+                    .with(chunk(), *new)
+                    .with(chunk_tile_refs(), tiles)
+                    .spawn();
             }
         }
 
-        Entity::new()
-            .with(chunk(), data.pos)
-            .with(chunk_tile_refs(), tiles)
-            .spawn();
-    });
-
-    chunks.on_message(move |chunks, _, data: UnloadChunk| {
-        let Some(chunk) = chunks.remove(&data.pos) else {
-            return;
-        };
-
-        for tile in entity::get_component(chunk, chunk_tile_refs()).unwrap_or_default() {
-            entity::despawn_recursive(tile);
+        for old in old_chunks.iter() {
+            if !data.chunks.contains(old) {
+                if let Some(chunk) = chunks.get(old) {
+                    entity::despawn_recursive(*chunk);
+                }
+            }
         }
 
-        entity::despawn_recursive(chunk);
+        entity::add_component(player::get_local(), loaded_chunks(), data.chunks);
     });
 }

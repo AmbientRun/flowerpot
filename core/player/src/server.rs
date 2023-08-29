@@ -41,7 +41,8 @@ fn main() {
                     .with(yaw(), 0.0)
                     .with(left_hand_ref(), left_hand)
                     .with(right_hand_ref(), right_hand)
-                    .with(loaded_chunks(), vec![]),
+                    .with(loaded_chunks(), vec![])
+                    .with(chunk_sequence(), 1),
             );
         }
     });
@@ -60,8 +61,9 @@ fn main() {
     );
 
     chunks.on_change(
-        change_query((user_id(), loaded_chunks(), in_chunk())).track_change(in_chunk()),
-        move |chunks, e, (uid, old_chunks, current_chunk)| {
+        change_query((user_id(), chunk_sequence(), loaded_chunks(), in_chunk()))
+            .track_change(in_chunk()),
+        move |chunks, e, (uid, old_sequence, old_chunks, current_chunk)| {
             let current_pos = entity::get_component(current_chunk, chunk()).unwrap();
             let mut new_chunks = Vec::new();
             for y in -4..4 {
@@ -70,31 +72,35 @@ fn main() {
                 }
             }
 
-            // TODO this is hilariously slow. please use sorted diffs
+            if new_chunks == old_chunks {
+                return;
+            }
 
-            for new_chunk in new_chunks.iter() {
-                if !old_chunks.contains(new_chunk) {
-                    let Some(chunk) = chunks.get(new_chunk) else {
+            for new in new_chunks.iter() {
+                if !old_chunks.contains(new) {
+                    let Some(chunk) = chunks.get(new) else {
                         continue;
                     };
 
-                    LoadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(true);
-                    LoadChunk::new(*new_chunk).send_client_targeted_reliable(uid.clone());
+                    LoadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(false);
                 }
             }
 
-            for old_chunk in old_chunks.iter() {
-                if !new_chunks.contains(old_chunk) {
-                    let Some(chunk) = chunks.get(old_chunk) else {
+            for old in old_chunks.iter() {
+                if !new_chunks.contains(old) {
+                    let Some(chunk) = chunks.get(old) else {
                         continue;
                     };
 
-                    UnloadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(true);
-                    UnloadChunk::new(*old_chunk).send_client_targeted_reliable(uid.clone());
+                    UnloadPlayerRegion::new(*chunk, e, uid.clone()).send_local_broadcast(false);
                 }
             }
+
+            UpdateLoadedChunks::new(new_chunks.clone(), old_sequence)
+                .send_client_targeted_reliable(uid);
 
             entity::set_component(e, loaded_chunks(), new_chunks);
+            entity::set_component(e, chunk_sequence(), old_sequence + 1);
         },
     );
 

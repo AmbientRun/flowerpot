@@ -73,6 +73,9 @@ name = "TileSelectionRef"
 attributes = ["Debuggable"]
 description = "A reference to this player's tile selection."
 
+[components.chunk_sequence]
+type = "U64"
+
 [messages.UpdatePlayerAngle]
 name = "UpdatePlayerAngle"
 description = "Client-to-server message to update the client's player's angle."
@@ -83,11 +86,6 @@ name = "UpdatePlayerDirection"
 description = "Client-to-server message to update the client's player's direction."
 fields = { direction = "Vec2" }
 
-[messages.LoadChunk]
-description = "Server-to-client message to command a client to load a chunk."
-fields = { pos = "Ivec2" }
-
-[messages.UnloadChunk]
-name = "UnloadChunk"
-description = "Server-to-client emssage to command a client to unload a chunk."
-fields = { pos = "Ivec2" }
+[messages.UpdateLoadedChunks]
+description = "Server-to-client message to command a client to load only these specific chunks."
+fields = { chunks = { type = "Vec", element_type = "Ivec2" }, sequence = "U64" }
