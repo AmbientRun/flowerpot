@@ -1,10 +1,8 @@
-use std::collections::HashMap;
-
-use ambient_api::{core::player::components::user_id, prelude::*};
+use ambient_api::prelude::*;
 
 use packages::{
     map::components::*,
-    region_networking::{components::players_observing, messages::LoadPlayerRegion},
+    region_networking::messages::OnSpawnThing,
     things::components::class_ref,
     this::{components::*, messages::*},
 };
@@ -13,114 +11,23 @@ mod shared;
 
 #[main]
 fn main() {
-    LoadPlayerRegion::subscribe(move |_, data| {
-        let Some(chunk_xy) = entity::get_component(data.region, chunk()) else {
-            return;
-        };
+    shared::init_shared();
 
-        let Some(chunk_tiles) = entity::get_component(data.region, chunk_tile_refs()) else {
-            return;
-        };
-
-        let mut tiles = Vec::with_capacity(chunk_tiles.len());
-        let mut classes = Vec::with_capacity(chunk_tiles.len());
-        let mut dirty = false;
-        for (tile_idx, tile) in chunk_tiles.iter().enumerate() {
-            let occupant = match entity::get_component(*tile, medium_crop_occupant()) {
-                Some(occupant) if !occupant.is_null() => occupant,
-                _ => continue,
-            };
-
-            let Some(class) = entity::get_component(occupant, class_ref()) else {
-                eprintln!("crop {} has no class", occupant);
-                continue;
-            };
-
-            dirty = true;
-            tiles.push(tile_idx.try_into().unwrap());
-            classes.push(class);
-        }
-
-        if !dirty {
-            return;
-        }
-
-        UpdateMediumCrops::new(chunk_xy, classes, tiles)
-            .send_client_targeted_reliable(data.player_uid.clone());
-    });
-
-    change_query((in_chunk(), chunk_tile_index(), medium_crop_occupant()))
-        .track_change(medium_crop_occupant())
-        .bind(move |entities| {
-            type ChunkUpdate = Vec<(u8, EntityId)>;
-            type BatchedUpdates = HashMap<EntityId, ChunkUpdate>;
-            let mut updates = BatchedUpdates::new();
-
-            for (_e, (chunk_ref, tile_idx, occupant)) in entities {
-                let class = if occupant.is_null() {
-                    EntityId::null()
-                } else {
-                    let Some(class) = entity::get_component(occupant, class_ref()) else {
-                        eprintln!("crop {} has no class", occupant);
-                        continue;
-                    };
-
-                    class
-                };
-
-                let update = (tile_idx, class);
-
-                if let Some(updates) = updates.get_mut(&chunk_ref) {
-                    updates.push(update);
-                } else {
-                    updates.insert(chunk_ref, vec![update]);
-                }
-            }
-
-            for (chunk_ref, update) in updates {
-                let Some(chunk_pos) = entity::get_component(chunk_ref, chunk()) else {
-                    continue;
-                };
-                let Some(observers) = entity::get_component(chunk_ref, players_observing()) else {
-                    continue;
-                };
-                let (tiles, classes): (Vec<_>, Vec<_>) = update.into_iter().unzip();
-
-                for observer in observers {
-                    let Some(uid) = entity::get_component(observer, user_id()) else {
-                        continue;
-                    };
-                    UpdateMediumCrops::new(chunk_pos, classes.clone(), tiles.clone())
-                        .send_client_targeted_reliable(uid);
-                }
-            }
-        });
-
-    spawn_query((is_medium_crop(), class_ref(), on_tile())).bind(move |entities| {
-        for (e, (_medium, crop_class, tile)) in entities {
-            if let Some(old_occupant) = entity::get_component(tile, medium_crop_occupant()) {
-                if !old_occupant.is_null() && old_occupant != e {
-                    entity::despawn_recursive(old_occupant);
-                }
-            }
-
-            entity::add_components(
-                e,
-                Entity::new()
-                    .with(age(), 0)
-                    .with(class_ref(), crop_class)
-                    .with(on_tile(), tile),
-            );
-
-            entity::add_component(tile, medium_crop_occupant(), e);
+    // despawn old crops since we don't spawn prefabs
+    spawn_query(despawn_when_loaded()).bind(move |entities| {
+        for (_e, old) in entities {
+            entity::despawn_recursive(old);
         }
     });
 
-    despawn_query((is_medium_crop(), class_ref(), on_tile())).bind(move |entities| {
-        for (e, (_medium, _class, tile)) in entities {
-            if entity::get_component(tile, medium_crop_occupant()) == Some(e) {
-                entity::set_component(tile, medium_crop_occupant(), EntityId::null());
-            }
+    OnSpawnThing::subscribe(move |source, spawn| {
+        if source.local().is_none() {
+            return;
+        }
+
+        if let Some(coords) = entity::get_component(spawn.thing, coords()) {
+            UpdateCropCoords::new(spawn.thing, coords)
+                .send_client_targeted_reliable(spawn.player_uid);
         }
     });
 

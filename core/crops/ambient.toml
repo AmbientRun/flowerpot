@@ -61,17 +61,17 @@ name = "OnTile"
 attributes = ["Debuggable"]
 description = "A reference to the tile that this crop is on."
 
+[components.coords]
+type = "Ivec2"
+name = "Coords"
+attributes = ["Debuggable"]
+
 [components.despawn_when_loaded]
 type = "EntityId"
 name = "DespawnWhenLoaded"
 attributes = ["Debuggable"]
 description = "An old crop model with a prefab that should be despawned when this entity's prefab is loaded."
 
-[messages.UpdateMediumCrops]
-name = "UpdateMediumCrops"
-description = "Server-to-client batch update for the medium crops in a chunk."
-
-[messages.UpdateMediumCrops.fields]
-chunk = "Ivec2"
-crop_classes = { type = "Vec", element_type = "EntityId" }
-crop_tiles = { type = "Vec", element_type = "U8" }
+[messages.UpdateCropCoords]
+name = "UpdateCropCoords"
+fields = { thing = "EntityId", position = "Ivec2" }

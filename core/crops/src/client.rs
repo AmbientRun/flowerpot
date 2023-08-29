@@ -9,81 +9,36 @@ use ambient_api::{
     prelude::*,
 };
 
-use flowerpot_common::CHUNK_SIZE;
+use flowerpot_common::{impl_remote_update, RemoteEntityStore};
 use packages::{
-    map::components::{chunk, chunk_tile_index, chunk_tile_refs, in_chunk, position},
+    map::components::position,
+    region_networking::components::remote_entity,
     terrain::components::altitude,
-    things::components::class_ref,
     this::{components::*, messages::*},
 };
 
 mod shared;
 
+impl_remote_update!(UpdateCropCoords);
+
 #[main]
 fn main() {
-    let chunks = flowerpot_common::init_map(chunk());
+    shared::init_shared();
 
-    UpdateMediumCrops::subscribe({
-        let chunks = chunks.clone();
-        move |_, data| {
-            let chunks = chunks.clone();
-            run_async(async move {
-                let mut tries = std::iter::repeat(()).take(20);
-                let chunk = loop {
-                    if let Some(_) = tries.next() {
-                        if let Some(chunk) = chunks.lock().unwrap().get(&data.chunk).copied() {
-                            break Some(chunk);
-                        }
-                    } else {
-                        break None;
-                    }
+    let remote_store = RemoteEntityStore::new(remote_entity());
 
-                    sleep(0.1).await;
-                };
-
-                let Some(chunk) = chunk else { return };
-                let Some(tiles) = entity::get_component(chunk, chunk_tile_refs()) else {
-                    return;
-                };
-
-                for (tile_idx, class) in data
-                    .crop_tiles
-                    .into_iter()
-                    .zip(data.crop_classes.into_iter())
-                {
-                    let tile = tiles[tile_idx as usize];
-
-                    let old_occupant =
-                        entity::get_component(tile, medium_crop_occupant()).unwrap_or_default();
-
-                    if class.is_null() {
-                        if !old_occupant.is_null() {
-                            entity::despawn_recursive(old_occupant);
-                        }
-
-                        continue;
-                    }
-
-                    let occupant_position = (data.chunk * CHUNK_SIZE as i32).as_vec2()
-                        + vec2(
-                            (tile_idx as usize % CHUNK_SIZE) as f32,
-                            (tile_idx as usize / CHUNK_SIZE) as f32,
-                        )
-                        + 0.5;
-
-                    let new_occupant = Entity::new()
-                        .with(class_ref(), class)
-                        .with(position(), occupant_position)
-                        .with(in_chunk(), chunk)
-                        .with(chunk_tile_index(), tile_idx)
-                        .with(despawn_when_loaded(), old_occupant)
-                        .spawn();
-
-                    entity::add_component(tile, medium_crop_occupant(), new_occupant);
-                }
-            });
-        }
+    remote_store.subscribe_update::<UpdateCropCoords>(move |e, data| {
+        entity::add_component(e, coords(), data.position);
     });
+
+    spawn_query(coords())
+        .requires(is_medium_crop())
+        .bind(move |entities| {
+            for (e, coords) in entities {
+                let new_position = coords.as_vec2() + 0.5;
+                entity::add_component(e, position(), new_position);
+            }
+        });
 
     // despawn old crops once the new one has finished loading
     spawn_query((despawn_when_loaded(), spawned())).bind(move |entities| {

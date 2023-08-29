@@ -4,7 +4,7 @@ use ambient_api::{once_cell::sync::OnceCell, prelude::*};
 
 use flowerpot_common::CHUNK_SIZE;
 use packages::{
-    crops::components::{is_medium_crop, medium_crop_occupant, on_tile},
+    crops::components::{coords, is_medium_crop, medium_crop_occupant, on_tile},
     game::components::*,
     map::components::{chunk, chunk_tile_refs},
     nameplate::components::name,
@@ -752,51 +752,20 @@ fn main() {
     add_tree("Cherry", 6, 4);
     add_tree("Peach", 6, 4);
 
-    spawn_query((chunk(), chunk_tile_refs())).bind(move |entities| {
-        for (_, (chunk, tiles)) in entities {
-            if chunk.x < 0 || chunk.y < 0 {
-                continue;
-            }
+    let row_spacing = 4;
+    let col_spacing = 4;
 
-            let row_spacing = 6;
-            let col_spacing = 6;
-
-            let chunk_offset = chunk * CHUNK_SIZE as i32;
-            for y in 0..CHUNK_SIZE {
-                let wy = y as i32 + chunk_offset.y;
-                if wy % row_spacing != 0 {
-                    continue;
-                }
-
-                let row_idx = wy / row_spacing;
-                let Some(row) = showcase.get(row_idx as usize) else {
-                    continue;
-                };
-
-                for x in 0..CHUNK_SIZE {
-                    let wx = x as i32 + chunk_offset.x;
-                    if wx % col_spacing != 0 {
-                        continue;
-                    }
-
-                    let col_idx = wx / col_spacing;
-                    let Some(crop) = row.get(col_idx as usize) else {
-                        continue;
-                    };
-
-                    let tile_idx = y * CHUNK_SIZE + x;
-                    let tile = tiles[tile_idx];
-
-                    let crop = Entity::new()
-                        .with(class_ref(), *crop)
-                        .with(on_tile(), tile)
-                        .spawn();
-
-                    entity::add_component(tile, medium_crop_occupant(), crop);
-                }
-            }
+    for (y, row) in showcase.iter().enumerate() {
+        for (x, class) in row.iter().enumerate() {
+            Entity::new()
+                .with(class_ref(), *class)
+                .with(
+                    coords(),
+                    ivec2(x as i32 * col_spacing, y as i32 * row_spacing),
+                )
+                .spawn();
         }
-    });
+    }
 
     use packages::crafting::components::*;
     def_entity!(
