@@ -7,8 +7,9 @@ use ambient_api::{
 };
 
 use packages::{
-    this::{components::*, messages::*},
     player::components::{left_hand_ref, local_player_ref, right_hand_ref},
+    things::components::class_ref,
+    this::{components::*, messages::*},
 };
 
 mod shared;
@@ -23,8 +24,13 @@ async fn async_main() {
         .await
         .expect("local_player_ref resource was deleted");
 
-    let Some(left_hand) = entity::get_component(local_player_entity, left_hand_ref()) else { panic!("local player entity has no left hand") };
-    let Some(right_hand) = entity::get_component(local_player_entity, right_hand_ref()) else { panic!("local player entity has no right hand") };
+    let Some(left_hand) = entity::get_component(local_player_entity, left_hand_ref()) else {
+        panic!("local player entity has no left hand")
+    };
+
+    let Some(right_hand) = entity::get_component(local_player_entity, right_hand_ref()) else {
+        panic!("local player entity has no right hand")
+    };
 
     UpdateHeldItems::subscribe(move |_, data| {
         update_held_item(left_hand, data.left);
@@ -41,17 +47,10 @@ fn update_held_item(hand: EntityId, class: EntityId) {
         return;
     }
 
-    let mut item_instance = Entity::new().with(local_to_parent(), Mat4::IDENTITY);
+    let item = Entity::new()
+        .with(local_to_parent(), Mat4::IDENTITY)
+        .with(class_ref(), class)
+        .spawn();
 
-    if let Some(new_color) = entity::get_component(class, color()) {
-        item_instance.set(color(), new_color);
-    }
-
-    // if let Some(prefab) = entity::get_component(class, this::prefab_path()) {
-    //     item_instance.set(prefab_from_url(), asset::url(prefab).unwrap());
-    // } else {
-    item_instance.set(cube(), ());
-    // }
-
-    entity::add_child(hand, item_instance.spawn());
+    entity::add_child(hand, item);
 }

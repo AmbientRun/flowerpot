@@ -6,6 +6,7 @@ content = { type = "Asset", schema = true, code = true }
 
 [dependencies]
 player = { path = "../player" }
+things = { path = "../../utils/things" }
 
 [components.held_ref]
 type = "EntityId"
