@@ -734,6 +734,7 @@ fn main() {
                 let path = format!("crops/large/{category}/{label}.fbx");
 
                 let e = def_entity!(
+                    is_class: (),
                     is_medium_crop: (),
                     prefab: url(&path),
                     name: label,
