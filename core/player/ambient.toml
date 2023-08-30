@@ -17,6 +17,12 @@ name = "LoadedChunks"
 attributes = ["Debuggable"]
 description = "The list of chunk positions that this player currently has loaded."
 
+[components.input_sequence]
+type = "U64"
+name = "InputSequence"
+attributes = ["Debuggable"]
+description = "The most recent sequence of this player's input state."
+
 [components.speed]
 type = "F32"
 name = "Speed"
@@ -76,15 +82,24 @@ description = "A reference to this player's tile selection."
 [components.chunk_sequence]
 type = "U64"
 
-[messages.UpdatePlayerAngle]
+[messages.UpdatePlayerInput]
 name = "UpdatePlayerAngle"
-description = "Client-to-server message to update the client's player's angle."
-fields = { pitch = "F32", yaw = "F32" }
+description = "Client-to-server message to update the client's player's input state."
 
-[messages.UpdatePlayerDirection]
-name = "UpdatePlayerDirection"
-description = "Client-to-server message to update the client's player's direction."
-fields = { direction = "Vec2" }
+[messages.UpdatePlayerInput.fields]
+direction = "Vec2"
+pitch = "F32"
+yaw = "F32"
+sequence = "U64"
+
+[messages.UpdatePlayerState]
+name = "UpdatePlayerState"
+description = "Server-to-client message to update the client's player's state."
+
+[messages.UpdatePlayerState.fields]
+position = "Vec2"
+speed = "F32"
+sequence = "U64"
 
 [messages.UpdateLoadedChunks]
 description = "Server-to-client message to command a client to load only these specific chunks."

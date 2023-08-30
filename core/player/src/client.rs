@@ -1,10 +1,15 @@
-use std::f32::consts::FRAC_PI_2;
+use std::{
+    collections::VecDeque,
+    f32::consts::FRAC_PI_2,
+    sync::{Arc, Mutex},
+};
 
 use ambient_api::{
     core::{
         app::components::main_scene,
         camera::components::aspect_ratio_from_window,
         camera::concepts::make_perspective_infinite_reverse_camera,
+        messages::Frame,
         player::components::{is_player, local_user_id, user_id},
         transform::{
             components::{local_to_parent, local_to_world, rotation, scale, translation},
@@ -25,7 +30,7 @@ use packages::{
     this::{components::*, messages::*},
 };
 
-use shared::init_shared_player;
+use shared::*;
 
 use crate::packages::map::components::chunk_tile_refs;
 
@@ -102,8 +107,6 @@ fn main() {
             }
         });
 
-    init_shared_player();
-
     change_query((is_player(), position(), altitude()))
         .track_change((position(), altitude()))
         .bind(move |entities| {
@@ -113,21 +116,23 @@ fn main() {
             }
         });
 
-    change_query((is_player(), pitch(), yaw()))
-        .track_change((pitch(), yaw()))
-        .bind(move |entities| {
-            for (_, (_, pitch, yaw)) in entities {
-                UpdatePlayerAngle::new(pitch, yaw).send_server_reliable();
-            }
-        });
+    let input = Arc::new(Mutex::new(InputPrediction::new()));
 
-    change_query((is_player(), direction()))
-        .track_change(direction())
-        .bind(move |entities| {
-            for (_, (_, direction)) in entities {
-                UpdatePlayerDirection::new(direction).send_server_reliable();
-            }
-        });
+    Frame::subscribe({
+        let input = input.clone();
+        move |_| {
+            input.lock().unwrap().on_frame();
+        }
+    });
+
+    input.on_message(move |input, _, data: UpdatePlayerState| {
+        let state = PlayerState {
+            position: data.position,
+            speed: data.speed,
+        };
+
+        input.rewind(data.sequence, state);
+    });
 
     query((yaw(), pitch(), position(), altitude()))
         .requires(is_player())
@@ -218,4 +223,90 @@ fn main() {
 
         entity::add_component(player::get_local(), loaded_chunks(), data.chunks);
     });
+}
+
+pub struct InputStep {
+    pub state: InputState,
+    pub dt: f32,
+}
+
+pub struct InputPrediction {
+    local_sequence: u64,
+    inputs: VecDeque<InputStep>,
+    last_server_update: u64,
+    state: PlayerState,
+    e: EntityId,
+}
+
+impl InputPrediction {
+    pub fn new() -> Self {
+        Self {
+            local_sequence: 0,
+            inputs: VecDeque::new(),
+            last_server_update: 0,
+            state: PlayerState {
+                position: Vec2::new(0.0, 0.0),
+                speed: 1.0,
+            },
+            e: player::get_local(),
+        }
+    }
+
+    pub fn on_frame(&mut self) {
+        let dt = delta_time();
+
+        let state = match InputState::get(self.e) {
+            Some(state) => state,
+            None => {
+                // eprintln!("local player has incomplete input state");
+                return;
+            }
+        };
+
+        self.apply(InputStep { state, dt });
+    }
+
+    pub fn apply(&mut self, input: InputStep) {
+        UpdatePlayerInput {
+            direction: input.state.direction,
+            pitch: input.state.pitch,
+            yaw: input.state.yaw,
+            sequence: self.local_sequence,
+        }
+        .send_server_unreliable();
+
+        self.state.apply(&input.state, input.dt);
+        self.state.set(self.e);
+        self.inputs.push_front(input);
+        self.local_sequence += 1;
+    }
+
+    pub fn rewind(&mut self, sequence: u64, mut state: PlayerState) {
+        // if this update is out of order, drop it
+        if self.last_server_update > sequence {
+            return;
+        }
+
+        // drop obsolete updates
+        let skipped = sequence - self.last_server_update;
+        for _ in 0..skipped {
+            self.inputs.pop_back();
+        }
+
+        // update the sequence of the latest server update
+        self.last_server_update = sequence;
+
+        // rewind
+        for input in self.inputs.iter().rev() {
+            state.apply(&input.state, input.dt);
+        }
+
+        // apply new state
+        self.update_state(state);
+    }
+
+    pub fn update_state(&mut self, state: PlayerState) {
+        state.set(self.e);
+        self.state = state;
+    }
 }

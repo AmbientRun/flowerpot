@@ -5,23 +5,22 @@ use ambient_api::{
 
 use flowerpot_common::SystemExt;
 use packages::{
-    fauna::components::{is_fauna, pitch, yaw},
+    fauna::components::{is_fauna, yaw},
     map::components::{chunk, in_chunk, position},
     region_networking::messages::{LoadPlayerRegion, UnloadPlayerRegion},
     things::components::{class_ref, is_class, model_prefab_url},
     this::{assets::url, components::*, messages::*},
 };
+use shared::*;
 
 mod shared;
 
 #[main]
 fn main() {
-    shared::init_shared_player();
-
     let player_class = Entity::new()
         .with(is_class(), ())
         .with(is_fauna(), ())
-        .with(speed(), 1.0)
+        .with(speed(), 30.0)
         .with(model_prefab_url(), url("player.glb"))
         .spawn();
 
@@ -42,7 +41,8 @@ fn main() {
                     .with(left_hand_ref(), left_hand)
                     .with(right_hand_ref(), right_hand)
                     .with(loaded_chunks(), vec![])
-                    .with(chunk_sequence(), 1),
+                    .with(chunk_sequence(), 1)
+                    .with(input_sequence(), 0),
             );
         }
     });
@@ -104,20 +104,49 @@ fn main() {
         },
     );
 
-    UpdatePlayerDirection::subscribe(move |source, data| {
+    UpdatePlayerInput::subscribe(move |source, data| {
         let Some(e) = source.client_entity_id() else {
             return;
         };
-        entity::add_component(e, direction(), data.direction.clamp_length_max(1.0));
+
+        let Some(old_sequence) = entity::get_component(e, input_sequence()) else {
+            // println!("player has no input sequence");
+            return;
+        };
+
+        // ignore out-of-order input updates
+        if old_sequence >= data.sequence {
+            // println!("out-of-order input sequence: {}", data.sequence);
+            return;
+        }
+
+        let state = InputState {
+            direction: data.direction.clamp_length_max(1.0),
+            pitch: data.pitch,
+            yaw: data.yaw,
+        };
+
+        state.set(e);
+        entity::set_component(e, input_sequence(), data.sequence);
     });
 
-    UpdatePlayerAngle::subscribe(move |source, data| {
-        let Some(e) = source.client_entity_id() else {
-            return;
-        };
-        entity::add_component(e, pitch(), data.pitch);
-        entity::add_component(e, yaw(), data.yaw);
-    });
+    query((input_sequence(), user_id()))
+        .requires(is_player())
+        .each_frame(move |entities| {
+            let dt = delta_time();
+            for (e, (sequence, uid)) in entities {
+                let Some(state) = update_player(e, dt) else {
+                    continue;
+                };
+
+                UpdatePlayerState {
+                    position: state.position,
+                    speed: state.speed,
+                    sequence,
+                }
+                .send_client_targeted_unreliable(uid);
+            }
+        });
 
     query(position())
         .requires(is_player())
