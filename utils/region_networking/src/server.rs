@@ -3,7 +3,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use ambient_api::{core::player::components::user_id, prelude::*};
+use ambient_api::{
+    core::{network::components::no_sync, player::components::user_id},
+    prelude::*,
+};
 use flowerpot_common::{ActorExt, SystemExt};
 
 use packages::this::{components::*, messages::*};
@@ -106,7 +109,10 @@ impl RegionOccupants {
 fn main() {
     let occupants: Arc<Mutex<RegionOccupants>> = Default::default();
 
-    occupants.on_event(spawn_query(in_region()), RegionOccupants::update_occupant);
+    occupants.on_event(spawn_query(in_region()), |occupants, e, region| {
+        entity::add_component(e, no_sync(), ());
+        occupants.update_occupant(e, region);
+    });
 
     occupants.on_change(
         change_query(in_region()).track_change(in_region()),
