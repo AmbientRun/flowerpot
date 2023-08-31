@@ -88,6 +88,11 @@ impl RegionOccupants {
     }
 
     fn despawn_from_observer(e: EntityId, player_entity: EntityId) {
+        if e == player_entity {
+            // do not sync players to themselves
+            return;
+        }
+
         let Some(player_uid) = entity::get_component(player_entity, user_id()) else {
             return;
         };
@@ -96,6 +101,11 @@ impl RegionOccupants {
     }
 
     fn spawn_to_observer(e: EntityId, player_entity: EntityId) {
+        if e == player_entity {
+            // do not sync players to themselves
+            return;
+        }
+
         let Some(player_uid) = entity::get_component(player_entity, user_id()) else {
             return;
         };
