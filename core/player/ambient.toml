@@ -1,6 +1,6 @@
 [package]
-id = "player"
-name = "player"
+id = "flowerpot_player"
+name = "flowerpot_player"
 version = "0.0.1"
 content = { type = "Asset", schema = true, code = true, models = true }
 

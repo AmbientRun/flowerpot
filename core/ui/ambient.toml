@@ -1,6 +1,6 @@
 [package]
-id = "ui"
-name = "ui"
+id = "flowerpot_ui"
+name = "flowerpot_ui"
 version = "0.0.1"
 content = { type = "Asset", schema = true, code = true }
 

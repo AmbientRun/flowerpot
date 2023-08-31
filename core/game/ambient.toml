@@ -1,6 +1,6 @@
 [package]
-id = "game"
-name = "game"
+id = "flowerpot_game"
+name = "flowerpot_game"
 version = "0.0.1"
 
 [package.content]

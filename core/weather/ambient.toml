@@ -1,6 +1,6 @@
 [package]
-id = "weather"
-name = "weather"
+id = "flowerpot_weather"
+name = "flowerpot_weather"
 version = "0.0.1"
 content = { type = "Asset", schema = true, code = true }
 

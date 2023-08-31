@@ -1,6 +1,6 @@
 [package]
-id = "map"
-name = "map"
+id = "flowerpot_map"
+name = "flowerpot_map"
 version = "0.0.1"
 content = { type = "Asset", schema = true, code = true }
 

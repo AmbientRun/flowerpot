@@ -1,6 +1,6 @@
 [package]
-id = "terrain"
-name = "terrain"
+id = "flowerpot_terrain"
+name = "flowerpot_terrain"
 version = "0.0.1"
 content = { type = "Asset", schema = true, code = true }
 
