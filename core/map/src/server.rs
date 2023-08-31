@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use ambient_api::prelude::*;
+use ambient_api::{core::network::components::no_sync, prelude::*};
 use flowerpot_common::CHUNK_SIZE;
 
 use packages::{
@@ -38,6 +38,7 @@ pub fn main() {
             let position = IVec2::new(x, y);
             let chunk = Entity::new()
                 .with(chunk(), position)
+                .with(no_sync(), ())
                 .with(players_observing(), vec![])
                 .spawn();
 
@@ -49,6 +50,7 @@ pub fn main() {
                     let tile = Entity::new()
                         .with(in_chunk(), chunk)
                         .with(chunk_tile_index(), tile_idx)
+                        .with(no_sync(), ())
                         .spawn();
 
                     chunk_tiles.push(tile);
