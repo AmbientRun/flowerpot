@@ -98,9 +98,9 @@ where
 {
     fn on_message(&self, mut cb: impl FnMut(&mut T, Source, Message) + 'static) {
         let actor = self.to_owned();
-        Message::subscribe(move |source, data| {
+        Message::subscribe(move |context, data| {
             let mut actor = actor.lock().unwrap();
-            cb(&mut actor, source, data);
+            cb(&mut actor, context.source, data);
         });
     }
 
