@@ -22,133 +22,97 @@ used in other non-farming Ambient games.
 
 ## Features
 
-- [x] An efficient, tile-based, open world
-- [x] Chunk-based networking to enable large numbers of players to freely roam
-- [x] Perlin noise-based heightmap generation
-- [x] First-person movement and controls
-- [x] Left and right player hands that can hold items
-- [ ] Dropping and picking of items on the map
-- [x] Planting seeds onto tiles to place crops
-- [x] Harvesting crops to obtain items
-- [x] A simple crafting system based on combining two items together
-- [x] Extensible content model using the prototype pattern
-- [ ] Animated player avatars
-- [x] Player-selected display names and nameplates on player avatars
-- [x] Live game text chat
-- [x] Content moderation for display names and game chat using [rustrict](https://crates.io/rustrict)
-- [x] Day/night cycle
-- [ ] Sound effects
-- [ ] Small crops
-- [x] Medium crops
-- [ ] Large crops
+- A tile-based, open world
+- Chunk-based networking to enable large numbers of players to freely roam
+- Perlin noise-based heightmap generation
+- First-person movement and controls
+- Left and right player hands that can hold items
+- Planting seeds onto tiles to place crops
+- Harvesting crops to obtain items
+- A simple crafting system based on combining two items together
+- Extensible content model using the prototype pattern
+- Player-selected display names and nameplates on player avatars
+- Live game text chat
+- Content moderation for display names and game chat using [rustrict](https://crates.io/rustrict)
+- Day/night cycle
 
 ## Bundled Content
 
 Flowerpot also bundles free, permissively-licensed game assets for helping to
 jumpstart the development of your farming game:
 
-TODO: update after launch
-- [ ] **10 medium crops** with 3D models for all growth stages
-- [ ] **item models** associated with all crops
+- **10 medium crops** with 3D models for all growth stages
+- **4 trees** with 3D models for all growth stages and 4 variations
+- **item models** associated with all crops
 
 # To-Do
 
-## MVP
+## Misc. Topics
 
-big topics:
-- [ ] migrate tasks from journal here (IMPORTANT)
-- [ ] player reach
-- [ ] player medium crop targeting
-- [ ] player small crop targeting
-- [ ] map items
-- [ ] drop map items
-- [ ] player map item targeting
-- [ ] pick up map items
-
-- [ ] tech
-  - [ ] give more appropriate/distinctive ember IDs to all embers
-  - [ ] break out region networking into its own ember
-  - [ ] break chat and naming system out into a standard ember
-- [ ] UX
-  - [ ] ui: generate colors for display names?
-  - [ ] ui: document messages
-  - [ ] ui: display player list in tab menu
-  - [ ] ui: scroll chat contents?
-  - [ ] ui: add "i'm not picky" name button to randomly select nickname
-- [ ] crops
-  - [ ] crops: define a `is_small_crop_class` component
-  - [ ] crops: define a `prefab_model_url` component
-  - [ ] crops: sync small crop prefabs
-  - [ ] crops: define and spawn test irises on chunks
-  - [ ] crops: reuse fauna chunk occupancy code to track small crops
-  - [ ] crops: spawn and update small crops client-side
-- [ ] items and actions
-  - [ ] crafting: better semantics for secondary items?
-  - [ ] items: define a `prefab_url` component
-  - [ ] game: grab some usable item models and define items for them
-  - [ ] game: define some workable crafting recipes
-- [ ] worldgen
-  - [ ] make a "procgen" mod
-  - [ ] procgen: figure out how to trigger chunk generation here
-  - [ ] procgen: instantiate random crops on each chunk
-
-## Pre-Launch
-
-big topics that still need to be planned here:
-- [ ] huge map gen
+- [ ] add instructions for making a mod from the template
+- [ ] switch from per-tile entities to per-chunk entities
 - [ ] water
 - [ ] animated player character
-- [ ] day/night cycle
 - [ ] non-walkable tiles and movement code
 - [ ] how do small crops reproduce?
 - [ ] road networking and representation
-- [ ] optimized diff-based crop sync?
 - [ ] seeing items other players are holding
 - [ ] crop neighbor counting and available neighbor tags
 - [ ] animated item/head bobbing during walking
 - [ ] held item animations
 - [ ] crafting animations
-- [ ] crop and item raycast targeting
 - [ ] harvesting small crops
+- [ ] credit use of mononoki font *somewhere*
+- [ ] license the codebase appropriately
+- [ ] give correct categories to embers
+
+## Tech
+
+- [ ] fauna: rubberbanding
+- [ ] rename chunks to regions
+- [ ] player: change `local_player_ref` into `is_joined`?
+- [ ] add more configuration to nameplate package
 - [ ] SFX
 - [ ] music
-- [ ] credit use of mononoki font *somewhere*
 
-- [ ] tech
-  - [ ] fauna: rubberbanding
-  - [ ] player: input prediction
-  - [ ] per-tile entity refactor
-  - [ ] rename chunks to regions
-  - [ ] player: change `local_player_ref` into `is_joined`?
-- [ ] items and actions
-  - [ ] crafting: comprehensively document components
-- [ ] worldgen
-  - [ ] terrain: terrain in the shape of an island
-  - [ ] terrain: define a `cut_direction` component
-  - [ ] terrain: define a checkerboard `cut_direction` system
-  - [ ] terrain: generate meshes according to `cut_direction`
-  - [ ] terrain: calculate height according to `cut_direction`
-  - [ ] terrain: experiment with different `cut_direction` heuristics
-  - [ ] terrain: define and use a terrain seed resource
-- [ ] launch content
-  - [ ] crops: sort out all of the medium crop assets
-  - [ ] game: define prototypes for all available medium crop models
-  - [ ] game: define prototypes for all medium crop-related items
-- [ ] meta
-  - [ ] outline this README
-  - [ ] add instructions for making a mod from the template
-  - [ ] license the codebase appropriately
-  - [ ] add more configuration to nameplate package
+## UX
 
-## Post-Launch
+- [ ] player reach
+- [ ] generate colors for display names?
+- [ ] document messages
+- [ ] display player list in a tab menu
+- [ ] scroll chat contents?
+- [ ] add "i'm not picky" name button to randomly select nickname
 
-big topics:
+## Crops
+
+- [ ] define a `is_small_crop` component
+- [ ] define and spawn test small crops on chunks
 - [ ] cover crops
 - [ ] large crops
-- [ ] soil types
 
-- [ ] meta
-  - [ ] setup CI to test code quality of PRs
-  - [ ] give correct categories to embers
-  - [ ] add clippy to CI
-  - [ ] make panicking (i.e. use of unwrap() or expect()) a clippy error
+## Items and Actions
+
+- [ ] map items
+- [ ] drop map items
+- [ ] player map item targeting
+- [ ] pick up map items
+- [ ] crafting: more flexible pattern matching semantics for secondary items?
+- [ ] items: define a `prefab_url` component
+- [ ] game: grab some usable item models and define items for them
+- [ ] game: define some workable crafting recipes
+- [ ] player medium crop targeting
+- [ ] player small crop targeting
+
+## Worldgen
+
+- [ ] make a "procgen" mod
+- [ ] procgen: figure out how to trigger chunk generation here
+- [ ] procgen: instantiate random crops on each chunk
+- [ ] terrain: terrain in the shape of an island
+- [ ] terrain: define a `cut_direction` component
+- [ ] terrain: define a checkerboard `cut_direction` system
+- [ ] terrain: generate meshes according to `cut_direction`
+- [ ] terrain: calculate height according to `cut_direction`
+- [ ] terrain: experiment with different `cut_direction` heuristics
+- [ ] terrain: define and use a terrain seed resource
